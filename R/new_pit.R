@@ -28,10 +28,10 @@
 
 new_pit <- function (path_to_folder, test_tags = NULL, print_to_file = FALSE, time_zone = NULL, old_format_data = NULL) {
 
-  require(stringr)
-  require(plyr)
-  require(dplyr)
-  require(lubridate)
+  #require(stringr)
+  #require(plyr)
+  #require(dplyr)
+  #require(lubridate)
 
   options(scipen = 999) # avoids scientific notation: use "options(scipen=0)" to turn back on
 

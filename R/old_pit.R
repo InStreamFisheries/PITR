@@ -17,10 +17,10 @@
 
 old_pit <- function (path_to_folder, test_tags = NULL, print_to_file = FALSE, time_zone = NULL) {
 
-  require(stringr)
-  require(plyr)
-  require(dplyr)
-  require(lubridate)
+  #require(stringr)
+  #require(plyr)
+  #require(dplyr)
+  #require(lubridate)
 
 
   #avoids scientific notation: use "options(scipen=0)" to turn back on
