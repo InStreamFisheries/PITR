@@ -1,0 +1,22 @@
+Package: PITR
+Title: Functions to collate, manage and summarize PIT telemetry data.
+Version: 1.0
+Author: Joel Harding, Douglas Braun, Nicholas Burnett, Annika Putt
+Maintainer: Nicholas Burnett <nich@instream.net>
+Description: PIT telemetry produces very large quantities of data that are
+    difficult to manage in raw format. The PITR package is designed to automate and
+    standardize the process of collating, managing and summarizing PIT telemetry
+    data. During data collation, users can choose to export metadata to a working
+    directory to assist in reviewing the analysis process. PITR functions allow
+    users to: (1) collate data from multiple readers and filter out tags specific to
+    a study, (2) restructure the configuration of readers and antennas into arrays;
+    (3) compute the detection efficiency of individual antennas; (4) compute the
+    direction of movement if there were two or more antennas deployed in a study;
+    (5) summarize upstream and downstream movements for each fish on each array;
+    (6) summarize the first and last detections on each antenna; and (7) plot the
+    voltage of each reader over the study duration. Users can summarize data by
+    year, month, week, day and hour. Notably, the quality of the data summaries is
+    reliant on antenna performance.
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 5.0.1
