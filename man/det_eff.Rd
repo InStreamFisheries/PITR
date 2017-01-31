@@ -8,7 +8,7 @@ det_eff(dat, resolution = NULL, direction, start_date = min(dat$date_time),
   end_date = max(dat$date_time))
 }
 \arguments{
-\item{dat}{telemetry dataset created using old_pit, new_pit or array_config}
+\item{dat}{telemetry dataset created using \code{\link{old_pit}}, \code{\link{new_pit}} or \code{\link{array_config}}}
 
 \item{resolution}{summarize data by year, month, week, day or hour}
 
@@ -25,7 +25,7 @@ A dataframe summarizing the detection efficiency of individual antennas.
 Function that computes the detection efficiency of individual antennas based on the array configuration and the user’s assumption of the direction of fish movement (up, down or resident). Data can be summarized by year, month, week, day or hour.
 }
 \details{
-Users can apply the det_eff function to the original dataset created by the pit_data function, or use the updated dataset created by the array_config function. Arguments start_date and end_date, if specified, must be entered as yyyy-mm-dd hh:mm:ss.
+Users can apply the \code{det_eff} function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use the updated dataset created by the \code{\link{array_config}} function. Arguments \code{start_date} and \code{end_date}, if specified, must be entered as yyyy-mm-dd hh:mm:ss.
 }
 \examples{
 #compute by month for fish assumed to be moving upstream

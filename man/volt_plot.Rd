@@ -7,7 +7,7 @@
 volt_plot(volt_dat, file_path = getwd())
 }
 \arguments{
-\item{volt_dat}{voltage dataset created using pit_data function}
+\item{volt_dat}{voltage dataset created using \code{\link{new_pit}} function}
 
 \item{file_path}{filepath to save the voltage plot}
 }

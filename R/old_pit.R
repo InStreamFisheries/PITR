@@ -1,6 +1,6 @@
 #' @title Collates data from readers in old format (<V5.0)
 #'
-#' @description Function collates data located in the working directory that were collected from readers with a firmware version earlier than 5.0 (April 2014). Users must define the working directory where the PIT files are located. If data is being collated from old and new formats, the user must specify separate working directories containing old and new data.
+#' @description Function collates data located in the working directory that were collected from readers with a firmware version earlier than 5.0 (April 2014). Users must define the working directory where the PIT files are located. If data is being collated from old and new formats, the user must separate working directories containing old and new data.
 #' @param path_to_folder filepath of the working directory containing data in old format
 #' @param test_tags concatenated list of PIT codes used for testing antenna performance
 #' @param print_to_file export metadata to working directory
