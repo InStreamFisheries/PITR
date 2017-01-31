@@ -6,6 +6,7 @@
 #' @param direction user-specified direction of fish movement
 #' @param start_date start date of period of interest, default is first date in dataset
 #' @param end_date end date of period of interest, default is last date in dataset
+#' @return A dataframe summarizing the detection efficiency of individual antennas.
 #' @details Users can apply the det_eff function to the original dataset created by the pit_data function, or use the updated dataset created by the array_config function. Arguments start_date and end_date, if specified, must be entered as yyyy-mm-dd hh:mm:ss.
 #' @examples
 #' #compute by month for fish assumed to be moving upstream

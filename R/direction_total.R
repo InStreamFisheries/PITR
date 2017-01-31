@@ -5,6 +5,7 @@
 #' @param resolution summarize data by year, month, week, day or hour
 #' @param start_date start date of period of interest, default is first date in dataset
 #' @param end_date end date of period of interest, default is last date in dataset
+#' @return A dataframe summarizing upstream and downstream movements on arrays.
 #' @details Users can apply the direction_total function to the original dataset created by the old_pit or pit_data function, or use the updated dataset created by the array_config function. Arguments start_date and end_date must be entered as yyyy-mm-dd hh:mm:ss.
 #' @examples
 #' #summarize by month
