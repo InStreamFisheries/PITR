@@ -14,7 +14,7 @@
 #' #summarize first and last detections by month
 #' first_last(data, “month”)
 
-first_last <- function( dat, resolution = NULL, start_date = min(dat$date_time), end_date = max(dat$date_time) ) {
+first_last <- function(dat, resolution = NULL, start_date = min(dat$date_time), end_date = max(dat$date_time) ) {
 
   # Need to format the dates away from character so that the filtering will work.
 
