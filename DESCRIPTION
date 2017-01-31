@@ -23,6 +23,7 @@ Imports:
     plyr,
     dplyr,
     lubridate
+URL: https://github.com/nichburnett/PITR
 BugReports: https://github.com/nichburnett/PITR/issues
 Encoding: UTF-8
 LazyData: TRUE

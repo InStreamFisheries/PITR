@@ -12,7 +12,7 @@ array_config(dat, configuration, arrayname = NULL, r1 = NULL, r2 = NULL,
 \arguments{
 \item{dat}{telemetry dataset created using \code{\link{old_pit}} or \code{\link{new_pit}} function}
 
-\item{configuration}{either ‘combine’, ‘split’ or ‘rename_antennas’}
+\item{configuration}{either \code{combine}, \code{split} or \code{rename_antennas}}
 
 \item{arrayname}{unique name of an array}
 
@@ -45,7 +45,7 @@ array_config(dat, configuration, arrayname = NULL, r1 = NULL, r2 = NULL,
 \item{an4}{new antenna 4}
 }
 \value{
-An updated dataset for further analysis using det_eff, direction, direction_total and first_last functions.
+An updated dataset for further analysis using \code{\link{det_eff}}, \code{\link{direction}}, \code{\link{direction_total}} and \code{\link{first_last}} functions.
 }
 \description{
 Function allows users to combine unique readers into an array, split readers with multiple antennas into single antennas, and rename up to four antennas on one reader or one array. Use of this function allows users to manage data for further analysis using \code{\link{det_eff}}, \code{\link{direction}}, \code{\link{direction_total}}, and \code{\link{first_last}} functions.

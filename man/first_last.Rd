@@ -23,7 +23,7 @@ A dataframe summarizing the first and last detections on individual antennas.
 Function summarizes the first and last detections and the difference in time (in minutes and days) between first and last detections on each antenna over a user-defined period of time. Data can be summarized by year, month, week, day or hour.
 }
 \details{
-Users can apply the \code{first_last} function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use the updated dataset created by the \code{\link{array_config}} function. Arguments \code{start_date} and \code{end_date} must be entered as “yyyy-mm-dd hh:mm:ss”.
+Users can apply the \code{first_last} function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use the updated dataset created by the \code{\link{array_config}} function. Arguments \code{start_date} and \code{end_date}, if specified, must be entered as “yyyy-mm-dd hh:mm:ss”.
 }
 \examples{
 #summarize first and last detections by day with a start date of 2015-10-15 08:00:00
