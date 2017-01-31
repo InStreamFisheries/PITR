@@ -1,7 +1,7 @@
 #' @title Computes the detection efficiency of individual antennas
 #'
 #' @description Function that computes the detection efficiency of individual antennas based on the array configuration and the user’s assumption of the direction of fish movement (up, down or resident). Data can be summarized by year, month, week, day or hour.
-#' @param dat telemetry dataset created using old_pit, new_pit or array_config
+#' @param data telemetry dataset created using old_pit, new_pit or array_config
 #' @param resolution summarize data by year, month, week, day or hour
 #' @param direction user-specified direction of fish movement
 #' @param start_date start date of period of interest, default is first date in dataset

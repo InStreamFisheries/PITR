@@ -1,7 +1,7 @@
 #' @title Summarizes first and last detections on each antenna
 #'
 #' @description Function summarizes the first and last detections and the difference in time (in minutes and days) between first and last detections on each antenna over a user-defined period of time. Data can be summarized by year, month, week, day or hour.
-#' @param dat telemetry dataset created using old_pit, new_pit or array_config
+#' @param data telemetry dataset created using old_pit, new_pit or array_config
 #' @param resolution summarize data by year, month, week, day or hour
 #' @param start_date start date of period of interest, default is first date in dataset
 #' @param end_date end date of period of interest, default is last date in dataset
