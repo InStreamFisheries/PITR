@@ -7,7 +7,7 @@
 direction(dat)
 }
 \arguments{
-\item{data}{telemetry dataset created using old_pit, new_pit or array_config}
+\item{dat}{telemetry dataset created using old_pit, new_pit or array_config}
 }
 \description{
 Function that determines the direction of movement if there were two or more antennas deployed in the study.
