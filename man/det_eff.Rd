@@ -18,6 +18,9 @@ det_eff(dat, resolution = NULL, direction, start_date = min(dat$date_time),
 
 \item{end_date}{end date of period of interest, default is last date in dataset}
 }
+\value{
+A dataframe summarizing the detection efficiency of individual antennas.
+}
 \description{
 Function that computes the detection efficiency of individual antennas based on the array configuration and the user’s assumption of the direction of fish movement (up, down or resident). Data can be summarized by year, month, week, day or hour.
 }

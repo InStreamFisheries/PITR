@@ -2,7 +2,7 @@
 % Please edit documentation in R/first_last.R
 \name{first_last}
 \alias{first_last}
-\title{Summarizes first and last detections on each antenna}
+\title{Summarizes first and last detections on individual antennas}
 \usage{
 first_last(dat, resolution = NULL, start_date = min(dat$date_time),
   end_date = max(dat$date_time))
@@ -15,6 +15,9 @@ first_last(dat, resolution = NULL, start_date = min(dat$date_time),
 \item{start_date}{start date of period of interest, default is first date in dataset}
 
 \item{end_date}{end date of period of interest, default is last date in dataset}
+}
+\value{
+A dataframe summarizing the first and last detections on individual antennas.
 }
 \description{
 Function summarizes the first and last detections and the difference in time (in minutes and days) between first and last detections on each antenna over a user-defined period of time. Data can be summarized by year, month, week, day or hour.

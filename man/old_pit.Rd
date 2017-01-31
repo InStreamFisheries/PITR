@@ -16,6 +16,9 @@ old_pit(path_to_folder, test_tags = NULL, print_to_file = FALSE,
 
 \item{time_zone}{time zone where data were collected, default is time zone of user’s computer}
 }
+\value{
+List of dataframes consisting of detection records, event records, non-detection and non-event records, duplicated detections, error records, and a character vector of unique readers.
+}
 \description{
 Function collates data located in the working directory that were collected from readers with a firmware version earlier than 5.0 (April 2014). Users must define the working directory where the PIT files are located. If data is being collated from old and new formats, the user must specify separate working directories containing old and new data.
 }

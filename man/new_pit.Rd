@@ -18,6 +18,9 @@ new_pit(path_to_folder, test_tags = NULL, print_to_file = FALSE,
 
 \item{old_format_data}{include collated data in old format}
 }
+\value{
+List of dataframes consisting of detection records, event records, non-detection and non-event records, duplicated detections and error records from single and multi readers. Character vectors of unique single and multi readers.
+}
 \description{
 Function collates data located in the working directory that were collected from readers with a firmware version later than 5.0 (April 2014). Users must define the working directory where the PIT files are located. If data is being collated from old and new formats, the user must specify separate working directories containing old and new data. If the function old_pit was used to collate old format data, the user must specify the output of the old_pit function using the old_format_data argument.
 }

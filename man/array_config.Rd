@@ -44,6 +44,9 @@ array_config(dat, configuration, arrayname = NULL, r1 = NULL, r2 = NULL,
 
 \item{an4}{new antenna 4}
 }
+\value{
+An updated dataset for further analysis using det_eff, direction, direction_total and first_last functions.
+}
 \description{
 Function allows users to combine unique readers into an array, split readers with multiple antennas into single antennas, and rename up to four antennas on one reader or one array. Use of this function allows users to manage data for further analysis using det_eff, direction, direction_total, and first_last functions.
 }
