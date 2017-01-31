@@ -9,8 +9,8 @@
 #' volt_plot(dat$volt_dat, "~/Dropbox (InStream)/Projects/62 - PIT R and D/4 – Figures and Tables")
 #' @export
 
-volt_plot <- function(volt_dat,file_path = getwd()){
-  fig_name<-paste(file_path,"pit_volt_plot",".png")
+volt_plot <- function(volt_dat, file_path = getwd()){
+  fig_name <- paste(file_path,"pit_volt_plot",".png")
   png(fig_name, height=1200, width=1200)
   par(mfrow=c(length(unique(volt_dat$reader)),1), mar=c(1.5,1.5,1,1.5), oma=c(4,4,0,0), cex=1.5)
   v2<- dplyr::arrange(volt_dat, date_time)
