@@ -1,7 +1,7 @@
 Package: PITR
 Title: Functions to collate, manage and summarize PIT telemetry data.
-Version: 1.0
-Date: January 30, 2017
+Version: 1.1.0
+Date: 2017-01-30
 Author: Joel Harding, Douglas Braun, Nicholas Burnett, Annika Putt
 Maintainer: Nicholas Burnett <nich@instream.net>
 Description: PIT telemetry produces very large quantities of data that are
