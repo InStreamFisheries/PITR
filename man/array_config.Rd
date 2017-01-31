@@ -4,17 +4,17 @@
 \alias{array_config}
 \title{Restructure the configuration of arrays}
 \usage{
-array_config(dat, configuration, arrayname = NULL, r1 = NULL, r2 = NULL,
-  r3 = NULL, r4 = NULL, readername = NULL, newreader1antennas = NULL,
-  ao1 = NULL, ao2 = NULL, ao3 = NULL, ao4 = NULL, an1 = NULL,
-  an2 = NULL, an3 = NULL, an4 = NULL)
+array_config(dat, configuration, array_name = NULL, r1 = NULL, r2 = NULL,
+  r3 = NULL, r4 = NULL, reader_name = NULL,
+  new_reader_1_antennas = NULL, ao1 = NULL, ao2 = NULL, ao3 = NULL,
+  ao4 = NULL, an1 = NULL, an2 = NULL, an3 = NULL, an4 = NULL)
 }
 \arguments{
 \item{dat}{telemetry dataset created using \code{\link{old_pit}} or \code{\link{new_pit}} function}
 
 \item{configuration}{either \code{combine}, \code{split} or \code{rename_antennas}}
 
-\item{arrayname}{unique name of an array}
+\item{array_name}{unique name of an array}
 
 \item{r1}{name of reader 1}
 
@@ -24,9 +24,9 @@ array_config(dat, configuration, arrayname = NULL, r1 = NULL, r2 = NULL,
 
 \item{r4}{name of reader 4}
 
-\item{readername}{name of reader to split}
+\item{reader_name}{name of reader to split}
 
-\item{newreader1antennas}{specific antennas to be grouped into reader 1}
+\item{new_reader_1_antennas}{specific antennas to be grouped into reader 1}
 
 \item{ao1}{old antenna 1}
 
@@ -51,7 +51,7 @@ An updated dataset for further analysis using \code{\link{det_eff}}, \code{\link
 Function allows users to combine unique readers into an array, split readers with multiple antennas into single antennas, and rename up to four antennas on one reader or one array. Use of this function allows users to manage data for further analysis using \code{\link{det_eff}}, \code{\link{direction}}, \code{\link{direction_total}}, and \code{\link{first_last}} functions.
 }
 \details{
-Function is dependent on what the user defines in the \code{configuration} argument. Argument \code{combine} is used to combine up to four single readers into one array. If a user wants to combine a multi reader with another reader (either a multi reader or single reader), the user first must split the multi reader into two or more single readers and then combine them together into an array. Argument \code{split} is used to split multi readers into two or more single readers to allow the combination of single readers into a user-specified array. Argument \code{newreader1antennas} is used to define the antennas to group into reader 1. All other antennas are grouped into reader 2. Argument \code{rename_antennas} is used to either rename antennas part of an array (if \code{arrayname} is specified) or antennas part of a reader (if \code{readername} is specified). Users can rename up to four antennas for one reader or one array. Arguments with the prefix ‘ao’ correspond to the old (or current) antenna numbering scheme, whereas arguments with the prefix ‘an’ correspond to the new antenna numbering scheme. Old antennas must be specified in order within the \code{array_config} function. Depending on the setup of the study, the user may have to run the \code{array_config} function several times. Note that use of arguments \code{combine}, \code{split} and \code{rename_antennas} must be iterative (see Examples). Ultimately the \code{array_config} function outputs an updated dataset to be used for further analysis.
+Function is dependent on what the user defines in the \code{configuration} argument. Argument \code{combine} is used to combine up to four single readers into one array. If a user wants to combine a multi reader with another reader (either a multi reader or single reader), the user first must split the multi reader into two or more single readers and then combine them together into an array. Argument \code{split} is used to split multi readers into two or more single readers to allow the combination of single readers into a user-specified array. Argument \code{new_reader_1_antennas} is used to define the antennas to group into reader 1. All other antennas are grouped into reader 2. Argument \code{rename_antennas} is used to either rename antennas part of an array (if \code{array_name} is specified) or antennas part of a reader (if \code{reader_name} is specified). Users can rename up to four antennas for one reader or one array. Arguments with the prefix ‘ao’ correspond to the old (or current) antenna numbering scheme, whereas arguments with the prefix ‘an’ correspond to the new antenna numbering scheme. Old antennas must be specified in order within the \code{array_config} function. Depending on the setup of the study, the user may have to run the \code{array_config} function several times. Note that use of arguments \code{combine}, \code{split} and \code{rename_antennas} must be iterative (see Examples). Ultimately the \code{array_config} function outputs an updated dataset to be used for further analysis.
 }
 \examples{
 #combine two single readers into an array called ‘bridge_reach34’
