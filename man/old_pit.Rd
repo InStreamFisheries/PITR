@@ -23,7 +23,7 @@ List of dataframes consisting of detection records, event records, non-detection
 Function collates data located in the working directory that were collected from readers with a firmware version earlier than 5.0 (April 2014). Users must define the working directory where the PIT files are located. If data is being collated from old and new formats, the user must specify separate working directories containing old and new data.
 }
 \details{
-Data files must be in the format ‘pit_reader_mm_dd_yyyy.txt’. Note that ‘pit_reader’ is the unique name of the PIT reader and that mm, dd and yyyy must be separated by underscores. If .txt is not at the end of each file, the user must enter .txt manually to each file prior to uploading the data. Users can apply the print_to_file argument to export metadata to the working directory to confirm that data collation was performed correctly. Users can choose to specify the time zone where data were collected. Default for time_zone is the time zone of the user’s computer.
+Data files must be in the format ‘pit_reader_mm_dd_yyyy.txt’. Note that ‘pit_reader’ is the unique name of the PIT reader and that mm, dd and yyyy must be separated by underscores. If .txt is not at the end of each file, the user must enter .txt manually to each file prior to uploading the data. Users can apply the \code{print_to_file} argument to export metadata to the working directory to confirm that data collation was performed correctly. Users can choose to specify the time zone where data were collected. Default for time_zone is the time zone of the user’s computer.
 }
 \examples{
 #collate data located in a Dropbox folder

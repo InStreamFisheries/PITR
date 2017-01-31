@@ -1,7 +1,7 @@
 #' @title Plots voltage of each reader over the study duration
 #'
 #' @description Function plots the voltage of each reader over the study duration.
-#' @param volt_dat voltage dataset created using pit_data function
+#' @param volt_dat voltage dataset created using \code{\link{new_pit}} function
 #' @param file_path filepath to save the voltage plot
 #' @details Plot is saved in the user-specified working directory.
 #' @examples

@@ -18,7 +18,12 @@ Description: PIT telemetry produces very large quantities of data that are
     voltage of each reader over the study duration. Users can summarize data by
     year, month, week, day and hour. Notably, the quality of the data summaries is
     reliant on antenna performance.
-Imports: stringr, plyr, dplyr, lubridate
+Imports:
+    stringr,
+    plyr,
+    dplyr,
+    lubridate
 BugReports: https://github.com/nichburnett/PITR/issues
 Encoding: UTF-8
 LazyData: TRUE
+RoxygenNote: 5.0.1

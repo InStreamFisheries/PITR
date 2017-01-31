@@ -1,12 +1,12 @@
 #' @title Summarizes upstream and downstream movements on arrays
 #'
 #' @description Function summarizes upstream and downstream movements of each fish on each array over a user-defined period of time. Such a function can assist in determining residence time between unique arrays. Data can be summarized by year, month, week, day or hour.
-#' @param dat telemetry dataset created using old_pit, new_pit or array_config
+#' @param dat telemetry dataset created using \code{\link{old_pit}}, \code{\link{new_pit}} or \code{\link{array_config}}
 #' @param resolution summarize data by year, month, week, day or hour
 #' @param start_date start date of period of interest, default is first date in dataset
 #' @param end_date end date of period of interest, default is last date in dataset
 #' @return A dataframe summarizing upstream and downstream movements on arrays.
-#' @details Users can apply the direction_total function to the original dataset created by the old_pit or pit_data function, or use the updated dataset created by the array_config function. Arguments start_date and end_date must be entered as yyyy-mm-dd hh:mm:ss.
+#' @details Users can apply the direction_total function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use the updated dataset created by the \code{\link{array_config}} function. Arguments \code{start_date} and \code{end_date} must be entered as yyyy-mm-dd hh:mm:ss.
 #' @examples
 #' #summarize by month
 #' direction_total(new$all_det, “month”)

@@ -1,9 +1,9 @@
 #' @title Computes the direction of movement
 #'
 #' @description Function that determines the direction of movement if there were two or more antennas deployed in the study.
-#' @param dat telemetry dataset created using old_pit, new_pit or array_config
+#' @param dat telemetry dataset created using \code{\link{old_pit}}, \code{\link{new_pit}} or \code{\link{array_config}}
 #' @return A dataframe summarizing the direction of movement.
-#' @details User can apply the direction function to the original dataset created by the old_pit or new_pit function, or use the updated dataset created by the array_config function.
+#' @details User can apply the direction function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use the updated dataset created by the \code{\link{array_config}} function.
 #' @examples
 #' #determine the direction of fish movement
 #' direction(new$all_det)
