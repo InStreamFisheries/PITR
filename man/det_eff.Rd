@@ -8,8 +8,6 @@ det_eff(dat, resolution = NULL, direction, start_date = min(dat$date_time),
   end_date = max(dat$date_time))
 }
 \arguments{
-\item{dat}{telemetry dataset created using old_pit, new_pit or array_config}
-
 \item{resolution}{summarize data by year, month, week, day or hour}
 
 \item{direction}{user-specified direction of fish movement}
@@ -17,6 +15,8 @@ det_eff(dat, resolution = NULL, direction, start_date = min(dat$date_time),
 \item{start_date}{start date of period of interest, default is first date in dataset}
 
 \item{end_date}{end date of period of interest, default is last date in dataset}
+
+\item{data}{telemetry dataset created using old_pit, new_pit or array_config}
 }
 \description{
 Function that computes the detection efficiency of individual antennas based on the array configuration and the user’s assumption of the direction of fish movement (up, down or resident). Data can be summarized by year, month, week, day or hour.
