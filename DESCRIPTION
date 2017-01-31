@@ -20,8 +20,6 @@ Description: PIT telemetry produces very large quantities of data that are
     reliant on antenna performance.
 Imports:
     stringr,
-    stringi,
-    magrittr,
     plyr,
     dplyr,
     lubridate
