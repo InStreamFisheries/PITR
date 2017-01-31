@@ -1,7 +1,7 @@
 #' @title Restructure the configuration of arrays
 #'
 #' @description Function allows users to combine unique readers into an array, split readers with multiple antennas into single antennas, and rename up to four antennas on one reader or one array. Use of this function allows users to manage data for further analysis using det_eff, direction, direction_total, and first_last functions.
-#' @param data telemetry dataset created using old_pit or new_pit function
+#' @param dat telemetry dataset created using old_pit or new_pit function
 #' @param configuration either ‘combine’, ‘split’ or ‘rename_antennas’
 #' @param arrayname unique name of an array
 #' @param r1 name of reader 1

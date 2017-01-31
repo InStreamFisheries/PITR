@@ -1,7 +1,7 @@
 #' @title Summarizes upstream and downstream movements on arrays
 #'
 #' @description Function summarizes upstream and downstream movements of each fish on each array over a user-defined period of time. Such a function can assist in determining residence time between unique arrays. Data can be summarized by year, month, week, day or hour.
-#' @param data telemetry dataset created using old_pit, new_pit or array_config
+#' @param dat telemetry dataset created using old_pit, new_pit or array_config
 #' @param resolution summarize data by year, month, week, day or hour
 #' @param start_date start date of period of interest, default is first date in dataset
 #' @param end_date end date of period of interest, default is last date in dataset
