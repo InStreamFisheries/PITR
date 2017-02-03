@@ -35,13 +35,6 @@
 #' array_config(new$all_det, configuration = "rename_antennas", reader_name = "bridge_reach34_ant2", ao1 = 2, an1 = 1)
 #' @export
 
-array_summary <- function(x) {
-  x1 <- select(x,array,reader,antenna)
-  x2 <- unique(x1)
-  print("Summary of current array, reader, and antenna configuration:")
-  print(x2)
-}
-
 array_config <- function (dat, configuration, array_name=NULL, r1=NULL, r2=NULL, r3=NULL, r4=NULL,
                           reader_name=NULL, new_reader_1_antennas=NULL,
                           ao1=NULL, ao2=NULL, ao3=NULL, ao4=NULL, an1=NULL, an2=NULL, an3=NULL, an4=NULL) {
