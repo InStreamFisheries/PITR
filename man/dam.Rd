@@ -1,7 +1,7 @@
 \name{dam}
 \alias{dam}
 \docType{data}
-\title{Dam}
+\title{Dataset to illustrate the PITR functions}
 \description{A dataset to illustrate the PITR functions.}
 \examples{
 det_eff(dam, "month", "up")
