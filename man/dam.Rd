@@ -5,21 +5,22 @@
 \description{A dataset that can be used to illustrate the PITR functions, \code{\link{det_eff}}, \code{\link{direction}}, \code{\link{direction_total}} and \code{\link{first_last}}.}
 \format{Dataset contains 809 detections on the following 12 variables.
 
-reader              a character vector of PIT readers
-antenna             a numeric vector of the antenna number
-det_type            a character vector of the detection record
-date				        a character vector of date
-time				        a character vector of time
-date_time		    	  date and time in POSIXct format
-time_zone           time zone where data were collected, default is time zone of user’s computer
-dur				          a character vector of the duration of the detection
-tag_type			      a character vector of the tag type
-tag_code		    	  a character vector of the tag codes
-consec_det			    a character vector of the number of consecutive detections
-no_empt_scan_prior	a character vector of the number of empty scans
+reader     a character vector of PIT readers \cr
+antenna     a numeric vector of the antenna number \cr
+det_type     a character vector of the detection record \cr
+date     a character vector of date \cr
+time     a character vector of time \cr
+date_time     date and time in POSIXct format \cr
+time_zone     time zone where data were collected, default is time zone of user’s computer \cr
+dur     a character vector of the duration of the detection \cr
+tag_type     a character vector of the tag type \cr
+tag_code     a character vector of the tag codes \cr
+consec_det     a character vector of the number of consecutive detections \cr
+no_empt_scan_prior     a character vector of the number of empty scans \cr
 
 }
 \examples{
 det_eff(dam, "month", "up")
+first_last(dam, “day”, “2015-10-15 08:00:00”)
 }
 \keyword{datasets}
