@@ -46,9 +46,9 @@ array_config <- function (dat, configuration, array_name=NULL, r1=NULL, r2=NULL,
 
   if (configuration == "combine") {
 
-    if (is.null(arrayname)) stop("Error: arrayname must be specified")
+    if (is.null(array_name)) stop("Error: array_name must be specified")
 
-    if (!is.null(arrayname)) {
+    if (!is.null(array_name)) {
 
       # Select data that comes from readers you want to combine
       rd <- filter(dat, reader %in% c(r1,r2,r3,r4))
@@ -83,7 +83,7 @@ array_config <- function (dat, configuration, array_name=NULL, r1=NULL, r2=NULL,
       }
 
       # All get new array name (becasue it is being combinerd into one PIT array)
-      rd$array <- arrayname
+      rd$array <- array_name
 
       # The array name of the rest of the data is defaulted to the reader name
       # Unless the function has already been run through and an array column has been created, in which case the array column is left as is
@@ -103,20 +103,20 @@ array_config <- function (dat, configuration, array_name=NULL, r1=NULL, r2=NULL,
 
   if (configuration == "split") {
 
-    if (is.null(readername)) stop("Error: reader name must be specified")
+    if (is.null(reader_name)) stop("Error: reader name must be specified")
 
-    if (!is.null(readername)) {
+    if (!is.null(reader_name)) {
 
-      if(is.null(newreader1antennas)) stop("Error: Must specify which antenna(s) will become part of the new reader 1")
+      if(is.null(new_reader_1_antennas)) stop("Error: Must specify which antenna(s) will become part of the new reader 1")
 
       # Select data that comes from reader you want to split in two
-      rd <- filter(dat,reader == readername)
+      rd <- filter(dat,reader == reader_name)
       # Select all other data to merge back in later
-      rr <- filter(dat, reader != readername)
+      rr <- filter(dat, reader != reader_name)
 
       # Assign new reader names based on antenna specifications (ao1,a02,and a03 get "reader"_1; all others get get "reader"_2)
-      if (!is.null(newreader1antennas)) {
-        rd$reader <- ifelse(rd$antenna == newreader1antennas, paste(readername,"1",sep="_"), paste(readername,"2",sep="_"))
+      if (!is.null(new_reader_1_antennas)) {
+        rd$reader <- ifelse(rd$antenna == new_reader_1_antennas, paste(reader_name,"1",sep="_"), paste(reader_name,"2",sep="_"))
       }
 
       # Create an array column if one doesn't exist, if the array column does exist then default to it here
@@ -135,18 +135,18 @@ array_config <- function (dat, configuration, array_name=NULL, r1=NULL, r2=NULL,
 
   if (configuration == "renameantennas") {
 
-    if (!is.null(readername) & !is.null(arrayname)) stop("Error: Only specify one array or one reader with antennas to rename")
+    if (!is.null(reader_name) & !is.null(array_name)) stop("Error: Only specify one array or one reader with antennas to rename")
 
-    if (is.null(readername) & is.null(arrayname)) stop("Error: Must specify a reader or array with antennas to rename")
+    if (is.null(reader_name) & is.null(array_name)) stop("Error: Must specify a reader or array with antennas to rename")
 
 
-    if (!is.null(readername)) {
+    if (!is.null(reader_name)) {
 
       # Select data that comes from reader you want to reconfig antennas for
-      rd <- filter(dat, reader == readername)
+      rd <- filter(dat, reader == reader_name)
 
       # Select all other data to merge back in later
-      rr <- filter(dat, reader != readername)
+      rr <- filter(dat, reader != reader_name)
 
       #Assign new antenna numbers based on number entries (ao1-> an1, ao2-> an2, ao3 -> an3, a04 -> an4)
 
@@ -195,15 +195,15 @@ array_config <- function (dat, configuration, array_name=NULL, r1=NULL, r2=NULL,
       return(nc)
     }
 
-    if (!is.null(arrayname)) {
+    if (!is.null(array_name)) {
 
       if(!"array" %in% names(dat)) stop("Error: No arrays column exists")
 
       # Select data that comes from reader you want to reconfig antennas for
-      rd <- filter(dat, array == arrayname)
+      rd <- filter(dat, array == array_name)
 
       # Select all other data to merge back in later
-      rr <- filter(dat, array != arrayname)
+      rr <- filter(dat, array != array_name)
 
       #Assign new antenna numbers based on number entries (ao1-> an1, ao2-> an2, ao3 -> an3, a04 -> an4)
 
