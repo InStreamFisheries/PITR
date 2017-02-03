@@ -27,9 +27,9 @@ Users can apply the direction_total function to the original dataset created by 
 }
 \examples{
 #summarize by month
-direction_total(new$all_det, “month”)
+direction_total(dam, “month”)
 
 #summarize by year with a start date of 2015-11-11 10:30:00
-direction_total(new$all_det, “year”, “2015-11-11 10:30:00”)
+direction_total(dam, “year”, “2015-11-11 10:30:00”)
 }
 

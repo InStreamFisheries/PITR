@@ -27,9 +27,9 @@ Users can apply the \code{first_last} function to the original dataset created b
 }
 \examples{
 #summarize first and last detections by day with a start date of 2015-10-15 08:00:00
-first_last(data, “day”, “2015-10-15 08:00:00”)
+first_last(dam, “day”, “2015-10-15 08:00:00”)
 
 #summarize first and last detections by month
-first_last(data, “month”)
+first_last(dam, “month”)
 }
 

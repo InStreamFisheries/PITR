@@ -2,7 +2,7 @@
 \alias{dam}
 \docType{data}
 \title{
-%%   ~~ data name/kind ... ~~
+%%   ~~ Dataset ~~
 }
 \description{
 %%  ~~ A dataset to illustrate the PITR functions. ~~

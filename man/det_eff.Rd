@@ -29,15 +29,15 @@ Users can apply the \code{det_eff} function to the original dataset created by t
 }
 \examples{
 #compute by month for fish assumed to be moving upstream
-det_eff(new$all_det, "month", "up")
+det_eff(dam, "month", "up")
 
-#compute by week for fish assumed to be moving upstream with a start date of 2015-10-11 08:45:00
-det_eff(new$all_det, "week", "up", start_date = "2015-10-11 08:45:00")
+#compute by week for fish assumed to be moving upstream with a start date of 2016-10-11 08:45:00
+det_eff(dam, "week", "up", start_date = "2016-10-11 08:45:00")
 
 #compute by day for fish assumed to be moving downstream
-det_eff(new$all_det, "day", "down")
+det_eff(dam, "day", "down")
 
 #compare by month for fish assumed to be resident
-det_eff(new$all_det, "month", "resident")
+det_eff(dam, "month", "resident")
 }
 

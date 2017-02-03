@@ -20,6 +20,6 @@ User can apply the direction function to the original dataset created by the \co
 }
 \examples{
 #determine the direction of fish movement
-direction(new$all_det)
+direction(dam)
 }
 
