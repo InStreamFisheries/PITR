@@ -6,7 +6,7 @@
 #' @details User can apply the direction function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use the updated dataset created by the \code{\link{array_config}} function.
 #' @examples
 #' #determine the direction of fish movement
-#' direction(new$all_det)
+#' direction(dam)
 #' @export
 
 direction <- function(dat){

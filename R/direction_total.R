@@ -9,10 +9,10 @@
 #' @details Users can apply the direction_total function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use the updated dataset created by the \code{\link{array_config}} function. Arguments \code{start_date} and \code{end_date}, if specified, must be entered as yyyy-mm-dd hh:mm:ss.
 #' @examples
 #' #summarize by month
-#' direction_total(new$all_det, “month”)
+#' direction_total(dam, “month”)
 #'
 #' #summarize by year with a start date of 2015-11-11 10:30:00
-#' direction_total(new$all_det, “year”, “2015-11-11 10:30:00”)
+#' direction_total(dam, “year”, “2015-11-11 10:30:00”)
 #' @export
 
 direction_total <- function(dat, resolution=NULL, start_date = min(dat$date_time), end_date = max(dat$date_time)) {
