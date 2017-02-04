@@ -21,8 +21,11 @@
   }
 }
 \examples{
-dam$date_time <- as.POSIXct(dam$date_time, format = ""%Y-%m-%d %H:%M")
+dam$date_time <- as.POSIXct(dam$date_time, format = “%Y-%m-%d %H:%M:%S”)
+
 det_eff(dam, "month", "up")
+direction(dam)
+direction_total(dam, “year”, “2015-11-11 10:30:00”)
 first_last(dam, “day”, “2015-10-15 08:00:00”)
 }
 \keyword{datasets}
