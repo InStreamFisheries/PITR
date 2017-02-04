@@ -21,8 +21,7 @@
   }
 }
 \examples{
-dam$date_time <- as.POSIXct(dam$date_time, format = “%Y-%m-%d %H:%M:%S”)
-
+#users must format \code{dam$date_time} to POSIXct (yyyy-mm-dd hh:mm:ss)
 det_eff(dam, "month", "up")
 direction(dam)
 direction_total(dam, “year”, “2015-11-11 10:30:00”)
