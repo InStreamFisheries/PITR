@@ -3,7 +3,7 @@
 \docType{data}
 \title{Dataset to illustrate the PITR functions}
 \description{A dataset that can be used to illustrate the PITR functions, \code{\link{det_eff}}, \code{\link{direction}}, \code{\link{direction_total}} and \code{\link{first_last}}.}
-\format{Dataset contains 809 detections on the following 12 variables.
+\format{Dataset contains 798 detections on the following 12 variables.
 
   \describe{
 \item{\code{reader}}{a character vector of PIT readers}
@@ -21,9 +21,10 @@
   }
 }
 \examples{
+oregon_rfid <- new_pit(data = oregon_rfid, test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
 det_eff(oregon_rfid, "month", "up")
 direction(oregon_rfid)
 direction_total(oregon_rfid, “year”, “2015-11-11 10:30:00”)
-first_last(oregon_rfid, “day”, “2015-10-15 08:00:00”)
+first_last(oregon_rfid, “month”, “2015-10-15 08:00:00”)
 }
 \keyword{datasets}

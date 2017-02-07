@@ -50,9 +50,7 @@ new_pit <- function (data, test_tags = NULL, print_to_file = FALSE, time_zone = 
     oregon_rfid$consec_det <- as.character(oregon_rfid$consec_det)
     oregon_rfid$no_empt_scan_prior <- as.character(oregon_rfid$no_empt_scan_prior)
 
-    oregon_rfid_data = oregon_rfid
-
-    return(oregon_rfid_data)
+    return(oregon_rfid)
 
   }
 
