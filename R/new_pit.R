@@ -55,6 +55,8 @@ new_pit <- function (data, test_tags = NULL, print_to_file = FALSE, time_zone = 
 
   }
 
+  if (data != "oregon_rfid") {
+
   options(scipen = 999) # avoids scientific notation: use "options(scipen=0)" to turn back on
 
   #Import PIT txt files: have to specify 9 columns to avoid dropping last column
@@ -446,4 +448,6 @@ new_pit <- function (data, test_tags = NULL, print_to_file = FALSE, time_zone = 
                      single_readers=single_readers,multi_readers=multi_readers,
                      volt_dat=volt_dat,event_dat=event_dat,other_dat=other_dat)
   return(final_list)
+
+  }
 }
