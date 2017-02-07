@@ -37,20 +37,20 @@ new_pit <- function (data, test_tags = NULL, print_to_file = FALSE, time_zone = 
   #Code to structure test dataset 'oregon_rfid'
   if (data == "oregon_rfid") {
 
-    oregon_rfid$reader <- as.character(oregon_rfid$reader)
-    oregon_rfid$antenna <- as.numeric(oregon_rfid$antenna)
-    oregon_rfid$det_type <- as.character(oregon_rfid$det_type)
-    oregon_rfid$date <- as.character(oregon_rfid$date)
-    oregon_rfid$time <- as.character(oregon_rfid$time)
-    oregon_rfid$date_time <- as.POSIXct(as.character(oregon_rfid$date_time), format = "%Y-%m-%d %H:%M")
-    oregon_rfid$time_zone <- as.character(oregon_rfid$time_zone)
-    oregon_rfid$dur <- as.character(oregon_rfid$dur)
-    oregon_rfid$tag_type <- as.character(oregon_rfid$tag_type)
-    oregon_rfid$tag_code <- as.character(oregon_rfid$tag_code)
-    oregon_rfid$consec_det <- as.character(oregon_rfid$consec_det)
-    oregon_rfid$no_empt_scan_prior <- as.character(oregon_rfid$no_empt_scan_prior)
+    oregon_rfid_data$reader <- as.character(oregon_rfid$reader)
+    oregon_rfid_data$antenna <- as.numeric(oregon_rfid$antenna)
+    oregon_rfid_data$det_type <- as.character(oregon_rfid$det_type)
+    oregon_rfid_data$date <- as.character(oregon_rfid$date)
+    oregon_rfid_data$time <- as.character(oregon_rfid$time)
+    oregon_rfid_data$date_time <- as.POSIXct(as.character(oregon_rfid$date_time), format = "%Y-%m-%d %H:%M")
+    oregon_rfid_data$time_zone <- as.character(oregon_rfid$time_zone)
+    oregon_rfid_data$dur <- as.character(oregon_rfid$dur)
+    oregon_rfid_data$tag_type <- as.character(oregon_rfid$tag_type)
+    oregon_rfid_data$tag_code <- as.character(oregon_rfid$tag_code)
+    oregon_rfid_data$consec_det <- as.character(oregon_rfid$consec_det)
+    oregon_rfid_data$no_empt_scan_prior <- as.character(oregon_rfid$no_empt_scan_prior)
 
-    return(oregon_rfid)
+    return(oregon_rfid_data)
 
   }
 
