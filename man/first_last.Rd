@@ -32,4 +32,3 @@ first_last(dam, “day”, “2015-10-15 08:00:00”)
 #summarize first and last detections by month
 first_last(dam, “month”)
 }
-

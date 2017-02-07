@@ -40,4 +40,3 @@ det_eff(dam, "day", "down")
 #compare by month for fish assumed to be resident
 det_eff(dam, "month", "resident")
 }
-

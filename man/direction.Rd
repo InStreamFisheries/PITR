@@ -22,4 +22,3 @@ User can apply the direction function to the original dataset created by the \co
 #determine the direction of fish movement
 direction(dam)
 }
-

@@ -64,4 +64,3 @@ array_config(new$all_det, configuration = "rename_antennas", array_name = "bridg
 #within the ‘bridge_reach34_ant2’ reader, rename the old A2 to A1
 array_config(new$all_det, configuration = "rename_antennas", reader_name = "bridge_reach34_ant2", ao1 = 2, an1 = 1)
 }
-

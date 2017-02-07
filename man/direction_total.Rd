@@ -32,4 +32,3 @@ direction_total(dam, “month”)
 #summarize by year with a start date of 2015-11-11 10:30:00
 direction_total(dam, “year”, “2015-11-11 10:30:00”)
 }
-

@@ -31,4 +31,3 @@ old <- "~/Dropbox (InStream)/Projects/62 - PIT R and D/5 - Data/Keogh Old"
 #no test tags, no metadata to print to working directory, data were collected in the time zone ‘America/Vancouver’
 old_pit(data = old, test_tags = NULL, print_to_file = FALSE, time_zone = “America/Vancouver”)
 }
-

@@ -21,4 +21,3 @@ Plot is saved in the user-specified working directory.
 #save voltage plot to a Dropbox folder
 volt_plot(dat$volt_dat, "~/Dropbox (InStream)/Projects/62 - PIT R and D/4 – Figures and Tables")
 }
-

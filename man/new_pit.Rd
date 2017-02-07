@@ -45,4 +45,3 @@ old_data <- old_pit(data = old, test_tags = NULL, print_to_file = FALSE, time_zo
 
 new_data <- new_pit(data = new, test_tags = tt, print_to_file = FALSE, time_zone = “America/Vancouver”, old_format_data = old_data)
 }
-
