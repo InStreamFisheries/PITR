@@ -21,7 +21,7 @@
   }
 }
 \examples{
-oregon_rfid <- new_pit(data = oregon_rfid, test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
+oregon_rfid <- new_pit(data = "oregon_rfid", test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
 det_eff(oregon_rfid, "month", "up")
 direction(oregon_rfid)
 direction_total(oregon_rfid, “year”, “2015-11-11 10:30:00”)
