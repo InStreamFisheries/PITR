@@ -43,7 +43,7 @@ new_pit <- function (data, test_tags = NULL, print_to_file = FALSE, time_zone = 
     oregon_rfid$date <- as.character(oregon_rfid$date)
     oregon_rfid$time <- as.character(oregon_rfid$time)
     oregon_rfid$date_time <- as.character(oregon_rfid$date_time)
-    oregon_rfid$date_time <- as.POSIXct(oregon_rfid$date_time)
+    oregon_rfid$date_time <- as.POSIXct(oregon_rfid$date_time, format = "%Y-%m-%d %H:%M:%S")
     oregon_rfid$time_zone <- as.character(oregon_rfid$time_zone)
     oregon_rfid$dur <- as.character(oregon_rfid$dur)
     oregon_rfid$tag_type <- as.character(oregon_rfid$tag_type)
