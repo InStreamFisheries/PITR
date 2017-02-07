@@ -1,5 +1,5 @@
-\name{dam}
-\alias{dam}
+\name{oregon_rfid}
+\alias{oregon_rfid}
 \docType{data}
 \title{Dataset to illustrate the PITR functions}
 \description{A dataset that can be used to illustrate the PITR functions, \code{\link{det_eff}}, \code{\link{direction}}, \code{\link{direction_total}} and \code{\link{first_last}}.}
@@ -22,9 +22,9 @@
 }
 \examples{
 #users must format date_time to POSIXct (yyyy-mm-dd hh:mm:ss)
-det_eff(dam, "month", "up")
-direction(dam)
-direction_total(dam, “year”, “2015-11-11 10:30:00”)
-first_last(dam, “day”, “2015-10-15 08:00:00”)
+det_eff(oregon_rfid, "month", "up")
+direction(oregon_rfid)
+direction_total(oregon_rfid, “year”, “2015-11-11 10:30:00”)
+first_last(oregon_rfid, “day”, “2015-10-15 08:00:00”)
 }
 \keyword{datasets}
