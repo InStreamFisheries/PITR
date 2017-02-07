@@ -4,11 +4,11 @@
 \alias{new_pit}
 \title{Collates data from readers in new format (>V5.0)}
 \usage{
-new_pit(path_to_folder, test_tags = NULL, print_to_file = FALSE,
-  time_zone = NULL, old_format_data = NULL)
+new_pit(data, test_tags = NULL, print_to_file = FALSE, time_zone = NULL,
+  old_format_data = NULL)
 }
 \arguments{
-\item{path_to_folder}{filepath of the working directory containing data in new format}
+\item{data}{filepath of the working directory containing data in new format}
 
 \item{test_tags}{concatenated list of PIT codes used for testing antenna performance}
 
@@ -31,18 +31,18 @@ Data files must be named in the following format ‘pit_reader_mm_dd_yyyy.txt’
 #collate data located in a Dropbox folder and print metadata to working directory
 
 #define working directory
-ptf_new <- "~/Dropbox (InStream)/Projects/62 - PIT R and D/5 - Data/Keogh 2016"
+new <- "~/Dropbox (InStream)/Projects/62 - PIT R and D/5 - Data/Keogh 2016"
 
 #three test tags used in study
 tt <- c("900_230000010075", "900_230000010079", "900_230000010080")
 
 #run pit_data function
-new_pit(path_to_folder = ptf_new, test_tags = tt, print_to_file = TRUE)
+new_pit(data = new, test_tags = tt, print_to_file = TRUE)
 
 #collate old format data with new format data
 
-old <- old_pit(path_to_folder = ptf_old, test_tags = NULL, print_to_file = FALSE, time_zone = “America/Vancouver”)
+old_data <- old_pit(data = old, test_tags = NULL, print_to_file = FALSE, time_zone = “America/Vancouver”)
 
-new <- new_pit(path_to_folder = ptf_new, test_tags = tt, print_to_file = FALSE, time_zone = “America/Vancouver”, old_format_data = old)
+new_data <- new_pit(data = new, test_tags = tt, print_to_file = FALSE, time_zone = “America/Vancouver”, old_format_data = old_data)
 }
 

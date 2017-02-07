@@ -21,7 +21,6 @@
   }
 }
 \examples{
-#users must format date_time to POSIXct (yyyy-mm-dd hh:mm:ss)
 det_eff(oregon_rfid, "month", "up")
 direction(oregon_rfid)
 direction_total(oregon_rfid, “year”, “2015-11-11 10:30:00”)

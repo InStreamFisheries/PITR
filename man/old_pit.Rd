@@ -4,11 +4,10 @@
 \alias{old_pit}
 \title{Collates data from readers in old format (<V5.0)}
 \usage{
-old_pit(path_to_folder, test_tags = NULL, print_to_file = FALSE,
-  time_zone = NULL)
+old_pit(data, test_tags = NULL, print_to_file = FALSE, time_zone = NULL)
 }
 \arguments{
-\item{path_to_folder}{filepath of the working directory containing data in old format}
+\item{data}{filepath of the working directory containing data in old format}
 
 \item{test_tags}{concatenated list of PIT codes used for testing antenna performance}
 
@@ -27,9 +26,9 @@ Data files must be in the format ‘pit_reader_mm_dd_yyyy.txt’. Note that ‘p
 }
 \examples{
 #collate data located in a Dropbox folder
-ptf_old <- "~/Dropbox (InStream)/Projects/62 - PIT R and D/5 - Data/Keogh Old"
+old <- "~/Dropbox (InStream)/Projects/62 - PIT R and D/5 - Data/Keogh Old"
 
-#no test tags, no metadata to print to working director, data were collected in the time zone ‘America/Vancouver’
-old_pit(path_to_folder = ptf_old, test_tags = NULL, print_to_file = FALSE, time_zone = “America/Vancouver”)
+#no test tags, no metadata to print to working directory, data were collected in the time zone ‘America/Vancouver’
+old_pit(data = old, test_tags = NULL, print_to_file = FALSE, time_zone = “America/Vancouver”)
 }
 
