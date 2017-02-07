@@ -34,6 +34,27 @@ new_pit <- function (data, test_tags = NULL, print_to_file = FALSE, time_zone = 
   #require(dplyr)
   #require(lubridate)
 
+  #Code to structure test dataset 'oregon_rfid'
+  if (data == oregon_rfid) {
+
+    oregon_rfid$reader <- as.character(oregon_rfid$reader)
+    oregon_rfid$antenna <- as.numeric(oregon_rfid$antenna)
+    oregon_rfid$det_type <- as.character(oregon_rfid$det_type)
+    oregon_rfid$date <- as.character(oregon_rfid$date)
+    oregon_rfid$time <- as.character(oregon_rfid$time)
+    oregon_rfid$date_time <- as.character(oregon_rfid$date_time)
+    oregon_rfid$date_time <- as.POSIXct(oregon_rfid$date_time, format = "%Y-%m-%d %H:%M:%S")
+    oregon_rfid$time_zone <- as.character(oregon_rfid$time_zone)
+    oregon_rfid$dur <- as.character(oregon_rfid$dur)
+    oregon_rfid$tag_type <- as.character(oregon_rfid$tag_type)
+    oregon_rfid$tag_code <- as.character(oregon_rfid$tag_code)
+    oregon_rfid$consec_det <- as.character(oregon_rfid$consec_det)
+    oregon_rfid$no_empt_scan_prior <- as.character(oregon_rfid$no_empt_scan_prior)
+
+    return(oregon_rfid)
+
+  }
+
   options(scipen = 999) # avoids scientific notation: use "options(scipen=0)" to turn back on
 
   #Import PIT txt files: have to specify 9 columns to avoid dropping last column
