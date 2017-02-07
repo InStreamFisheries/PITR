@@ -35,7 +35,7 @@ new_pit <- function (data, test_tags = NULL, print_to_file = FALSE, time_zone = 
   #require(lubridate)
 
   #Code to structure test dataset 'oregon_rfid'
-  if (data == oregon_rfid) {
+  if (data == "oregon_rfid") {
 
     oregon_rfid$reader <- as.character(oregon_rfid$reader)
     oregon_rfid$antenna <- as.numeric(oregon_rfid$antenna)
