@@ -19,7 +19,7 @@ Description: PIT telemetry produces very large quantities of data that are
     year, month, week, day and hour. Notably, the quality of the data summaries is
     reliant on antenna performance.
 Depends:
-    R (>=3.2.5),
+    R (>= 3.2.5),
     stringr,
     plyr,
     dplyr,
