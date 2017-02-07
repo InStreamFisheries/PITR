@@ -1,7 +1,7 @@
 #' @title Collates data from readers in old format (<V5.0)
 #'
 #' @description Function collates data located in the working directory that were collected from readers with a firmware version earlier than 5.0 (April 2014). Users must define the working directory where the PIT files are located. If data is being collated from old and new formats, the user must separate working directories containing old and new data.
-#' @param path_to_folder filepath of the working directory containing data in old format
+#' @param data filepath of the working directory containing data in old format
 #' @param test_tags concatenated list of PIT codes used for testing antenna performance
 #' @param print_to_file export metadata to working directory
 #' @param time_zone time zone where data were collected, default is time zone of user’s computer
@@ -9,14 +9,14 @@
 #' @details Data files must be in the format ‘pit_reader_mm_dd_yyyy.txt’. Note that ‘pit_reader’ is the unique name of the PIT reader and that mm, dd and yyyy must be separated by underscores. If .txt is not at the end of each file, the user must enter .txt manually to each file prior to uploading the data. Users can apply the \code{print_to_file} argument to export metadata to the working directory to confirm that data collation was performed correctly. Users can choose to specify the time zone where data were collected. Default for \code{time_zone} is the time zone of the user’s computer.
 #' @examples
 #' #collate data located in a Dropbox folder
-#' ptf_old <- "~/Dropbox (InStream)/Projects/62 - PIT R and D/5 - Data/Keogh Old"
+#' old <- "~/Dropbox (InStream)/Projects/62 - PIT R and D/5 - Data/Keogh Old"
 #'
-#' #no test tags, no metadata to print to working director, data were collected in the time zone ‘America/Vancouver’
-#' old_pit(path_to_folder = ptf_old, test_tags = NULL, print_to_file = FALSE, time_zone = “America/Vancouver”)
+#' #no test tags, no metadata to print to working directory, data were collected in the time zone ‘America/Vancouver’
+#' old_pit(data = old, test_tags = NULL, print_to_file = FALSE, time_zone = “America/Vancouver”)
 #' @export
 
 
-old_pit <- function (path_to_folder, test_tags = NULL, print_to_file = FALSE, time_zone = NULL) {
+old_pit <- function (data, test_tags = NULL, print_to_file = FALSE, time_zone = NULL) {
 
   #require(stringr)
   #require(plyr)
@@ -29,7 +29,7 @@ old_pit <- function (path_to_folder, test_tags = NULL, print_to_file = FALSE, ti
 
   #Import PIT txt files: have to specify 9 columns to avoid dropping last column
   #create directory of files in paths to folder
-  counter_paths <- dir(path_to_folder, full.names = TRUE)
+  counter_paths <- dir(data, full.names = TRUE)
   names(counter_paths) <- basename(counter_paths)
 
   o_f1<- plyr::ldply(counter_paths,
