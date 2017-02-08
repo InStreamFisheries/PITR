@@ -16,7 +16,7 @@ A dataframe summarizing the direction of movement.
 Function that determines the direction of movement if there were two or more antennas deployed in the study.
 }
 \details{
-User can apply the direction function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use the updated dataset created by the \code{\link{array_config}} function.
+User can apply the direction function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use an updated dataset created by the \code{\link{array_config}} function.
 }
 \examples{
 #load test dataset
