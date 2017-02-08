@@ -6,7 +6,7 @@
 #' @details Plot is saved in the user-specified working directory.
 #' @examples
 #' #save voltage plot to a Dropbox folder
-#' volt_plot(dat$volt_dat, "~/Dropbox (InStream)/Projects/62 - PIT R and D/4 – Figures and Tables")
+#' volt_plot(new_data$volt_dat, "~/Dropbox (InStream)/Projects/62 - PIT R and D/4 – Figures and Tables")
 #' @export
 
 volt_plot <- function(volt_dat, file_path = getwd()){

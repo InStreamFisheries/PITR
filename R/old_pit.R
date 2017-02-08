@@ -6,12 +6,12 @@
 #' @param print_to_file export metadata to working directory
 #' @param time_zone time zone where data were collected, default is time zone of user’s computer
 #' @return List of dataframes consisting of detection records, event records, non-detection and non-event records, duplicated detections, error records, and a character vector of unique readers.
-#' @details Data files must be in the format ‘pit_reader_mm_dd_yyyy.txt’. Note that ‘pit_reader’ is the unique name of the PIT reader and that mm, dd and yyyy must be separated by underscores. If .txt is not at the end of each file, the user must enter .txt manually to each file prior to uploading the data. Users can apply the \code{print_to_file} argument to export metadata to the working directory to confirm that data collation was performed correctly. Users can choose to specify the time zone where data were collected. Default for \code{time_zone} is the time zone of the user’s computer.
+#' @details Data files must be in the format ‘pit_reader_mm_dd_yyyy.txt’. Note that pit_reader is the unique name of the PIT reader and that mm, dd and yyyy must be separated by underscores. If .txt is not at the end of each file, the user must enter .txt manually to each file prior to uploading the data. Users can use the \code{print_to_file} argument to export metadata to the working directory to confirm that data collation was performed correctly. Users can choose to specify the time zone where data were collected. Default for \code{time_zone} is the time zone of the user’s computer.
 #' @examples
-#' #collate data located in a Dropbox folder
+#' #define working directory
 #' old <- "~/Dropbox (InStream)/Projects/62 - PIT R and D/5 - Data/Keogh Old"
 #'
-#' #no test tags, no metadata to print to working directory, data were collected in the time zone ‘America/Vancouver’
+#' #no test tags, no metadata to print to working directory, data were collected in the time zone "America/Vancouver"
 #' old_pit(data = old, test_tags = NULL, print_to_file = FALSE, time_zone = “America/Vancouver”)
 #' @export
 

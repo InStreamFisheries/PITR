@@ -17,8 +17,8 @@
 #' #three test tags used in study
 #' tt <- c("900_230000010075", "900_230000010079", "900_230000010080")
 #'
-#' #run pit_data function
-#' new_pit(data = new, test_tags = tt, print_to_file = TRUE)
+#' #run new_pit function
+#' new_pit(data = new, test_tags = tt, print_to_file = TRUE, time_zone = "America/Vancouver")
 #'
 #' #collate old format data with new format data
 #'
