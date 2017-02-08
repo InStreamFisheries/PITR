@@ -153,8 +153,8 @@ det_eff <- function(data, resolution = NULL, direction, start_date = min(data$da
     # Name columns for output
     # A new column has been added and I have altered the column names.
     # For original column names see the det_eff_function.R file in the pre temoral resolution tests folder
-    names(det_clean) <- c("Array", "Antenna", "Detection Efficiency", "Shared Detections",
-                          "Detections at array", "Detections not at array", "Missed Detections")
+    names(det_clean) <- c("Array", "Antenna", "Detection efficiency", "Shared detections",
+                          "Detections on array", "Detections not on array", "Missed detections")
 
     #Filter rows without antenna values (single arrays not ID'd as arrays)
     det_clean <- dplyr::filter(det_clean, Antenna != "NA")
@@ -290,8 +290,8 @@ det_eff <- function(data, resolution = NULL, direction, start_date = min(data$da
     # Name columns for output
     # A new column has been added and I have altered the column names.
     # For original column names see the det_eff_function.R file in the pre temoral resolution tests folder
-    names(det_clean) <- c("Array", "Year", "Date", "Antenna", "Detection Efficiency", "Shared Detections",
-                          "Detections at array", "Detections not at array", "Missed Detections")
+    names(det_clean) <- c("Array", "Year", "Date", "Antenna", "Detection efficiency", "Shared detections",
+                          "Detections on array", "Detections not on array", "Missed detections")
 
     #Filter rows without antenna values (single arrays not ID'd as arrays)
     det_clean <- dplyr::filter(det_clean, Antenna != "NA")
@@ -428,8 +428,8 @@ det_eff <- function(data, resolution = NULL, direction, start_date = min(data$da
     # Name columns for output
     # A new column has been added and I have altered the column names.
     # For original column names see the det_eff_function.R file in the pre temoral resolution tests folder
-    names(det_clean) <- c("Array", "Year", "Month", "Date", "Antenna", "Detection Efficiency", "Shared Detections",
-                          "Detections at array", "Detections not at array", "Missed Detections")
+    names(det_clean) <- c("Array", "Year", "Month", "Date", "Antenna", "Detection efficiency", "Shared detections",
+                          "Detections on array", "Detections not on array", "Missed detections")
 
     #Filter rows without antenna values (single arrays not ID'd as arrays)
     det_clean <- dplyr::filter(det_clean, Antenna != "NA")
@@ -569,8 +569,8 @@ det_eff <- function(data, resolution = NULL, direction, start_date = min(data$da
     # Name columns for output
     # A new column has been added and I have altered the column names.
     # For original column names see the det_eff_function.R file in the pre temoral resolution tests folder
-    names(det_clean) <- c("Array", "Year", "Month", "Week", "Date", "Antenna", "Detection Efficiency", "Shared Detections",
-                          "Detections at array", "Detections not at array", "Missed Detections")
+    names(det_clean) <- c("Array", "Year", "Month", "Week", "Date", "Antenna", "Detection efficiency", "Shared detections",
+                          "Detections on array", "Detections not on array", "Missed detections")
 
     #Filter rows without antenna values (single arrays not ID'd as arrays)
     det_clean <- dplyr::filter(det_clean, Antenna != "NA")
@@ -706,8 +706,8 @@ det_eff <- function(data, resolution = NULL, direction, start_date = min(data$da
     # Name columns for output
     # A new column has been added and I have altered the column names.
     # For original column names see the det_eff_function.R file in the pre temoral resolution tests folder
-    names(det_clean) <- c("Array", "Year", "Month", "Week", "Day", "Date", "Antenna", "Detection Efficiency", "Shared Detections",
-                          "Detections at array", "Detections not at array", "Missed Detections")
+    names(det_clean) <- c("Array", "Year", "Month", "Week", "Day", "Date", "Antenna", "Detection efficiency", "Shared detections",
+                          "Detections on array", "Detections not on array", "Missed detections")
 
     #Filter rows without antenna values (single arrays not ID'd as arrays)
     det_clean <- dplyr::filter(det_clean, Antenna != "NA")
@@ -845,8 +845,8 @@ det_eff <- function(data, resolution = NULL, direction, start_date = min(data$da
     # Name columns for output
     # A new column has been added and I have altered the column names.
     # For original column names see the det_eff_function.R file in the pre temoral resolution tests folder
-    names(det_clean) <- c("Array", "Year", "Month", "Week", "Day", "Hour", "Date", "Antenna", "Detection Efficiency", "Shared Detections",
-                          "Detections at array", "Detections not at array", "Missed Detections")
+    names(det_clean) <- c("Array", "Year", "Month", "Week", "Day", "Hour", "Date", "Antenna", "Detection efficiency", "Shared detections",
+                          "Detections on array", "Detections not on array", "Missed detections")
 
     #Filter rows without antenna values (single arrays not ID'd as arrays)
     det_clean <- dplyr::filter(det_clean, Antenna != "NA")
