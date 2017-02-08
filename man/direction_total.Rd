@@ -4,11 +4,11 @@
 \alias{direction_total}
 \title{Summarizes upstream and downstream movements on arrays}
 \usage{
-direction_total(dat, resolution = NULL, start_date = min(dat$date_time),
-  end_date = max(dat$date_time))
+direction_total(data, resolution = NULL, start_date = min(data$date_time),
+  end_date = max(data$date_time))
 }
 \arguments{
-\item{dat}{telemetry dataset created using \code{\link{old_pit}}, \code{\link{new_pit}} or \code{\link{array_config}}}
+\item{data}{telemetry dataset created using \code{\link{old_pit}}, \code{\link{new_pit}} or \code{\link{array_config}}}
 
 \item{resolution}{summarize data by year, month, week, day or hour}
 
@@ -26,9 +26,13 @@ Function summarizes upstream and downstream movements of each fish on each array
 Users can apply the direction_total function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use the updated dataset created by the \code{\link{array_config}} function. Arguments \code{start_date} and \code{end_date}, if specified, must be entered as yyyy-mm-dd hh:mm:ss.
 }
 \examples{
+
+#load test dataset
+oregon_rfid <- new_pit(data = "oregon_rfid", test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
+
 #summarize by month
-direction_total(dam, “month”)
+direction_total(oregon_rfid, “month”)
 
 #summarize by year with a start date of 2015-11-11 10:30:00
-direction_total(dam, “year”, “2015-11-11 10:30:00”)
+direction_total(oregon_rfid, “year”, “2015-11-11 10:30:00”)
 }

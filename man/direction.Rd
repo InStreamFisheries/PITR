@@ -4,10 +4,10 @@
 \alias{direction}
 \title{Computes the direction of movement}
 \usage{
-direction(dat)
+direction(data)
 }
 \arguments{
-\item{dat}{telemetry dataset created using \code{\link{old_pit}}, \code{\link{new_pit}} or \code{\link{array_config}}}
+\item{data}{telemetry dataset created using \code{\link{old_pit}}, \code{\link{new_pit}} or \code{\link{array_config}}}
 }
 \value{
 A dataframe summarizing the direction of movement.
@@ -19,6 +19,10 @@ Function that determines the direction of movement if there were two or more ant
 User can apply the direction function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use the updated dataset created by the \code{\link{array_config}} function.
 }
 \examples{
+
+#load test dataset
+oregon_rfid <- new_pit(data = "oregon_rfid", test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
+
 #determine the direction of fish movement
-direction(dam)
+direction(oregon_rfid)
 }

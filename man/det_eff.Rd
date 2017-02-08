@@ -4,11 +4,11 @@
 \alias{det_eff}
 \title{Computes the detection efficiency of individual antennas}
 \usage{
-det_eff(dat, resolution = NULL, direction, start_date = min(dat$date_time),
-  end_date = max(dat$date_time))
+det_eff(data, resolution = NULL, direction,
+  start_date = min(data$date_time), end_date = max(data$date_time))
 }
 \arguments{
-\item{dat}{telemetry dataset created using \code{\link{old_pit}}, \code{\link{new_pit}} or \code{\link{array_config}}}
+\item{data}{telemetry dataset created using \code{\link{old_pit}}, \code{\link{new_pit}} or \code{\link{array_config}}}
 
 \item{resolution}{summarize data by year, month, week, day or hour}
 
@@ -28,15 +28,19 @@ Function that computes the detection efficiency of individual antennas based on 
 Users can apply the \code{det_eff} function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use the updated dataset created by the \code{\link{array_config}} function. Arguments \code{start_date} and \code{end_date}, if specified, must be entered as yyyy-mm-dd hh:mm:ss.
 }
 \examples{
+
+#load test dataset
+oregon_rfid <- new_pit(data = "oregon_rfid", test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
+
 #compute by month for fish assumed to be moving upstream
-det_eff(dam, "month", "up")
+det_eff(oregon_rfid, "month", "up")
 
 #compute by week for fish assumed to be moving upstream with a start date of 2016-10-11 08:45:00
-det_eff(dam, "week", "up", start_date = "2016-10-11 08:45:00")
+det_eff(oregon_rfid, "week", "up", start_date = "2016-10-11 08:45:00")
 
 #compute by day for fish assumed to be moving downstream
-det_eff(dam, "day", "down")
+det_eff(oregon_rfid, "day", "down")
 
 #compare by month for fish assumed to be resident
-det_eff(dam, "month", "resident")
+det_eff(oregon_rfid, "month", "resident")
 }

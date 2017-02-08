@@ -7,7 +7,7 @@
 array_summary(x)
 }
 \arguments{
-\item{dat}{telemetry dataset created using \code{\link{old_pit}} or \code{\link{new_pit}} function}
+\item{data}{telemetry dataset created using \code{\link{old_pit}} or \code{\link{new_pit}} function}
 
 \item{configuration}{either \code{combine}, \code{split} or \code{rename_antennas}}
 
