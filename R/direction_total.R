@@ -1,28 +1,32 @@
 #' @title Summarizes upstream and downstream movements on arrays
 #'
 #' @description Function summarizes upstream and downstream movements of each fish on each array over a user-defined period of time. Such a function can assist in determining residence time between unique arrays. Data can be summarized by year, month, week, day or hour.
-#' @param dat telemetry dataset created using \code{\link{old_pit}}, \code{\link{new_pit}} or \code{\link{array_config}}
+#' @param data telemetry dataset created using \code{\link{old_pit}}, \code{\link{new_pit}} or \code{\link{array_config}}
 #' @param resolution summarize data by year, month, week, day or hour
 #' @param start_date start date of period of interest, default is first date in dataset
 #' @param end_date end date of period of interest, default is last date in dataset
 #' @return A dataframe summarizing upstream and downstream movements on arrays.
 #' @details Users can apply the direction_total function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use the updated dataset created by the \code{\link{array_config}} function. Arguments \code{start_date} and \code{end_date}, if specified, must be entered as yyyy-mm-dd hh:mm:ss.
 #' @examples
+#'
+#' #load test dataset
+#' oregon_rfid <- new_pit(data = "oregon_rfid", test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
+#'
 #' #summarize by month
-#' direction_total(dam, “month”)
+#' direction_total(oregon_rfid, “month”)
 #'
 #' #summarize by year with a start date of 2015-11-11 10:30:00
-#' direction_total(dam, “year”, “2015-11-11 10:30:00”)
+#' direction_total(oregon_rfid, “year”, “2015-11-11 10:30:00”)
 #' @export
 
-direction_total <- function(dat, resolution=NULL, start_date = min(dat$date_time), end_date = max(dat$date_time)) {
+direction_total <- function(data, resolution=NULL, start_date = min(data$date_time), end_date = max(data$date_time)) {
 
   # Need to format the dates away from character so that the filtering will work.
-  start_date <- ymd_hms(start_date,tz=dat$time_zone[1])
-  end_date <- ymd_hms(end_date,tz=dat$time_zone[1])
+  start_date <- ymd_hms(start_date,tz=data$time_zone[1])
+  end_date <- ymd_hms(end_date,tz=data$time_zone[1])
 
   #Remove single reader rows from data set (created with pit_data function)
-  xv<- subset(dat, antenna != "NA")
+  xv<- subset(data, antenna != "NA")
 
   #Filter data
   rg <- filter(xv, date_time >= start_date & date_time <= end_date)
@@ -111,7 +115,7 @@ direction_total <- function(dat, resolution=NULL, start_date = min(dat$date_time
     # Add a date column that represents the first moment in time at the level of subsetting
     dir_t$date <- ymd(sprintf("%s-%s-%s",dir_t$year,dir_t$month,dir_t$day))
     dir_t$date <- update(dir_t$date,hour=dir_t$hour)
-    dir_t$date <- ymd_hms(dir_t$date,tz=dat$time_zone[1])
+    dir_t$date <- ymd_hms(dir_t$date,tz=data$time_zone[1])
 
     dir_t <- select(dir_t,array,tag_code,year,month,day,hour,date,first_det,first_dir,last_det,last_dir,time_diff_days,time_diff_mins)
 
@@ -161,7 +165,7 @@ direction_total <- function(dat, resolution=NULL, start_date = min(dat$date_time
 
     # Add a date column that represents the first moment in time at the level of subsetting
     dir_t$date <- ymd(sprintf("%s-%s-%s",dir_t$year,dir_t$month,dir_t$day))
-    dir_t$date <- ymd(dir_t$date,tz=dat$time_zone[1])
+    dir_t$date <- ymd(dir_t$date,tz=data$time_zone[1])
 
     dir_t <- select(dir_t,array,tag_code,year,month,day,date,first_det,first_dir,last_det,last_dir,time_diff_days,time_diff_mins)
 
@@ -214,7 +218,7 @@ direction_total <- function(dat, resolution=NULL, start_date = min(dat$date_time
     # Determine what day of the week January 1 is for each year
     dir_t$first.day <- as.numeric(format(dir_t$date,"%w"))
     dir_t$date <- dir_t$date + 7*dir_t$week - dir_t$first.day - 7 # Add in 7 days for each week up to the specified week minus the first.day and minus one week to get the start of the week
-    dir_t$date <- ymd(dir_t$date,tz=dat$time_zone[1])
+    dir_t$date <- ymd(dir_t$date,tz=data$time_zone[1])
 
     dir_t <- select(dir_t,array,tag_code,year,month,week,date,first_det,first_dir,last_det,last_dir,time_diff_days,time_diff_mins)
 
@@ -263,7 +267,7 @@ direction_total <- function(dat, resolution=NULL, start_date = min(dat$date_time
 
     # Add a date column that represents the first moment in time at the level of subsetting
     dir_t$date <- ymd(sprintf("%s-%s-%s",dir_t$year,dir_t$month,1))
-    dir_t$date <- ymd(dir_t$date,tz=dat$time_zone[1])
+    dir_t$date <- ymd(dir_t$date,tz=data$time_zone[1])
 
     dir_t <- select(dir_t,array,tag_code,year,month,date,first_det,first_dir,last_det,last_dir,time_diff_days,time_diff_mins)
 
@@ -313,7 +317,7 @@ direction_total <- function(dat, resolution=NULL, start_date = min(dat$date_time
 
     # Add a date column that represents the first moment in time at the level of subsetting
     dir_t$date <- ymd(sprintf("%s-%s-%s",dir_t$year,1,1))
-    dir_t$date <- ymd(dir_t$date,tz=dat$time_zone[1])
+    dir_t$date <- ymd(dir_t$date,tz=data$time_zone[1])
 
     dir_t <- select(dir_t,array,tag_code,year,date,first_det,first_dir,last_det,last_dir,time_diff_days,time_diff_mins)
 

@@ -1,7 +1,7 @@
 #' @title Computes the detection efficiency of individual antennas
 #'
 #' @description Function that computes the detection efficiency of individual antennas based on the array configuration and the user’s assumption of the direction of fish movement (up, down or resident). Data can be summarized by year, month, week, day or hour.
-#' @param dat telemetry dataset created using \code{\link{old_pit}}, \code{\link{new_pit}} or \code{\link{array_config}}
+#' @param data telemetry dataset created using \code{\link{old_pit}}, \code{\link{new_pit}} or \code{\link{array_config}}
 #' @param resolution summarize data by year, month, week, day or hour
 #' @param direction user-specified direction of fish movement
 #' @param start_date start date of period of interest, default is first date in dataset
@@ -9,29 +9,33 @@
 #' @return A dataframe summarizing the detection efficiency of individual antennas.
 #' @details Users can apply the \code{det_eff} function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use the updated dataset created by the \code{\link{array_config}} function. Arguments \code{start_date} and \code{end_date}, if specified, must be entered as yyyy-mm-dd hh:mm:ss.
 #' @examples
+#'
+#' #load test dataset
+#' oregon_rfid <- new_pit(data = "oregon_rfid", test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
+#'
 #' #compute by month for fish assumed to be moving upstream
-#'det_eff(dam, "month", "up")
+#'det_eff(oregon_rfid, "month", "up")
 #'
 #' #compute by week for fish assumed to be moving upstream with a start date of 2016-10-11 08:45:00
-#' det_eff(dam, "week", "up", start_date = "2016-10-11 08:45:00")
+#' det_eff(oregon_rfid, "week", "up", start_date = "2016-10-11 08:45:00")
 #'
 #' #compute by day for fish assumed to be moving downstream
-#' det_eff(dam, "day", "down")
+#' det_eff(oregon_rfid, "day", "down")
 #'
 #' #compare by month for fish assumed to be resident
-#' det_eff(dam, "month", "resident")
+#' det_eff(oregon_rfid, "month", "resident")
 #' @export
 
-det_eff <- function(dat, resolution = NULL, direction, start_date = min(dat$date_time), end_date = max(dat$date_time)) {
+det_eff <- function(data, resolution = NULL, direction, start_date = min(data$date_time), end_date = max(data$date_time)) {
   #Remove single reader rows from data set (created with pit_data function)
   #xv<- subset(dat, antenna != "NA")
 
   # Need to format the dates away from character so that the filtering will work.
-  start_date <- ymd_hms(start_date,tz=dat$time_zone[1])
-  end_date <- ymd_hms(end_date,tz=dat$time_zone[1])
+  start_date <- ymd_hms(start_date,tz=data$time_zone[1])
+  end_date <- ymd_hms(end_date,tz=data$time_zone[1])
 
   #Filter data
-  rg <- dplyr::filter(dat, date_time >= start_date  & date_time <= end_date)
+  rg <- dplyr::filter(data, date_time >= start_date  & date_time <= end_date)
 
   #create new temporal columns
   rg$year  <- year(rg$date_time)
@@ -279,7 +283,7 @@ det_eff <- function(dat, resolution = NULL, direction, start_date = min(dat$date
 
     # Add a date column with the first day of the first month of year
     det$Date <- ymd(sprintf("%s-%s-%s",det$year,1,1))
-    det$Date <- ymd(det$Date,tz=dat$time_zone[1])
+    det$Date <- ymd(det$Date,tz=data$time_zone[1])
 
     # Re-order the columns to be more intuitive and fit with Joel's original structure
     det_clean <- det[,c("array","year","Date","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
@@ -417,7 +421,7 @@ det_eff <- function(dat, resolution = NULL, direction, start_date = min(dat$date
 
     # Add a date column with the first day of the month and the first hour
     det$Date <- ymd(sprintf("%s-%s-%s",det$year,det$month,1))
-    det$Date <- ymd(det$Date,tz=dat$time_zone[1])
+    det$Date <- ymd(det$Date,tz=data$time_zone[1])
 
     # Re-order the columns to be more intuitive and fit with Joel's original structure
     det_clean <- det[,c("array","year","month","Date","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
@@ -558,7 +562,7 @@ det_eff <- function(dat, resolution = NULL, direction, start_date = min(dat$date
     # Determine what day of the week January 1 is for each year
     det$first.day <- as.numeric(format(det$Date,"%w"))
     det$Date <- det$Date + 7*det$week - det$first.day - 7 # Add in 7 days for each week up to the specified week minus the first.day and minus one week to get the start of the week
-    det$Date <- ymd(det$Date,tz=dat$time_zone[1])
+    det$Date <- ymd(det$Date,tz=data$time_zone[1])
 
     # Re-order the columns to be more intuitive and fit with Joel's original structure
     det_clean <- det[,c("array","year","month","week","Date","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
@@ -695,7 +699,7 @@ det_eff <- function(dat, resolution = NULL, direction, start_date = min(dat$date
 
     # Add a date column with the day and the first hour
     det$Date <- ymd(sprintf("%s-%s-%s",det$year,det$month,det$day))
-    det$Date <- ymd(det$Date,tz=dat$time_zone[1])
+    det$Date <- ymd(det$Date,tz=data$time_zone[1])
 
     # Re-order the columns to be more intuitive and fit with Joel's original structure
     det_clean <- det[,c("array","year","month","week","day","Date","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
@@ -834,7 +838,7 @@ det_eff <- function(dat, resolution = NULL, direction, start_date = min(dat$date
     # Add a date column with the day month and hour
     det$Date <- ymd(sprintf("%s-%s-%s",det$year,det$month,det$day))
     det$Date <- update(det$Date,hour=det$hour)
-    det$Date <- ymd_hms(det$Date,tz=dat$time_zone[1])
+    det$Date <- ymd_hms(det$Date,tz=data$time_zone[1])
 
     # Re-order the columns to be more intuitive and fit with Joel's original structure
     det_clean <- det[,c("array","year","month","week","day","hour","Date","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]

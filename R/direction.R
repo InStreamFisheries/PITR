@@ -1,21 +1,25 @@
 #' @title Computes the direction of movement
 #'
 #' @description Function that determines the direction of movement if there were two or more antennas deployed in the study.
-#' @param dat telemetry dataset created using \code{\link{old_pit}}, \code{\link{new_pit}} or \code{\link{array_config}}
+#' @param data telemetry dataset created using \code{\link{old_pit}}, \code{\link{new_pit}} or \code{\link{array_config}}
 #' @return A dataframe summarizing the direction of movement.
 #' @details User can apply the direction function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use the updated dataset created by the \code{\link{array_config}} function.
 #' @examples
+#'
+#' #load test dataset
+#' oregon_rfid <- new_pit(data = "oregon_rfid", test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
+#'
 #' #determine the direction of fish movement
-#' direction(dam)
+#' direction(oregon_rfid)
 #' @export
 
-direction <- function(dat){
+direction <- function(data){
 
   # If the reader column doesn't exist, create it by duplicating the reader column
-  if(!"array" %in% names(dat)) dat$array <- dat$reader
+  if(!"array" %in% names(data)) data$array <- data$reader
 
   #Remove single reader rows form data set (breated with pit_data function)
-  xv<- subset(dat, antenna != "NA")
+  xv<- subset(data, antenna != "NA")
   #For each reader/ tag code...
   dir<- ddply(xv, c("array","tag_code"), function(x){
     #Order by date_time

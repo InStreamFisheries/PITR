@@ -1,7 +1,7 @@
 #' @title Restructure the configuration of arrays
 #'
 #' @description Function allows users to combine unique readers into an array, split readers with multiple antennas into single antennas, and rename up to four antennas on one reader or one array. Use of this function allows users to manage data for further analysis using \code{\link{det_eff}}, \code{\link{direction}}, \code{\link{direction_total}}, and \code{\link{first_last}} functions.
-#' @param dat telemetry dataset created using \code{\link{old_pit}} or \code{\link{new_pit}} function
+#' @param data telemetry dataset created using \code{\link{old_pit}} or \code{\link{new_pit}} function
 #' @param configuration either \code{combine}, \code{split} or \code{rename_antennas}
 #' @param array_name unique name of an array
 #' @param r1 name of reader 1
@@ -42,7 +42,7 @@ array_summary <- function(x) {
   print(x2)
 }
 
-array_config <- function (dat, configuration, array_name=NULL, r1=NULL, r2=NULL, r3=NULL, r4=NULL,
+array_config <- function (data, configuration, array_name=NULL, r1=NULL, r2=NULL, r3=NULL, r4=NULL,
                           reader_name=NULL, new_reader_1_antennas=NULL,
                           ao1=NULL, ao2=NULL, ao3=NULL, ao4=NULL, an1=NULL, an2=NULL, an3=NULL, an4=NULL) {
 
@@ -58,9 +58,9 @@ array_config <- function (dat, configuration, array_name=NULL, r1=NULL, r2=NULL,
     if (!is.null(array_name)) {
 
       # Select data that comes from readers you want to combine
-      rd <- filter(dat, reader %in% c(r1,r2,r3,r4))
+      rd <- filter(data, reader %in% c(r1,r2,r3,r4))
       # Select all other data to merge back in later
-      rr <- filter(dat, !(reader %in% c(r1,r2,r3,r4)))
+      rr <- filter(data, !(reader %in% c(r1,r2,r3,r4)))
 
       # Assign new antenna numbers based on readers (r1, r2, r3 and r4 get antenna 3"s 1,2,3 and 4 respectively)
 
@@ -117,9 +117,9 @@ array_config <- function (dat, configuration, array_name=NULL, r1=NULL, r2=NULL,
       if(is.null(new_reader_1_antennas)) stop("Error: Must specify which antenna(s) will become part of the new reader 1")
 
       # Select data that comes from reader you want to split in two
-      rd <- filter(dat,reader == reader_name)
+      rd <- filter(data,reader == reader_name)
       # Select all other data to merge back in later
-      rr <- filter(dat, reader != reader_name)
+      rr <- filter(data, reader != reader_name)
 
       # Assign new reader names based on antenna specifications (ao1,a02,and a03 get "reader"_1; all others get get "reader"_2)
       if (!is.null(new_reader_1_antennas)) {
@@ -150,10 +150,10 @@ array_config <- function (dat, configuration, array_name=NULL, r1=NULL, r2=NULL,
     if (!is.null(reader_name)) {
 
       # Select data that comes from reader you want to reconfig antennas for
-      rd <- filter(dat, reader == reader_name)
+      rd <- filter(data, reader == reader_name)
 
       # Select all other data to merge back in later
-      rr <- filter(dat, reader != reader_name)
+      rr <- filter(data, reader != reader_name)
 
       #Assign new antenna numbers based on number entries (ao1-> an1, ao2-> an2, ao3 -> an3, a04 -> an4)
 
@@ -204,13 +204,13 @@ array_config <- function (dat, configuration, array_name=NULL, r1=NULL, r2=NULL,
 
     if (!is.null(array_name)) {
 
-      if(!"array" %in% names(dat)) stop("Error: No arrays column exists")
+      if(!"array" %in% names(data)) stop("Error: No arrays column exists")
 
       # Select data that comes from reader you want to reconfig antennas for
-      rd <- filter(dat, array == array_name)
+      rd <- filter(data, array == array_name)
 
       # Select all other data to merge back in later
-      rr <- filter(dat, array != array_name)
+      rr <- filter(data, array != array_name)
 
       #Assign new antenna numbers based on number entries (ao1-> an1, ao2-> an2, ao3 -> an3, a04 -> an4)
 
