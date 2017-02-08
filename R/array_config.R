@@ -253,3 +253,10 @@ array_config <- function (data, configuration, array_name=NULL, r1=NULL, r2=NULL
     }
   }
 }
+
+array_summary <- function(x) {
+  x1 <- select(x,array,reader,antenna)
+  x2 <- unique(x1)
+  print("Summary of current array, reader, and antenna configuration:")
+  print(x2)
+}
