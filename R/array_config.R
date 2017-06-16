@@ -133,7 +133,7 @@ array_config <- function (data, configuration, array_name=NULL, r1=NULL, r2=NULL
     }
   }
 
-  if (configuration == "renameantennas") {
+  if (configuration == "rename_antennas") {
 
     if (!is.null(reader_name) & !is.null(array_name)) stop("Error: Only specify one array or one reader with antennas to rename")
 
