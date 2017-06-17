@@ -157,7 +157,7 @@ det_eff <- function(data, resolution = NULL, direction, start_date = min(data$da
                           "detections_on_array", "detections_not_on_array", "missed_detections")
 
     #Filter rows without antenna values (single arrays not ID'd as arrays)
-    det_clean <- dplyr::filter(det_clean, Antenna != "NA")
+    det_clean <- dplyr::filter(det_clean, antenna != "NA")
     return(det_clean)
   }
 
@@ -294,7 +294,7 @@ det_eff <- function(data, resolution = NULL, direction, start_date = min(data$da
                           "detections_on_array", "detections_not_on_array", "missed_detections")
 
     #Filter rows without antenna values (single arrays not ID'd as arrays)
-    det_clean <- dplyr::filter(det_clean, Antenna != "NA")
+    det_clean <- dplyr::filter(det_clean, antenna != "NA")
     return(det_clean)
 
   }
@@ -432,7 +432,7 @@ det_eff <- function(data, resolution = NULL, direction, start_date = min(data$da
                           "detections_on_array", "detections_not_on_array", "missed_detections")
 
     #Filter rows without antenna values (single arrays not ID'd as arrays)
-    det_clean <- dplyr::filter(det_clean, Antenna != "NA")
+    det_clean <- dplyr::filter(det_clean, antenna != "NA")
 
     return(det_clean)
 
@@ -573,7 +573,7 @@ det_eff <- function(data, resolution = NULL, direction, start_date = min(data$da
                           "detections_on_array", "detections_not_on_array", "missed_detections")
 
     #Filter rows without antenna values (single arrays not ID'd as arrays)
-    det_clean <- dplyr::filter(det_clean, Antenna != "NA")
+    det_clean <- dplyr::filter(det_clean, antenna != "NA")
     return(det_clean)
 
   }
@@ -710,7 +710,7 @@ det_eff <- function(data, resolution = NULL, direction, start_date = min(data$da
                           "detections_on_array", "detections_not_on_array", "missed_detections")
 
     #Filter rows without antenna values (single arrays not ID'd as arrays)
-    det_clean <- dplyr::filter(det_clean, Antenna != "NA")
+    det_clean <- dplyr::filter(det_clean, antenna != "NA")
     return(det_clean)
 
   }
@@ -849,7 +849,7 @@ det_eff <- function(data, resolution = NULL, direction, start_date = min(data$da
                           "detections_on_array", "detections_not_on_array", "missed_detections")
 
     #Filter rows without antenna values (single arrays not ID'd as arrays)
-    det_clean <- dplyr::filter(det_clean, Antenna != "NA")
+    det_clean <- dplyr::filter(det_clean, antenna != "NA")
     return(det_clean)
 
   }
