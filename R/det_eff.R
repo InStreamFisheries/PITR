@@ -7,7 +7,7 @@
 #' @param start_date start date of period of interest, default is first date in dataset
 #' @param end_date end date of period of interest, default is last date in dataset
 #' @return Dataframe summarizing the detection efficiency of individual antennas.
-#' @details Users must have individual antennas across arrays numbered in consecutive order from downstream to upstream (or upstream to downstream) to correctly compute detection efficiency. If antennas were not numbered correctly in the field, users can use the \code{array_config} function to restructure the configuration of antennas. Users can apply the \code{det_eff} function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use an updated dataset created by the \code{\link{array_config}} function. Arguments \code{start_date} and \code{end_date}, if specified, must be entered as yyyy-mm-dd hh:mm:ss.
+#' @details Users must have individual antennas across arrays numbered in consecutive order from downstream to upstream (or upstream to downstream) to correctly compute detection efficiency. If antennas were not numbered correctly in the field, users can apply the \code{array_config} function to restructure the configuration of antennas. Users can apply the \code{det_eff} function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use an updated dataset created by the \code{\link{array_config}} function. Arguments \code{start_date} and \code{end_date}, if specified, must be entered as yyyy-mm-dd hh:mm:ss.
 #' @examples
 #' #example study
 #' #studying an upstream migration in a river that contains two, two-antenna arrays
