@@ -5,7 +5,7 @@
 #' @param resolution summarize data by year, month, week, day or hour
 #' @param start_date start date of period of interest, default is first date in dataset
 #' @param end_date end date of period of interest, default is last date in dataset
-#' @return A dataframe summarizing the first and last detections on individual antennas.
+#' @return Dataframe summarizing the first and last detections on individual antennas.
 #' @details Users can apply the \code{first_last} function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use an updated dataset created by the \code{\link{array_config}} function. Arguments \code{start_date} and \code{end_date}, if specified, must be entered as “yyyy-mm-dd hh:mm:ss”.
 #' @examples
 #' #load test dataset
