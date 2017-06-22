@@ -14,7 +14,7 @@ array_config(data, configuration, array_name = NULL, r1 = NULL, r2 = NULL,
 
 \item{configuration}{either \code{combine}, \code{split} or \code{rename_antennas}}
 
-\item{array_name}{unique name of an array}
+\item{array_name}{name of array}
 
 \item{r1}{name of reader 1}
 
@@ -45,7 +45,7 @@ array_config(data, configuration, array_name = NULL, r1 = NULL, r2 = NULL,
 \item{an4}{new antenna 4}
 }
 \value{
-An updated dataset for further analysis using \code{\link{det_eff}}, \code{\link{direction}}, \code{\link{direction_total}} and \code{\link{first_last}} functions.
+Updated dataset for further analysis using \code{\link{det_eff}}, \code{\link{direction}}, \code{\link{direction_total}} and \code{\link{first_last}} functions.
 }
 \description{
 Function allows users to combine unique readers into an array, split readers with multiple antennas into single antennas, and rename up to four antennas on one reader or one array. Use of this function allows users to manage data for further analysis using \code{\link{det_eff}}, \code{\link{direction}}, \code{\link{direction_total}}, and \code{\link{first_last}} functions.
@@ -58,8 +58,6 @@ Function is dependent on what the user defines in the \code{configuration} argum
 array_config(new$all_det, configuration = "combine", array_name = "bridge_reach34", r1 = "bridge_reach34_ant1", r2 = "bridge_reach34_ant2")
 
 #split the ‘bridge_counter’ multi reader into two single readers; include A2 into reader #1
-array_config(new$all_det, configuration = "split", reader_name = "bridge_counter", new_reader_1_antennas = c(2))
-#or
 array_config(new$all_det, configuration = "split", reader_name = "bridge_counter", new_reader_1_antennas = 2)
 
 #within the ‘bridge_counter’ array, rename the old A1 to A2 and the old A2 to A1

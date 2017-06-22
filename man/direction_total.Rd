@@ -17,7 +17,7 @@ direction_total(data, resolution = NULL, start_date = min(data$date_time),
 \item{end_date}{end date of period of interest, default is last date in dataset}
 }
 \value{
-A dataframe summarizing upstream and downstream movements on arrays.
+Dataframe summarizing upstream and downstream movements on arrays.
 }
 \description{
 Function summarizes upstream and downstream movements of each fish on each array over a user-defined period of time. Such a function can assist in determining residence time between unique arrays. Data can be summarized by year, month, week, day or hour.

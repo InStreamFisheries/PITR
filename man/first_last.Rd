@@ -17,7 +17,7 @@ first_last(data, resolution = NULL, start_date = min(data$date_time),
 \item{end_date}{end date of period of interest, default is last date in dataset}
 }
 \value{
-A dataframe summarizing the first and last detections on individual antennas.
+Dataframe summarizing the first and last detections on individual antennas.
 }
 \description{
 Function summarizes the first and last detections and the difference in time (in minutes and days) between first and last detections on each antenna over a user-defined period of time. Data can be summarized by year, month, week, day or hour.

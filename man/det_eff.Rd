@@ -19,15 +19,21 @@ det_eff(data, resolution = NULL, direction,
 \item{end_date}{end date of period of interest, default is last date in dataset}
 }
 \value{
-A dataframe summarizing the detection efficiency of individual antennas.
+Dataframe summarizing the detection efficiency of individual antennas.
 }
 \description{
-Function that computes the detection efficiency of individual antennas based on the array configuration and the user’s assumption of the direction of fish movement (up, down or resident). Data can be summarized by year, month, week, day or hour.
+Function that computes the detection efficiency of individual antennas or arrays based on the array configuration and the user’s assumption of the direction of fish movement (up, down or resident). Data can be summarized by year, month, week, day or hour.
 }
 \details{
-Users can apply the \code{det_eff} function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use an updated dataset created by the \code{\link{array_config}} function. Arguments \code{start_date} and \code{end_date}, if specified, must be entered as yyyy-mm-dd hh:mm:ss.
+Users must have individual antennas across arrays numbered in consecutive order from downstream to upstream (or upstream to downstream) to correctly compute detection efficiency. If antennas were not numbered correctly in the field, users can use the \code{array_config} function to restructure the configuration of antennas. Users can apply the \code{det_eff} function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use an updated dataset created by the \code{\link{array_config}} function. Arguments \code{start_date} and \code{end_date}, if specified, must be entered as yyyy-mm-dd hh:mm:ss.
 }
 \examples{
+#example study
+#studying an upstream migration in a river that contains two, two-antenna arrays
+#user must ensure that the downstream array contains two antennas numbered 1 and 2, whereby antenna 1 is the most downstream antenna in that array
+#next, the upstream array must contain two antennas numbered 3 and 4, whereby antenna 3 is the most downstream antenna in that array
+#overall, the antennas from the two arrays are numbered from 1 (downstream) to 4 (upstream) and the detection efficiency for upstream migrating fish can be correctly computed
+
 #load test dataset
 oregon_rfid <- new_pit(data = "oregon_rfid", test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
 
@@ -40,6 +46,6 @@ det_eff(oregon_rfid, "week", "up", start_date = "2016-10-11 08:45:00")
 #compute by day for fish assumed to be moving downstream
 det_eff(oregon_rfid, "day", "down")
 
-#compare by month for fish assumed to be resident
+#compute by month for fish assumed to be resident
 det_eff(oregon_rfid, "month", "resident")
 }

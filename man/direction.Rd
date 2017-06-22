@@ -10,7 +10,7 @@ direction(data)
 \item{data}{telemetry dataset created using \code{\link{old_pit}}, \code{\link{new_pit}} or \code{\link{array_config}}}
 }
 \value{
-A dataframe summarizing the direction of movement.
+Dataframe summarizing the direction of movement.
 }
 \description{
 Function that determines the direction of movement if there were two or more antennas deployed in the study.
