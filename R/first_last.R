@@ -12,10 +12,10 @@
 #' oregon_rfid <- new_pit(data = "oregon_rfid", test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
 #'
 #' #summarize first and last detections by day with a start date of 2015-10-15 08:00:00
-#' first_last(oregon_rfid, “day”, “2015-10-15 08:00:00”)
+#' first_last(data = oregon_rfid, resolution = “day”, start_date = “2015-10-15 08:00:00”)
 #'
 #' #summarize first and last detections by month
-#' first_last(oregon_rfid, “month”)
+#' first_last(data = oregon_rfid, resolution = “month”)
 #' @export
 
 first_last <- function(data, resolution = NULL, start_date = min(data$date_time), end_date = max(data$date_time)) {

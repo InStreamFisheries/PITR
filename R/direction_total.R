@@ -12,10 +12,10 @@
 #' oregon_rfid <- new_pit(data = "oregon_rfid", test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
 #'
 #' #summarize by month
-#' direction_total(oregon_rfid, “month”)
+#' direction_total(data = oregon_rfid, resolution = “month”)
 #'
 #' #summarize by year with a start date of 2015-11-11 10:30:00
-#' direction_total(oregon_rfid, “year”, “2015-11-11 10:30:00”)
+#' direction_total(data = oregon_rfid, resolution = “year”, start_date = “2015-11-11 10:30:00”)
 #' @export
 
 direction_total <- function(data, resolution=NULL, start_date = min(data$date_time), end_date = max(data$date_time)) {
