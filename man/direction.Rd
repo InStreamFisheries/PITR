@@ -23,5 +23,5 @@ User can apply the direction function to the original dataset created by the \co
 oregon_rfid <- new_pit(data = "oregon_rfid", test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
 
 #determine the direction of fish movement
-direction(oregon_rfid)
+direction(data = oregon_rfid)
 }
