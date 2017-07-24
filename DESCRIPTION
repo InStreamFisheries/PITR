@@ -11,7 +11,7 @@ Description: PIT telemetry produces very large quantities of data that are
     directory to assist in reviewing the analysis process. PITR functions allow
     users to: (1) collate data from multiple readers and filter out test tags and tags specific to
     a study; (2) restructure the configuration of readers and antennas into arrays;
-    (3) compute the detection efficiency of individual antennas and arrays; (4) compute the
+    (3) compute the detection efficiency of antennas or arrays; (4) compute the
     direction of movement if there were two or more antennas deployed in a study;
     (5) summarize upstream and downstream movements for each fish on each array;
     (6) summarize the first and last detections on each antenna; and (7) plot the

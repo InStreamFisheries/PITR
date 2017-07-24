@@ -2,7 +2,7 @@
 % Please edit documentation in R/det_eff.R
 \name{det_eff}
 \alias{det_eff}
-\title{Computes the detection efficiency of individual antennas or arrays}
+\title{Computes the detection efficiency of antennas or arrays}
 \usage{
 det_eff(data, resolution = NULL, by_array = FALSE, array_sequence = NULL,
   direction, start_date = min(data$date_time),
@@ -11,37 +11,28 @@ det_eff(data, resolution = NULL, by_array = FALSE, array_sequence = NULL,
 \arguments{
 \item{data}{telemetry dataset created using \code{\link{old_pit}}, \code{\link{new_pit}} or \code{\link{array_config}}}
 
-\item{resolution}{summarize by year, month, week, day or hour}
+\item{resolution}{summarize by year, month, week, day or hour (optional)}
 
-\item{by_array}{summarize by array (TRUE) or by individual antenna (FALSE)}
+\item{by_array}{summarize by array (TRUE) or antenna (FALSE)}
 
 \item{array_sequence}{vector of array names in order from downstream to upstream}
 
-\item{direction}{user-specified direction of fish movement}
+\item{direction}{user-specified direction of fish movement (required)}
 
 \item{start_date}{start date of period of interest, default is first date in dataset}
 
 \item{end_date}{end date of period of interest, default is last date in dataset}
 }
 \value{
-Dataframe summarizing the detection efficiency of individual antennas or arrays.
+Dataframe summarizing the detection efficiency of antennas or arrays.
 }
 \description{
-Function that computes the detection efficiency of individual antennas or arrays based on the array configuration and the user’s assumption of the direction of fish movement (up, down or resident). Data can be summarized by year, month, week, day or hour.
+Function that computes the detection efficiency of antennas or arrays based on the array configuration and the user’s assumption of the direction of fish movement (up, down or resident). Data can be summarized by year, month, week, day or hour.
 }
 \details{
-Users must have individual antennas across arrays numbered in consecutive order from downstream to upstream (or upstream to downstream) to correctly compute detection efficiency. If antennas were not numbered correctly in the field, users can apply the \code{array_config} function to restructure the configuration of antennas. Users can summarize detection effiency on each array through the argument by_array. If by_array = TRUE, the user must list the array names in order from downstream to upstream using the array_sequence argument. Users can apply the \code{det_eff} function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use an updated dataset created by the \code{\link{array_config}} function. Arguments \code{start_date} and \code{end_date}, if specified, must be entered as yyyy-mm-dd hh:mm:ss.
+Users must have individual antennas across arrays numbered in consecutive order from downstream to upstream to correctly compute detection efficiency by antenna (see Examples). If antennas were not numbered correctly in the field, users can apply the \code{array_config} function to restructure the configuration of antennas. Users can summarize detection effiency by array through the argument by_array. Note that individual antennas do not need to be numbered in consecutive order if detection efficiency is being summarized by array. If by_array = TRUE, the user must list the array names in order from downstream to upstream using the array_sequence argument. Users can apply the \code{det_eff} function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use an updated dataset created by the \code{\link{array_config}} function. Arguments \code{start_date} and \code{end_date}, if specified, must be entered as yyyy-mm-dd hh:mm:ss. Default for the resolution argument (NULL) will summarize detection efficiency over the entire time period present in the dataset.
 }
 \examples{
-#example study
-#studying an upstream migration in a river that contains two, two-antenna arrays
-#user must ensure that the downstream array (array_one) contains two antennas numbered 1 and 2, whereby antenna 1 is the most downstream antenna in that array
-#next, the upstream array (array_two) must contain two antennas numbered 3 and 4, whereby antenna 3 is the most downstream antenna in that array
-#the antennas from the two arrays are numbered from 1 (downstream) to 4 (upstream) and the detection efficiency for upstream migrating fish can be correctly computed by array or by individual antenna
-
-#summarize by array and by month for fish assumed to be moving upstream
-det_eff(data = multi_array, resolution = "month", by_array = TRUE, array_sequence = c("array_one", "array_two"), direction = "up")
-
 #load test dataset
 oregon_rfid <- new_pit(data = "oregon_rfid", test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
 
@@ -56,4 +47,13 @@ det_eff(data = oregon_rfid, resolution = "day", by_array = FALSE, direction = "d
 
 #summarize by individual antenna and by month for fish assumed to be resident
 det_eff(data = oregon_rfid, resolution = "month", by_array = FALSE, direction = "resident")
+
+#example study
+#studying an upstream migration in a river that contains two, two-antenna arrays
+#user must ensure that the downstream array (array_one) contains two antennas numbered 1 and 2, whereby antenna 1 is the most downstream antenna in that array
+#next, the upstream array (array_two) must contain two antennas numbered 3 and 4, whereby antenna 3 is the most downstream antenna in that array
+#overall, the antennas from the two arrays are numbered from 1 (downstream) to 4 (upstream) and the detection efficiency for upstream migrating fish can be correctly computed by antenna or array
+
+#summarize by array and by month for fish assumed to be moving upstream
+det_eff(data = multi_array, resolution = "month", by_array = TRUE, array_sequence = c("array_one", "array_two"), direction = "up")
 }
