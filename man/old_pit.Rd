@@ -16,7 +16,7 @@ old_pit(data, test_tags = NULL, print_to_file = FALSE, time_zone = NULL)
 \item{time_zone}{time zone where data were collected, default is time zone of user’s computer}
 }
 \value{
-List of dataframes consisting of detection records, event records, non-detection and non-event records, duplicated detections, error records, and a character vector of unique readers.
+List of data frames consisting of detection records, event records, non-detection and non-event records, duplicated detections, error records, and a character vector of unique readers.
 }
 \description{
 Function collates data located in the working directory that were collected from readers with a firmware version earlier than 5.0 (April 2014). Users must define the working directory where the PIT files are located. If data is being collated from old and new formats, the user must separate working directories containing old and new data.
@@ -26,8 +26,8 @@ Data files must be in the format ‘pit_reader_mm_dd_yyyy.txt’. Note that pit_
 }
 \examples{
 #define working directory
-old <- "~/Dropbox (InStream)/Projects/62 - PIT R and D/5 - Data/Keogh Old"
+old <- "./Old PIT Data/"
 
 #no test tags, no metadata to print to working directory, data were collected in the time zone "America/Vancouver"
-old_pit(data = old, test_tags = NULL, print_to_file = FALSE, time_zone = “America/Vancouver”)
+old_pit(data = old, test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
 }

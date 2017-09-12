@@ -17,7 +17,7 @@ first_last(data, resolution = NULL, start_date = min(data$date_time),
 \item{end_date}{end date of period of interest, default is last date in dataset}
 }
 \value{
-Dataframe summarizing the first and last detections on individual antennas.
+Data frame summarizing the first and last detections on individual antennas.
 }
 \description{
 Function summarizes the first and last detections and the difference in time (in minutes and days) between first and last detections on each antenna over a user-defined period of time. Data can be summarized by year, month, week, day or hour.
@@ -30,8 +30,8 @@ Users can apply the \code{first_last} function to the original dataset created b
 oregon_rfid <- new_pit(data = "oregon_rfid", test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
 
 #summarize first and last detections by day with a start date of 2015-10-15 08:00:00
-first_last(data = oregon_rfid, resolution = “day”, start_date = “2015-10-15 08:00:00”)
+first_last(data = oregon_rfid, resolution = "day", start_date = "2015-10-15 08:00:00")
 
 #summarize first and last detections by month
-first_last(data = oregon_rfid, resolution = “month”)
+first_last(data = oregon_rfid, resolution = "month")
 }

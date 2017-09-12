@@ -24,9 +24,9 @@
 #load test dataset
 oregon_rfid <- new_pit(data = "oregon_rfid", test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
 
-det_eff(oregon_rfid, "month", "up")
-direction(oregon_rfid)
-direction_total(oregon_rfid, “year”, “2015-11-11 10:30:00”)
-first_last(oregon_rfid, “month”, “2015-10-15 08:00:00”)
+det_eff(data = oregon_rfid, resolution = "month", direction = "up")
+direction(data = oregon_rfid)
+direction_total(data = oregon_rfid, resolution = "year", start_date = "2015-11-11 10:30:00")
+first_last(data = oregon_rfid, resolution = "month", start_date = "2015-10-15 08:00:00")
 }
 \keyword{datasets}

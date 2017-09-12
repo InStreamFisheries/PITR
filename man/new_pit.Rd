@@ -19,19 +19,19 @@ new_pit(data, test_tags = NULL, print_to_file = FALSE, time_zone = NULL,
 \item{old_format_data}{include collated data in old format}
 }
 \value{
-List of dataframes consisting of detection records, event records, non-detection and non-event records, duplicated detections and error records from single and multi readers. Character vectors of unique single and multi readers.
+List of data frames consisting of detection records, event records, non-detection and non-event records, duplicated detections and error records from single and multi readers. Character vectors of unique single and multi readers.
 }
 \description{
 Function collates data located in the working directory that were collected from readers with a firmware version later than 5.0 (April 2014). Users must define the working directory where the PIT files are located. If data is being collated from old and new formats, the user must specify separate working directories containing old and new data. If the function \code{\link{old_pit}} was used to collate old format data, the user must specify the output of the \code{old_pit} function using the \code{old_format_data} argument.
 }
 \details{
-Data files must be named in the following format ‘pit_reader_mm_dd_yyyy.txt’. Note that pit_reader is the unique name of the PIT reader and that mm, dd and yyyy must be separated by underscores. If .txt is not at the end of each file, the user must enter .txt manually to each file prior to reading in the data. Users can apply the \code{print_to_file} argument to export metadata to the working directory to confirm that data collation was performed correctly. Users can include a dataframe called study tags in .csv or .txt format (i.e., study_tags.csv or study_tags.txt) in the working directory that contains the full list of tags used in a study in one column called ‘study_tags’. Tag codes must be complete: 900_230000010075 and not 10075, 0000_0000000183783293 and not 183783293. If no dataframe of study tags exists in the working directory, it is assumed that no tag codes are subsetted out of the dataset. Users can choose to specify the time zone where data were collected. Default for \code{time_zone} is the time zone of the user’s computer. If \code{old_format_data} is not specified, it is assumed that there are no data in the old format to collate.
+Data files must be named in the following format ‘pit_reader_mm_dd_yyyy.txt’. Note that pit_reader is the unique name of the PIT reader and that mm, dd and yyyy must be separated by underscores. If .txt is not at the end of each file, the user must enter .txt manually to each file prior to reading in the data. Users can apply the \code{print_to_file} argument to export metadata to the working directory to confirm that data collation was performed correctly. Users can include a data frame called study tags in .csv or .txt format (i.e., study_tags.csv or study_tags.txt) in the working directory that contains the full list of tags used in a study in one column called ‘study_tags’. Tag codes must be complete: 900_230000010075 and not 10075, 0000_0000000183783293 and not 183783293. If no data frame of study tags exists in the working directory, it is assumed that no tag codes are subsetted out of the dataset. Users can choose to specify the time zone where data were collected. Default for \code{time_zone} is the time zone of the user’s computer. If \code{old_format_data} is not specified, it is assumed that there are no data in the old format to collate.
 }
 \examples{
 #collate data located in a Dropbox folder and print metadata to working directory
 
 #define working directory
-new <- "~/Dropbox (InStream)/Projects/62 - PIT R and D/5 - Data/Keogh 2016"
+new <- "./New PIT Data/"
 
 #three test tags used in study
 tt <- c("900_230000010075", "900_230000010079", "900_230000010080")
@@ -41,7 +41,7 @@ new_pit(data = new, test_tags = tt, print_to_file = TRUE, time_zone = "America/V
 
 #collate old format data with new format data
 
-old_data <- old_pit(data = old, test_tags = NULL, print_to_file = FALSE, time_zone = “America/Vancouver”)
+old_dat <- old_pit(data = old, test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
 
-new_data <- new_pit(data = new, test_tags = tt, print_to_file = FALSE, time_zone = “America/Vancouver”, old_format_data = old_data)
+new_dat <- new_pit(data = new, test_tags = tt, print_to_file = FALSE, time_zone = "America/Vancouver", old_format_data = old_dat)
 }

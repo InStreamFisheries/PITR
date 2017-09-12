@@ -17,7 +17,7 @@ direction_total(data, resolution = NULL, start_date = min(data$date_time),
 \item{end_date}{end date of period of interest, default is last date in dataset}
 }
 \value{
-Dataframe summarizing upstream and downstream movements on arrays.
+Data frame summarizing upstream and downstream movements on arrays.
 }
 \description{
 Function summarizes upstream and downstream movements of each fish on each array over a user-defined period of time. Such a function can assist in determining residence time between unique arrays. Data can be summarized by year, month, week, day or hour.
@@ -33,5 +33,5 @@ oregon_rfid <- new_pit(data = "oregon_rfid", test_tags = NULL, print_to_file = F
 direction_total(data = oregon_rfid, resolution = “month”)
 
 #summarize by year with a start date of 2015-11-11 10:30:00
-direction_total(data = oregon_rfid, resolution = “year”, start_date = “2015-11-11 10:30:00”)
+direction_total(data = oregon_rfid, resolution = "year", start_date = "2015-11-11 10:30:00")
 }
