@@ -5,7 +5,7 @@
 #' @param resolution summarize data by year, month, week, day or hour
 #' @param start_date start date of period of interest, default is first date in dataset
 #' @param end_date end date of period of interest, default is last date in dataset
-#' @return Dataframe summarizing upstream and downstream movements on arrays.
+#' @return Data frame summarizing upstream and downstream movements on arrays.
 #' @details Users can apply the direction_total function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use an updated dataset created by the \code{\link{array_config}} function. Arguments \code{start_date} and \code{end_date}, if specified, must be entered as yyyy-mm-dd hh:mm:ss. Default for the resolution argument (NULL) will summarize upstream and downstream movements over the entire time period present in the dataset.
 #' @examples
 #' #load test dataset
@@ -15,7 +15,7 @@
 #' direction_total(data = oregon_rfid, resolution = “month”)
 #'
 #' #summarize by year with a start date of 2015-11-11 10:30:00
-#' direction_total(data = oregon_rfid, resolution = “year”, start_date = “2015-11-11 10:30:00”)
+#' direction_total(data = oregon_rfid, resolution = "year", start_date = "2015-11-11 10:30:00")
 #' @export
 
 direction_total <- function(data, resolution = NULL, start_date = min(data$date_time), end_date = max(data$date_time)) {

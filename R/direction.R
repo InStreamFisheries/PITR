@@ -2,7 +2,7 @@
 #'
 #' @description Function that determines the direction of movement if there were two or more antennas deployed in the study.
 #' @param data telemetry dataset created using \code{\link{old_pit}}, \code{\link{new_pit}} or \code{\link{array_config}}
-#' @return Dataframe summarizing the direction of movement.
+#' @return Data frame summarizing the direction of movement.
 #' @details User can apply the direction function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use an updated dataset created by the \code{\link{array_config}} function.
 #' @examples
 #' #load test dataset
