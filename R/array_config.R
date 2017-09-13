@@ -21,16 +21,11 @@
 #' @return Updated dataset for further analysis using \code{\link{det_eff}}, \code{\link{direction}}, \code{\link{direction_total}} and \code{\link{first_last}} functions.
 #' @details Function is dependent on what the user defines in the \code{configuration} argument. Argument \code{combine} is used to combine up to four single readers into one array. If a user wants to combine a multi reader with another reader (either a multi or single reader), the user first must split the multi reader into two or more single readers and then combine them together into an array. Argument \code{split} is used to split multi readers into two or more single readers to allow the combination of single readers into a user-specified array. Argument \code{new_reader_1_antennas} is used to define the antennas to group into reader 1. All other antennas are grouped into reader 2. Argument \code{rename_antennas} is used to either rename antennas part of an array (if \code{array_name} is specified) or antennas part of a reader (if \code{reader_name} is specified). Users can rename up to four antennas for one reader or one array. Arguments with the prefix ‘ao’ correspond to the old (or current) antenna numbering scheme, whereas arguments with the prefix ‘an’ correspond to the new antenna numbering scheme. Old antennas must be specified in order within the \code{array_config} function. Depending on the setup of the study, the user may have to run the \code{array_config} function several times. Note that use of arguments \code{combine}, \code{split} and \code{rename_antennas} must be iterative (see Examples).
 #' @examples
-#' #combine two single readers into an array called ‘bridge_reach34’
-#' array_config(new$all_det, configuration = "combine", array_name = "bridge_reach34", r1 = "bridge_reach34_ant1", r2 = "bridge_reach34_ant2")
+#' #split a multi reader with two antennas into two single readers
+#' array_config(data = oregon_rfid, configuration = "split", reader_name = "dam", new_reader_1_antennas = "1")
 #'
-#' #split the ‘bridge_counter’ multi reader into two single readers; include A2 into reader #1
-#' array_config(new$all_det, configuration = "split", reader_name = "bridge_counter", new_reader_1_antennas = 2)
-#'
-#' #within the ‘bridge_counter’ array, rename the old A1 to A2 and the old A2 to A1
-#' array_config(new$all_det, configuration = "rename_antennas", array_name = "bridge_counter", ao1 = 2, ao2 = 1, an1 = 1, an2 = 2)
-#' #within the ‘bridge_reach34_ant2’ reader, rename the old A2 to A1
-#' array_config(new$all_det, configuration = "rename_antennas", reader_name = "bridge_reach34_ant2", ao1 = 2, an1 = 1)
+#' #combine two single readers into an array called fishway
+#' array_config(data = oregon_rfid, configuraiton = "combine", array_name = "fishway", r1 = "", r2 = "")
 #' @export
 
 array_config <- function (data, configuration, array_name=NULL, r1=NULL, r2=NULL, r3=NULL, r4=NULL,

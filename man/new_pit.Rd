@@ -28,7 +28,7 @@ Function collates data located in the working directory that were collected from
 Data files must be named in the following format ‘pit_reader_mm_dd_yyyy.txt’. Note that pit_reader is the unique name of the PIT reader and that mm, dd and yyyy must be separated by underscores. If .txt is not at the end of each file, the user must enter .txt manually to each file prior to reading in the data. Users can apply the \code{print_to_file} argument to export metadata to the working directory to confirm that data collation was performed correctly. Users can include a data frame called study tags in .csv or .txt format (i.e., study_tags.csv or study_tags.txt) in the working directory that contains the full list of tags used in a study in one column called ‘study_tags’. Tag codes must be complete: 900_230000010075 and not 10075, 0000_0000000183783293 and not 183783293. If no data frame of study tags exists in the working directory, it is assumed that no tag codes are subsetted out of the dataset. Users can choose to specify the time zone where data were collected. Default for \code{time_zone} is the time zone of the user’s computer. If \code{old_format_data} is not specified, it is assumed that there are no data in the old format to collate.
 }
 \examples{
-#collate data located in a Dropbox folder and print metadata to working directory
+#collate data and print metadata to working directory
 
 #define working directory
 new <- "./New PIT Data/"
