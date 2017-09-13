@@ -54,9 +54,15 @@ Function allows users to combine unique readers into an array, split readers wit
 Function is dependent on what the user defines in the \code{configuration} argument. Argument \code{combine} is used to combine up to four single readers into one array. If a user wants to combine a multi reader with another reader (either a multi or single reader), the user first must split the multi reader into two or more single readers and then combine them together into an array. Argument \code{split} is used to split multi readers into two or more single readers to allow the combination of single readers into a user-specified array. Argument \code{new_reader_1_antennas} is used to define the antennas to group into reader 1. All other antennas are grouped into reader 2. Argument \code{rename_antennas} is used to either rename antennas part of an array (if \code{array_name} is specified) or antennas part of a reader (if \code{reader_name} is specified). Users can rename up to four antennas for one reader or one array. Arguments with the prefix ‘ao’ correspond to the old (or current) antenna numbering scheme, whereas arguments with the prefix ‘an’ correspond to the new antenna numbering scheme. Old antennas must be specified in order within the \code{array_config} function. Depending on the setup of the study, the user may have to run the \code{array_config} function several times. Note that use of arguments \code{combine}, \code{split} and \code{rename_antennas} must be iterative (see Examples).
 }
 \examples{
+#load test dataset
+oregon_rfid <- new_pit(data = "oregon_rfid", test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
+
 #split a multi reader with two antennas into two single readers
-array_config(data = oregon_rfid, configuration = "split", reader_name = "dam", new_reader_1_antennas = "1")
+split <- array_config(data = oregon_rfid, configuration = "split", reader_name = "dam", new_reader_1_antennas = "1")
 
 #combine two single readers into an array called fishway
-array_config(data = oregon_rfid, configuraiton = "combine", array_name = "fishway", r1 = "", r2 = "")
+combine <- array_config(data = split, configuration = "combine", array_name = "fishway", r1 = "dam_1", r2 = "dam_2")
+
+#rename the two fishway array antennas
+rename <- array_config(data = combine, configuration = "rename_antennas", array_name = "fishway", r1 = "dam_1", r2 = "dam_2")
 }

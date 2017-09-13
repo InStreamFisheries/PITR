@@ -31,7 +31,8 @@
 #' combine <- array_config(data = split, configuration = "combine", array_name = "fishway", r1 = "dam_1", r2 = "dam_2")
 #'
 #' #rename the two fishway array antennas
-#' rename <- array_config(data = combine, configuration = "rename_antennas", array_name = "fishway", r1 = "dam_1", r2 = "dam_2")
+#' rename_one <- array_config(data = combine, configuration = "rename_antennas", array_name = "fishway", ao1 = "1", an1 = "3")
+#' rename_two <- array_config(data = rename_one, configuration = "rename_antennas", array_name = "fishway", ao2 = "2", an2 = "4")
 #' @export
 
 array_config <- function (data, configuration, array_name=NULL, r1=NULL, r2=NULL, r3=NULL, r4=NULL,
