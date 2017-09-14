@@ -2,7 +2,7 @@
 \alias{oregon_rfid}
 \docType{data}
 \title{Dataset to illustrate the PITR functions}
-\description{Example dataset from a multi reader with two antennas that can be used to illustrate the PITR functions, \code{\link{det_eff}}, \code{\link{direction}}, \code{\link{direction_total}} and \code{\link{first_last}}. Note that this dataset could be restructured to an array through the function \code{\link{array_config}}.}
+\description{Example dataset from a multi reader with two antennas that can be used to illustrate the PITR functions, \code{\link{det_eff}}, \code{\link{direction}}, \code{\link{direction_total}} and \code{\link{first_last}}. Note that this dataset can be restructured through the function \code{\link{array_config}}.}
 \format{Dataframe contains 798 detections on the following 12 variables.
 
   \describe{

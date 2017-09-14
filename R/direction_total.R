@@ -8,7 +8,7 @@
 #' @return Data frame summarizing upstream and downstream movements on arrays.
 #' @details Users can apply the direction_total function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use an updated dataset created by the \code{\link{array_config}} function. Arguments \code{start_date} and \code{end_date}, if specified, must be entered as yyyy-mm-dd hh:mm:ss. Default for the resolution argument (NULL) will summarize upstream and downstream movements over the entire time period present in the dataset.
 #' @examples
-#' #load test dataset
+#' #load test dataset containing detections from a multi reader with two antennas
 #' oregon_rfid <- new_pit(data = "oregon_rfid", test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
 #'
 #' #summarize by month
