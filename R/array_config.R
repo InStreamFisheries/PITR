@@ -30,12 +30,12 @@
 #'
 #' #Example 2: combine two single readers into an array called fishway
 #' #users can combine two or more single readers (using a raw or split dataset) into arrays
-#' #if there is an existing dataset with two or more readers (multi or single readers or a combination), the user can skip the split step and combine the readers into arrays
+#' #if there is an existing dataset with two or more readers (multi or single readers or a combination), the user can start by combining the readers into arrays
 #' combine <- array_config(data = split, configuration = "combine", array_name = "fishway", r1 = "dam_1", r2 = "dam_2")
 #'
 #' #Example 3: rename the two antennas
 #' rename_one <- array_config(data = combine, configuration = "rename_antennas", array_name = "fishway", ao1 = "1", an1 = "3")
-#' rename_two <- array_config(data = rename_one, configuration = "rename_antennas", array_name = "fishway", ao2 = "2", an2 = "4")
+#' rename_two <- array_config(data = rename_one, configuration = "rename_antennas", array_name = "fishway", ao1 = "2", an1 = "4")
 #' @export
 
 array_config <- function (data, configuration, array_name=NULL, r1=NULL, r2=NULL, r3=NULL, r4=NULL,
