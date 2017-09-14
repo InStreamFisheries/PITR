@@ -10,7 +10,7 @@ first_last(data, resolution = NULL, start_date = min(data$date_time),
 \arguments{
 \item{data}{telemetry dataset created using \code{\link{old_pit}}, \code{\link{new_pit}} or \code{\link{array_config}}}
 
-\item{resolution}{summarize data by year, month, week, day or hour}
+\item{resolution}{summarize data by year, month, week, day or hour (optional)}
 
 \item{start_date}{start date of period of interest, default is first date in dataset}
 
@@ -20,10 +20,10 @@ first_last(data, resolution = NULL, start_date = min(data$date_time),
 Data frame summarizing the first and last detections on individual antennas.
 }
 \description{
-Function summarizes the first and last detections and the difference in time (in minutes and days) between first and last detections on each antenna over a user-defined period of time. Data can be summarized by year, month, week, day or hour.
+Function summarizes the first and last detections and the difference in time (in minutes and days) between the first and last detections on each antenna over a user-defined period of time. Data can be summarized by year, month, week, day or hour.
 }
 \details{
-Users can apply the \code{first_last} function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use an updated dataset created by the \code{\link{array_config}} function. Arguments \code{start_date} and \code{end_date}, if specified, must be entered as yyyy-mm-dd hh:mm:ss. Default for the resolution argument (NULL) will summarize the first and last detections on antennas over the entire time period present in the dataset.
+Users can apply the \code{first_last} function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use an updated dataset created by the \code{\link{array_config}} function. Arguments \code{start_date} and \code{end_date}, if specified, must be entered as yyyy-mm-dd hh:mm:ss. Default for the resolution argument will summarize the first and last detections on antennas over the entire time period present in the dataset.
 }
 \examples{
 #load test dataset containing detections from a multi reader with two antennas
