@@ -19,7 +19,7 @@ Function that determines the direction of movement if there were two or more ant
 User can apply the direction function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use an updated dataset created by the \code{\link{array_config}} function.
 }
 \examples{
-#load test dataset
+#load test dataset containing detections from a multi reader with two antennas
 oregon_rfid <- new_pit(data = "oregon_rfid", test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
 
 #determine the direction of fish movement

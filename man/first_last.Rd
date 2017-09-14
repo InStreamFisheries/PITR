@@ -26,7 +26,7 @@ Function summarizes the first and last detections and the difference in time (in
 Users can apply the \code{first_last} function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use an updated dataset created by the \code{\link{array_config}} function. Arguments \code{start_date} and \code{end_date}, if specified, must be entered as yyyy-mm-dd hh:mm:ss. Default for the resolution argument (NULL) will summarize the first and last detections on antennas over the entire time period present in the dataset.
 }
 \examples{
-#load test dataset
+#load test dataset containing detections from a multi reader with two antennas
 oregon_rfid <- new_pit(data = "oregon_rfid", test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
 
 #summarize first and last detections by day with a start date of 2015-10-15 08:00:00

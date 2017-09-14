@@ -33,7 +33,7 @@ Function that computes the detection efficiency of antennas or arrays based on t
 Users must have individual antennas across arrays numbered in consecutive order from downstream to upstream to correctly compute detection efficiency by antenna (see Examples). If antennas were not numbered correctly in the field, users can apply the \code{array_config} function to restructure the configuration of antennas. Users can summarize detection effiency by array through the argument by_array. Note that individual antennas do not need to be numbered in consecutive order if detection efficiency is being summarized by array. If by_array = TRUE, the user must list the array names in order from downstream to upstream using the array_sequence argument. Users can apply the \code{det_eff} function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use an updated dataset created by the \code{\link{array_config}} function. Arguments \code{start_date} and \code{end_date}, if specified, must be entered as yyyy-mm-dd hh:mm:ss. Default for the resolution argument (NULL) will summarize detection efficiency over the entire time period present in the dataset.
 }
 \examples{
-#load test dataset
+#load test dataset containing detections from a multi reader with two antennas
 oregon_rfid <- new_pit(data = "oregon_rfid", test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
 
 #summarize by individual antenna and by month for fish assumed to be moving upstream
