@@ -1,6 +1,6 @@
 #' @title Restructure the configuration of arrays
 #'
-#' @description Function allows users to combine unique readers into an array, split readers with multiple antennas into single antennas, and rename up to four antennas on one reader or one array. Use of this function allows users to manage data for further analysis using \code{\link{det_eff}}, \code{\link{direction}}, \code{\link{direction_total}}, and \code{\link{first_last}} functions.
+#' @description Function allows users to combine unique readers into an array, split readers with multiple antennas into single readers, and rename up to four antennas on one reader or one array. Use of this function allows users to manage data for further analysis using \code{\link{det_eff}}, \code{\link{direction}}, \code{\link{direction_total}}, and \code{\link{first_last}} functions.
 #' @param data telemetry dataset created using \code{\link{old_pit}} or \code{\link{new_pit}} function
 #' @param configuration either \code{combine}, \code{split} or \code{rename_antennas}
 #' @param array_name name of array

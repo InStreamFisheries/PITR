@@ -1,12 +1,12 @@
 #' @title Summarizes first and last detections on individual antennas
 #'
-#' @description Function summarizes the first and last detections and the difference in time (in minutes and days) between first and last detections on each antenna over a user-defined period of time. Data can be summarized by year, month, week, day or hour.
+#' @description Function summarizes the first and last detections and the difference in time (in minutes and days) between the first and last detections on each antenna over a user-defined period of time. Data can be summarized by year, month, week, day or hour.
 #' @param data telemetry dataset created using \code{\link{old_pit}}, \code{\link{new_pit}} or \code{\link{array_config}}
-#' @param resolution summarize data by year, month, week, day or hour
+#' @param resolution summarize data by year, month, week, day or hour (optional)
 #' @param start_date start date of period of interest, default is first date in dataset
 #' @param end_date end date of period of interest, default is last date in dataset
 #' @return Data frame summarizing the first and last detections on individual antennas.
-#' @details Users can apply the \code{first_last} function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use an updated dataset created by the \code{\link{array_config}} function. Arguments \code{start_date} and \code{end_date}, if specified, must be entered as yyyy-mm-dd hh:mm:ss. Default for the resolution argument (NULL) will summarize the first and last detections on antennas over the entire time period present in the dataset.
+#' @details Users can apply the \code{first_last} function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use an updated dataset created by the \code{\link{array_config}} function. Arguments \code{start_date} and \code{end_date}, if specified, must be entered as yyyy-mm-dd hh:mm:ss. Default for the resolution argument will summarize the first and last detections on antennas over the entire time period present in the dataset.
 #' @examples
 #' #load test dataset containing detections from a multi reader with two antennas
 #' oregon_rfid <- new_pit(data = "oregon_rfid", test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")

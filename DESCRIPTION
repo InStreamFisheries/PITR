@@ -1,7 +1,7 @@
 Package: PITR
 Title: Functions to collate, manage and summarize PIT telemetry data
 Version: 1.1.0
-Date: 2017-01-30
+Date: 2017-09-01
 Authors: Joel Harding, Douglas Braun, Nicholas Burnett, Annika Putt
 Maintainer: Nicholas Burnett <nich@instream.net>
 Description: PIT telemetry produces very large quantities of data that are
@@ -23,8 +23,8 @@ Depends:
     plyr,
     dplyr,
     lubridate
-URL: https://github.com/nichburnett/PITR
-BugReports: https://github.com/nichburnett/PITR/issues
+URL: https://github.com/InStreamFisheries/PITR
+BugReports: https://github.com/InStreamFisheries/PITR/issues
 Encoding: UTF-8
 LazyData: TRUE
 RoxygenNote: 6.0.1

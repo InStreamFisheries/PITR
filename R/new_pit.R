@@ -21,9 +21,7 @@
 #' new_pit(data = new, test_tags = tt, print_to_file = TRUE, time_zone = "America/Vancouver")
 #'
 #' #collate old format data with new format data
-#'
 #' old_dat <- old_pit(data = old, test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
-#'
 #' new_dat <- new_pit(data = new, test_tags = tt, print_to_file = FALSE, time_zone = "America/Vancouver", old_format_data = old_dat)
 #' @export
 

@@ -3,7 +3,7 @@
 \docType{data}
 \title{Dataset to illustrate the PITR functions}
 \description{Example dataset from a multi reader with two antennas that can be used to illustrate the PITR functions, \code{\link{det_eff}}, \code{\link{direction}}, \code{\link{direction_total}} and \code{\link{first_last}}. Note that this dataset can be restructured through the function \code{\link{array_config}}.}
-\format{Dataframe contains 798 detections on the following 12 variables.
+\format{Data frame contains 798 detections on the following 12 variables.
 
   \describe{
 \item{\code{reader}}{a character vector of PIT readers}
@@ -21,7 +21,7 @@
   }
 }
 \examples{
-#load test dataset
+#load test dataset containing detections from a multi reader with two antennas
 oregon_rfid <- new_pit(data = "oregon_rfid", test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
 
 det_eff(data = oregon_rfid, resolution = "month", direction = "up")
