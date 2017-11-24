@@ -1,13 +1,13 @@
 Package: PITR
 Title: Functions to collate, manage and summarize PIT telemetry data
 Version: 1.1.0
-Date: 2017-09-01
+Date: 2018-01-01
 Authors: Joel Harding, Douglas Braun, Nicholas Burnett, Annika Putt
 Maintainer: Nicholas Burnett <nich@instream.net>
 Description: PIT telemetry produces very large quantities of data that are
     difficult to manage in raw format. The PITR package is designed to automate and
-    standardize the process of collating, managing and summarizing PIT telemetry
-    data collected from Oregon RFID readers. During data collation, users can choose to export metadata to a working
+    standardize the process of collating, managing, summarizing and querying PIT telemetry
+    data collected from half-duplex Oregon RFID readers. During data collation, users can choose to export metadata to a working
     directory to assist in reviewing the analysis process. PITR functions allow
     users to: (1) collate data from multiple readers and filter out test tags and tags specific to
     a study; (2) restructure the configuration of readers and antennas into arrays;
@@ -28,3 +28,6 @@ BugReports: https://github.com/InStreamFisheries/PITR/issues
 Encoding: UTF-8
 LazyData: TRUE
 RoxygenNote: 6.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
