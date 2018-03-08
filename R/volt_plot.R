@@ -25,7 +25,7 @@ volt_plot <- function(volt_dat, file_path = getwd()){
     r <- range(volt_dat$date_time)
     axis.POSIXct(1, at = seq(r[1], r[2], by = "weeks"), format = "%b %d", cex.axis = 0.8)
     axis(side=2, col="black", las = 1)
-    mtext(volt_dat$reader[1], side=3, adj=0.02, line=-2, cex=1.5)
+    mtext(volt_dat$reader[1], side=3, adj=0.02, line=-1.5, cex=1.5)
     mtext("Voltage", 2, cex = 2, line = 3)
     box()
   })
