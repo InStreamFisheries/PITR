@@ -169,7 +169,9 @@ new_pit <- function (data, test_tags = NULL, print_to_file = FALSE, time_zone = 
     sa2 <- data.frame(sa1[,c(1:7,11,8,9)]) # Rearrange to match multiplexer column structure
 
     # consec_det and no_empt_scan_prior columns to numeric
-    sa2$consec_det <- as.numeric(sa2$consec_det)
+    sa2$consec_det <- suppressWarnings(as.numeric(sa2$consec_det))
+    #sa2$consec_det <- as.numeric(sa2$consec_det)
+    if(sum(is.na(sa2$consec_det)) > 0) print("Warning: NAs introduced by coercion in consec_det/count column. Single antenna data may be corrupted.")
 
     # Remove duplicate rows
     sa3 <- sa2 %>% distinct(reader, date, time, dur, tag_type, tag_code, consec_det, no_empt_scan_prior, .keep_all=TRUE)
@@ -222,6 +224,10 @@ new_pit <- function (data, test_tags = NULL, print_to_file = FALSE, time_zone = 
 
     # Filter complete cases
     ma2 <- filter(ma1,complete.cases(no_empt_scan_prior))
+
+    # Consec det to numeric
+    ma2$consec_det <- suppressWarnings(as.numeric(ma2$consec_det))
+    if(sum(is.na(ma2$consec_det)) > 0) print("Warning: NAs introduced by coercion in consec_det/count column. Multiple antenna data may be corrupted.")
 
     #Remove duplicate rows
     ma3 <- ma2 %>% distinct(reader, date, time, dur, tag_type, tag_code, antenna, consec_det, no_empt_scan_prior, .keep_all=TRUE)
@@ -278,7 +284,9 @@ new_pit <- function (data, test_tags = NULL, print_to_file = FALSE, time_zone = 
     sa2 <- data.frame(sa1[,c(1:7,11,8,9)]) # Rearrange to match multiplexer column structure
 
     # consec_det and no_empt_scan_prior columns to numeric
-    sa2$consec_det <- as.numeric(sa2$consec_det)
+    sa2$consec_det <- suppressWarnings(as.numeric(sa2$consec_det))
+    #sa2$consec_det <- as.numeric(sa2$consec_det)
+    if(sum(is.na(sa2$consec_det)) > 0) print("Warning: NAs introduced by coercion in consec_det/count column. Single antenna data may be corrupted.")
 
     # Remove duplicate rows
     sa3 <- sa2 %>% distinct(reader, date, time, dur, tag_type, tag_code, consec_det, no_empt_scan_prior, .keep_all=TRUE)
@@ -294,6 +302,10 @@ new_pit <- function (data, test_tags = NULL, print_to_file = FALSE, time_zone = 
 
     # Mulitplexer
     ma2 <- filter(ma1,complete.cases(no_empt_scan_prior))
+
+    # Consec det to numeric
+    ma2$consec_det <- suppressWarnings(as.numeric(ma2$consec_det))
+    if(sum(is.na(ma2$consec_det)) > 0) print("Warning: NAs introduced by coercion in consec_det/count column. Multiple antenna data may be corrupted.")
 
     #Remove duplicate rows
     ma3 <- ma2 %>% distinct(reader, date, time, dur, tag_type, tag_code, antenna, consec_det, no_empt_scan_prior, .keep_all=TRUE)

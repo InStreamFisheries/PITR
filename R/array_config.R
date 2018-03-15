@@ -1,6 +1,6 @@
 #' @title Restructure the configuration of arrays
 #'
-#' @description Function allows users to combine unique readers into an array, split readers with multiple antennas into single readers, and rename up to four antennas on one reader or one array. Use of this function allows users to manage data for further analysis using \code{\link{det_eff}}, \code{\link{direction}}, \code{\link{direction_total}}, and \code{\link{first_last}} functions.
+#' @description Function allows users to combine unique readers into an array, split readers with multiple antennas into single readers, and rename an antenna on one reader or one array. Use of this function allows users to manage data for further analysis using \code{\link{det_eff}}, \code{\link{direction}}, \code{\link{direction_total}}, and \code{\link{first_last}} functions.
 #' @param data telemetry dataset created using \code{\link{old_pit}} or \code{\link{new_pit}} function
 #' @param configuration either \code{combine}, \code{split} or \code{rename_antennas}
 #' @param array_name name of array
@@ -153,39 +153,49 @@ array_config <- function (data, configuration, array_name=NULL, r1=NULL, r2=NULL
 
       #Assign new antenna numbers based on number entries (ao1-> an1, ao2-> an2, ao3 -> an3, a04 -> an4)
 
+      # For now we will only allow one reader at a time to be renamed
+      if(!is.null(ao2)) stop("Only one antenna can be renamed per function call")
+      if(!is.null(ao3)) stop("Only one antenna can be renamed per function call")
+      if(!is.null(ao4)) stop("Only one antenna can be renamed per function call")
+
       # If ao1 exists, give new antenna number an1
       if (!is.null(ao1)) {
         df1 <- rd
-        x1 <- which(df1$antenna == ao1)
-        df1$antenna[x1] <- an1
+        if(ao1 == "NA") {
+          x1 <- which(is.na(df1$antenna))
+          df1$antenna[x1] <- an1
+        } else {
+          x1 <- which(df1$antenna == ao1)
+          df1$antenna[x1] <- an1
+        }
       }
 
-      # If ao2 exists, give new antenna number an2
-      if (!is.null(ao2)) {
-        df2 <- rd
-        x2 <- which(df2$antenna == ao2)
-        df2$antenna[x2] <- an2
-      }
-
-      # If ao3 exists, give new antenna number an3
-      if (!is.null(ao3)) {
-        df3 <- rd
-        x3 <- which(df3$antenna == ao3)
-        df3$antenna[x3] <- an3
-      }
-
-      #If ao4 exists, give new antenna number an4
-      if (!is.null(ao4)) {
-        df4 <- rd
-        x4 <- which(df4$antenna == ao4)
-        df4$antenna[x4] <- an4
-      }
+      # # If ao2 exists, give new antenna number an2
+      # if (!is.null(ao2)) {
+      #   df2 <- rd
+      #   x2 <- which(df2$antenna == ao2)
+      #   df2$antenna[x2] <- an2
+      # }
+      #
+      # # If ao3 exists, give new antenna number an3
+      # if (!is.null(ao3)) {
+      #   df3 <- rd
+      #   x3 <- which(df3$antenna == ao3)
+      #   df3$antenna[x3] <- an3
+      # }
+      #
+      # #If ao4 exists, give new antenna number an4
+      # if (!is.null(ao4)) {
+      #   df4 <- rd
+      #   x4 <- which(df4$antenna == ao4)
+      #   df4$antenna[x4] <- an4
+      # }
 
       # Combine the data frames
       rd <- df1
-      if (exists("df2")) rd <- rbind(df1,df2)
-      if (exists("df3")) rd <- rbind(df1,df2,df3)
-      if (exists("df4")) rd <- rbind(df1,df2,df3,df4)
+      # if (exists("df2")) rd <- rbind(df1,df2)
+      # if (exists("df3")) rd <- rbind(df1,df2,df3)
+      # if (exists("df4")) rd <- rbind(df1,df2,df3,df4)
 
       # Create an array column if one doesn't exist, if the array column does exist then default to it here
       if ("array" %in% names(rr)) rr$array<-rr$array else rr$array<-rr$reader
@@ -208,41 +218,51 @@ array_config <- function (data, configuration, array_name=NULL, r1=NULL, r2=NULL
       # Select all other data to merge back in later
       rr <- filter(data, array != array_name)
 
+      # For now we will only allow one reader at a time to be renamed
+      if(!is.null(ao2)) stop("Only one antenna can be renamed per function call")
+      if(!is.null(ao3)) stop("Only one antenna can be renamed per function call")
+      if(!is.null(ao4)) stop("Only one antenna can be renamed per function call")
+
       #Assign new antenna numbers based on number entries (ao1-> an1, ao2-> an2, ao3 -> an3, a04 -> an4)
 
       # If ao1 exists, give new antenna number an1
       if (!is.null(ao1)) {
         df1 <- rd
-        x1 <- which(df1$antenna == ao1)
-        df1$antenna[x1] <- an1
+        if(ao1 == "NA") {
+          x1 <- which(is.na(df1$antenna))
+          df1$antenna[x1] <- an1
+        } else {
+          x1 <- which(df1$antenna == ao1)
+          df1$antenna[x1] <- an1
+        }
       }
 
-      # If ao2 exists, give new antenna number an2
-      if (!is.null(ao2)) {
-        df2 <- rd
-        x2 <- which(df2$antenna == ao2)
-        df2$antenna[x2] <- an2
-      }
-
-      # If ao3 exists, give new antenna number an3
-      if (!is.null(ao3)) {
-        df3 <- rd
-        x3 <- which(df3$antenna == ao3)
-        df3$antenna[x3] <- an3
-      }
-
-      #If ao4 exists, give new antenna number an4
-      if (!is.null(ao4)) {
-        df4 <- rd
-        x4 <- which(df4$antenna == ao4)
-        df4$antenna[x4] <- an4
-      }
+      # # If ao2 exists, give new antenna number an2
+      # if (!is.null(ao2)) {
+      #   df2 <- rd
+      #   x2 <- which(df2$antenna == ao2)
+      #   df2$antenna[x2] <- an2
+      # }
+      #
+      # # If ao3 exists, give new antenna number an3
+      # if (!is.null(ao3)) {
+      #   df3 <- rd
+      #   x3 <- which(df3$antenna == ao3)
+      #   df3$antenna[x3] <- an3
+      # }
+      #
+      # #If ao4 exists, give new antenna number an4
+      # if (!is.null(ao4)) {
+      #   df4 <- rd
+      #   x4 <- which(df4$antenna == ao4)
+      #   df4$antenna[x4] <- an4
+      # }
 
       # Combine the data frames
       rd <- df1
-      if (exists("df2")) rd <- rbind(df1,df2)
-      if (exists("df3")) rd <- rbind(df1,df2,df3)
-      if (exists("df4")) rd <- rbind(df1,df2,df3,df4)
+      # if (exists("df2")) rd <- rbind(df1,df2)
+      # if (exists("df3")) rd <- rbind(df1,df2,df3)
+      # if (exists("df4")) rd <- rbind(df1,df2,df3,df4)
 
       # Create an array column if one doesn't exist, if the array column does exist then default to it here
       if ("array" %in% names(rr)) rr$array<-rr$array else rr$array<-rr$reader
