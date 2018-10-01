@@ -69,7 +69,7 @@ new_pit <- function (data, test_tags = NULL, print_to_file = FALSE, time_zone = 
                     skipNul = TRUE,
                     col.names=c("det_type", "date", "time", "dur", "tag_type", "tag_code", "antenna", "consec_det", "no_empt_scan_prior"))
 
-  #Create unique ID for each reader fromf file names
+  #Create unique ID for each reader from file names
   f1$reader <- str_sub(f1$.id,1,-16)
 
   #Create new data frame dropping .id (filname) and moving reader name to left side
@@ -154,9 +154,13 @@ new_pit <- function (data, test_tags = NULL, print_to_file = FALSE, time_zone = 
   d[d==""] <- NA
 
   # Create data frames of single antenna data and multiplexer data and wrap in if statements
-  sa1 <- filter(d, !(antenna %in% c("A1","A2", "A3", "A4")) & !(is.na(antenna)))
+  sa1 <- filter(d, !(antenna %in% c("A1","A2", "A3", "A4")) & !(is.na(antenna)) & is.na(no_empt_scan_prior))
   ma1 <- filter(d,antenna %in% c("A1", "A2", "A3", "A4"))
-
+  
+  # In some cases you may have corrupt multiplexer data that doesn't have antenna in A1, A2, A3, A4, but is also not single reader data.
+  corrupt_multi <- filter(d, !(antenna %in% c("A1","A2", "A3", "A4")) & !(is.na(antenna)) & !is.na(no_empt_scan_prior))
+  if(nrow(corrupt_multi) >0 ) print("Warning: Corrupt multiplexer data were detected and removed")
+  
   # 1. Only single antenna data
   if ( (nrow(sa1) > 0 ) & (nrow(ma1) == 0) ) {
 
@@ -243,12 +247,14 @@ new_pit <- function (data, test_tags = NULL, print_to_file = FALSE, time_zone = 
 
     #############
     # Pull "other" detections and recover any corrupt data
+    # 
     o1 <- filter(x, !(det_type %in% c("D","E")))
 
     # Only retain unique rows
     o2 <- o1 %>% distinct(reader, date, time, dur, tag_type, tag_code, antenna, consec_det, no_empt_scan_prior, .keep_all=TRUE)
 
     # Select for rows that 'H' in tag_type column (this selects detection that have corrupted data in our test files)
+    # That we can fix and add back to our data.
     o3 <- filter(o2, grepl("H", tag_type))
 
     if ( nrow(o3) > 0) { # i.e., there are corrupt data
