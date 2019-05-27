@@ -18,43 +18,31 @@
 #' first_last(data = oregon_rfid, resolution = "month")
 #' @export
 
-first_last <- function(data, resolution = NULL, start_date = min(data$date_time), end_date = max(data$date_time)) {
+first_last <- function(data,
+                       resolution = NULL,
+                       start_date = NULL,
+                       end_date = NULL) {
 
-  # Need to format the dates away from character so that the filtering will work.
-
-  start_date <- ymd_hms(start_date,tz=data$time_zone[1])
-  end_date <- ymd_hms(end_date,tz=data$time_zone[1])
+  if (is.null(start_date)) start_date <- min(data$date_time) else start_date <- ymd_hms(start_date, tz = data$time_zone[1])
+  if (is.null(end_date)) end_date <- max(data$date_time) else end_date <- ymd_hms(end_date, tz = data$time_zone[1])
 
   #Filter data
   rg <- filter(data, date_time >= start_date  & date_time <= end_date)
 
-  #create new temporal columns
-  rg$year  <- year(rg$date_time)
-  rg$month <- month(rg$date_time)
-  rg$week  <- week(rg$date_time)
-  rg$day   <- day(rg$date_time)
-  rg$hour  <- hour(rg$date_time)
+  # create new temporal columns
+  rg <- rg %>%
+    mutate(year = year(date_time)) %>%
+    mutate(month = month(date_time)) %>%
+    mutate(week = week(date_time)) %>%
+    mutate(day = day(date_time)) %>%
+    mutate(hour = hour(date_time))
 
   # If the reader column doesn't exist, create it by duplicating the reader column
   if(!"array" %in% names(rg)) rg$array <- rg$reader
 
   if (is.null(resolution)) {
 
-    fl.df <- ddply(rg, c("array", "antenna", "tag_code"), function(x){
-
-      first_det <- min(x$date_time)
-      last_det <- max(x$date_time)
-
-      #Calculate time difference in minutes using lubridate
-      time_diff_mins <- round((interval(first_det,last_det)/dminutes()),2)
-      time_diff_days <- round((interval(first_det,last_det)/ddays()),2)
-
-
-      data.frame(first_det,
-                 last_det,
-                 time_diff_days,
-                 time_diff_mins)
-    })
+    fl.df <- ddply(rg, c("array", "antenna", "tag_code"), diff_func)
 
     return(fl.df)
 
@@ -62,28 +50,11 @@ first_last <- function(data, resolution = NULL, start_date = min(data$date_time)
 
   if (resolution == "year") {
 
-    fl.df <- ddply(rg, c("array", "antenna", "tag_code", "year"), function(x){
-
-      first_det <- min(x$date_time)
-      last_det <- max(x$date_time)
-
-      #Calculate time difference in minutes using lubridate
-      time_diff_min <- round((interval(first_det,last_det)/dminutes()),2)
-
-      #Calculate time difference in minutes using lubridate
-      time_diff_mins <- round((interval(first_det,last_det)/dminutes()),2)
-      time_diff_days <- round((interval(first_det,last_det)/ddays()),2)
-
-
-      data.frame(first_det,
-                 last_det,
-                 time_diff_days,
-                 time_diff_mins)
-    })
+    fl.df <- ddply(rg, c("array", "antenna", "tag_code", "year"), diff_func)
 
     # Add a date column that represents the first moment in time at the level of subsetting
-    fl.df$date <- ymd(sprintf("%s-%s-%s",fl.df$year,1,1))
-    fl.df$date <- ymd(fl.df$date,tz=data$time_zone[1])
+    fl.df$date <- ymd(sprintf("%s-%s-%s", fl.df$year, 1, 1))
+    fl.df$date <- ymd(fl.df$date, tz = data$time_zone[1])
 
     fl.df <- select(fl.df,array,antenna,tag_code,year,date,first_det,last_det,time_diff_days,time_diff_mins)
 
@@ -93,21 +64,7 @@ first_last <- function(data, resolution = NULL, start_date = min(data$date_time)
 
   if (resolution == "month") {
 
-    fl.df <- ddply(rg, c("array", "antenna", "tag_code", "year", "month"), function(x){
-
-      first_det <- min(x$date_time)
-      last_det <- max(x$date_time)
-
-      #Calculate time difference in minutes using lubridate
-      time_diff_mins <- round((interval(first_det,last_det)/dminutes()),2)
-      time_diff_days <- round((interval(first_det,last_det)/ddays()),2)
-
-
-      data.frame(first_det,
-                 last_det,
-                 time_diff_days,
-                 time_diff_mins)
-    })
+    fl.df <- ddply(rg, c("array", "antenna", "tag_code", "year", "month"), diff_func)
 
     # Add a date column that represents the first moment in time at the level of subsetting
     fl.df$date <- ymd(sprintf("%s-%s-%s",fl.df$year,fl.df$month,1))
@@ -121,28 +78,14 @@ first_last <- function(data, resolution = NULL, start_date = min(data$date_time)
 
   if (resolution == "week") {
 
-    fl.df <- ddply(rg, c("array", "antenna", "tag_code", "year", "month", "week"), function(x){
-
-      first_det <- min(x$date_time)
-      last_det <- max(x$date_time)
-
-      #Calculate time difference in minutes using lubridate
-      time_diff_mins <- round((interval(first_det,last_det)/dminutes()),2)
-      time_diff_days <- round((interval(first_det,last_det)/ddays()),2)
-
-
-      data.frame(first_det,
-                 last_det,
-                 time_diff_days,
-                 time_diff_mins)
-    })
+    fl.df <- ddply(rg, c("array", "antenna", "tag_code", "year", "month", "week"), diff_func)
 
     # Add a date column that represents the first moment in time at the level of subsetting
-    fl.df$date <- ymd(sprintf("%s-%s-%s",fl.df$year,1,1)) # Start at Jan 1
+    fl.df$date <- ymd(sprintf("%s-%s-%s", fl.df$year, 1, 1)) # Start at Jan 1
     # Determine what day of the week January 1 is for each year
-    fl.df$first.day <- as.numeric(format(fl.df$date,"%w"))
+    fl.df$first.day <- as.numeric(format(fl.df$date, "%w"))
     fl.df$date <- fl.df$date + 7*fl.df$week - fl.df$first.day - 7 # Add in 7 days for each week up to the specified week minus the first.day and minus one week to get the start of the week
-    fl.df$date <- ymd(fl.df$date,tz=data$time_zone[1])
+    fl.df$date <- ymd(fl.df$date, tz = data$time_zone[1])
 
     fl.df <- select(fl.df,array,antenna,tag_code,year,month,week,date,first_det,last_det,time_diff_days,time_diff_mins)
 
@@ -152,25 +95,11 @@ first_last <- function(data, resolution = NULL, start_date = min(data$date_time)
 
   if (resolution == "day") {
 
-    fl.df <- ddply(rg, c("array", "antenna", "tag_code", "year", "month", "week", "day"), function(x){
-
-      first_det <- min(x$date_time)
-      last_det <- max(x$date_time)
-
-      #Calculate time difference in minutes using lubridate
-      time_diff_mins <- round((interval(first_det,last_det)/dminutes()),2)
-      time_diff_days <- round((interval(first_det,last_det)/ddays()),2)
-
-
-      data.frame(first_det,
-                 last_det,
-                 time_diff_days,
-                 time_diff_mins)
-    })
+    fl.df <- ddply(rg, c("array", "antenna", "tag_code", "year", "month", "week", "day"), diff_func)
 
     # Add a date column that represents the first moment in time at the level of subsetting
-    fl.df$date <- ymd(sprintf("%s-%s-%s",fl.df$year,fl.df$month,fl.df$day))
-    fl.df$date <- ymd(fl.df$date,tz=data$time_zone[1])
+    fl.df$date <- ymd(sprintf("%s-%s-%s", fl.df$year, fl.df$month, fl.df$day))
+    fl.df$date <- ymd(fl.df$date, tz = data$time_zone[1])
 
     fl.df <- select(fl.df,array,antenna,tag_code,year,month,week,day,date,first_det,last_det,time_diff_days,time_diff_mins)
 
@@ -180,26 +109,12 @@ first_last <- function(data, resolution = NULL, start_date = min(data$date_time)
 
   if (resolution == "hour") {
 
-    fl.df <- ddply(rg, c("array", "antenna", "tag_code", "year", "month", "week", "day", "hour"), function(x){
-
-      first_det <- min(x$date_time)
-      last_det <- max(x$date_time)
-
-      #Calculate time difference in minutes using lubridate
-      time_diff_mins <- round((interval(first_det,last_det)/dminutes()),2)
-      time_diff_days <- round((interval(first_det,last_det)/ddays()),2)
-
-
-      data.frame(first_det,
-                 last_det,
-                 time_diff_days,
-                 time_diff_mins)
-    })
+    fl.df <- ddply(rg, c("array", "antenna", "tag_code", "year", "month", "week", "day", "hour"), diff_func)
 
     # Add a date column that represents the first moment in time at the level of subsetting
-    fl.df$date <- ymd(sprintf("%s-%s-%s",fl.df$year,fl.df$month,fl.df$day))
-    fl.df$date <- update(fl.df$date,hour=fl.df$hour)
-    fl.df$date <- ymd_hms(fl.df$date,tz=data$time_zone[1])
+    fl.df$date <- ymd(sprintf("%s-%s-%s", fl.df$year, fl.df$month, fl.df$day))
+    fl.df$date <- update(fl.df$date, hour = fl.df$hour)
+    fl.df$date <- ymd_hms(fl.df$date, tz = data$time_zone[1])
 
     fl.df <- select(fl.df,array,antenna,tag_code,year,month,week,day,hour,date,first_det,last_det,time_diff_days,time_diff_mins)
 
@@ -208,4 +123,20 @@ first_last <- function(data, resolution = NULL, start_date = min(data$date_time)
   }
 
 
+}
+
+
+diff_func <- function(x) {
+
+  first_det <- min(x$date_time)
+  last_det <- max(x$date_time)
+
+  #Calculate time difference in minutes using lubridate
+  time_diff_mins <- round((interval(first_det,last_det)/dminutes()),2)
+  time_diff_days <- round((interval(first_det,last_det)/ddays()),2)
+
+  data.frame(first_det,
+             last_det,
+             time_diff_days,
+             time_diff_mins)
 }

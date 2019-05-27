@@ -42,500 +42,500 @@ det_eff_test <- function(data,
                          array_sequence = NULL,
                          direction,
                          start_date = NULL,
-                         end_date = NULL {
+                         end_date = NULL) {
 
-                           if (is.null(start_date)) start_date <- min(data$date_time) else start_date <- ymd_hms(start_date, tz = data$time_zone[1])
-                           if (is.null(end_date)) end_date <- max(data$date_time) else end_date <- ymd_hms(end_date, tz = data$time_zone[1])
+  if (is.null(start_date)) start_date <- min(data$date_time) else start_date <- ymd_hms(start_date, tz = data$time_zone[1])
+  if (is.null(end_date)) end_date <- max(data$date_time) else end_date <- ymd_hms(end_date, tz = data$time_zone[1])
 
-                           #Filter data
-                           rg <- dplyr::filter(data, date_time >= start_date  & date_time <= end_date)
+  #Filter data
+  rg <- dplyr::filter(data, date_time >= start_date  & date_time <= end_date)
 
-                           #create new temporal columns
-                           rg <- rg %>%
-                             mutate(year = year(date_time)) %>%
-                             mutate(month = month(date_time)) %>%
-                             mutate(week = week(date_time)) %>%
-                             mutate(day = day(date_time)) %>%
-                             mutate(hour = hour(date_time))
+  #create new temporal columns
+  rg <- rg %>%
+    mutate(year = year(date_time)) %>%
+    mutate(month = month(date_time)) %>%
+    mutate(week = week(date_time)) %>%
+    mutate(day = day(date_time)) %>%
+    mutate(hour = hour(date_time))
 
-                           ###################################################
-                           ######### Antenna Detection Efficiency ############
-                           ###################################################
+  ###################################################
+  ######### Antenna Detection Efficiency ############
+  ###################################################
 
-                           if (!isTRUE(by_array)) {
+  if (!isTRUE(by_array)) {
 
-                             # If the array column doesn't exist, create it by duplicating the reader column
-                             if(!"array" %in% names(rg)) rg$array <- rg$reader
+    # If the array column doesn't exist, create it by duplicating the reader column
+    if(!"array" %in% names(rg)) rg$array <- rg$reader
 
-                             ### RESOLUTION = NULL ###
-                             if (is.null(resolution)) {
+    ### RESOLUTION = NULL ###
+    if (is.null(resolution)) {
 
-                               if (direction == "up") {
-                                 det <- ddply(rg, c("array", "antenna"), up_func)
-                               }
+      if (direction == "up") {
+        det <- ddply(rg, c("array", "antenna"), up_func)
+      }
 
-                               if (direction == "down") {
-                                 det <- ddply(rg, c("array", "antenna"), down_func)
-                               }
+      if (direction == "down") {
+        det <- ddply(rg, c("array", "antenna"), down_func)
+      }
 
-                               if (direction == "resident") {
-                                 nested <- ddply(rg, c("array", "antenna"), resident_func)
-                               }
+      if (direction == "resident") {
+        nested <- ddply(rg, c("array", "antenna"), resident_func)
+      }
 
-                               # Re-order the columns to be more intuitive and fit with Joel's original structure
-                               det_clean <- det[, c("array","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
+      # Re-order the columns to be more intuitive and fit with Joel's original structure
+      det_clean <- det[, c("array","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
 
-                               # Name columns for output
-                               names(det_clean) <- c("array", "antenna", "detection_efficiency", "shared_detections", "detections_on_array", "detections_not_on_array", "missed_detections")
+      # Name columns for output
+      names(det_clean) <- c("array", "antenna", "detection_efficiency", "shared_detections", "detections_on_array", "detections_not_on_array", "missed_detections")
 
-                               # Filter rows without antenna values (single arrays not ID'd as arrays)
-                               det_clean <- dplyr::filter(det_clean, antenna != "NA")
-                               return(det_clean)
-                             }
+      # Filter rows without antenna values (single arrays not ID'd as arrays)
+      det_clean <- dplyr::filter(det_clean, antenna != "NA")
+      return(det_clean)
+    }
 
-                             ### YEAR ###
+    ### YEAR ###
 
-                             if (resolution == "year") {
+    if (resolution == "year") {
 
-                               if (direction == "up") {
-                                 det <- ddply(rg, c("year"), function(x) {
-                                   nested <- ddply(x, c("array", "antenna"), up_func)
-                                 })
-                               }
+      if (direction == "up") {
+        det <- ddply(rg, c("year"), function(x) {
+          nested <- ddply(x, c("array", "antenna"), up_func)
+        })
+      }
 
-                               if (direction == "down") {
-                                 det <- ddply(rg, c("year"), function(x) {
-                                   nested <- ddply(x, c("array", "antenna"), down_func)
-                                 })
-                               }
+      if (direction == "down") {
+        det <- ddply(rg, c("year"), function(x) {
+          nested <- ddply(x, c("array", "antenna"), down_func)
+        })
+      }
 
-                               if (direction == "resident") {
-                                 det <- ddply(rg, c("year"), function(x) {
-                                   nested <- ddply(x, c("array", "antenna"), resident_func)
-                                 })
-                               }
+      if (direction == "resident") {
+        det <- ddply(rg, c("year"), function(x) {
+          nested <- ddply(x, c("array", "antenna"), resident_func)
+        })
+      }
 
-                               # Add a date column with the first day of the first month of year
-                               det$Date <- ymd(sprintf("%s-%s-%s", det$year,1,1))
-                               det$Date <- ymd(det$Date, tz = data$time_zone[1])
+      # Add a date column with the first day of the first month of year
+      det$Date <- ymd(sprintf("%s-%s-%s", det$year,1,1))
+      det$Date <- ymd(det$Date, tz = data$time_zone[1])
 
-                               # Re-order the columns to be more intuitive and fit with Joel's original structure
-                               det_clean <- det[,c("array","year","Date","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
+      # Re-order the columns to be more intuitive and fit with Joel's original structure
+      det_clean <- det[,c("array","year","Date","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
 
-                               names(det_clean) <- c("array", "year", "date", "antenna", "detection_efficiency", "shared_detections",
-                                                     "detections_on_array", "detections_not_on_array", "missed_detections")
+      names(det_clean) <- c("array", "year", "date", "antenna", "detection_efficiency", "shared_detections",
+                            "detections_on_array", "detections_not_on_array", "missed_detections")
 
-                               #Filter rows without antenna values (single arrays not ID'd as arrays)
-                               det_clean <- dplyr::filter(det_clean, antenna != "NA")
-                               return(det_clean)
+      #Filter rows without antenna values (single arrays not ID'd as arrays)
+      det_clean <- dplyr::filter(det_clean, antenna != "NA")
+      return(det_clean)
 
-                             }
+    }
 
-                             ### MONTH ###
+    ### MONTH ###
 
-                             if (resolution == "month") {
+    if (resolution == "month") {
 
-                               if (direction == "up") {
-                                 det <- ddply(rg, c("year", "month"), function(x) {
-                                   nested <- ddply(x, c("array", "antenna"), up_func)
-                                 })
-                               }
+      if (direction == "up") {
+        det <- ddply(rg, c("year", "month"), function(x) {
+          nested <- ddply(x, c("array", "antenna"), up_func)
+        })
+      }
 
-                               if (direction == "down") {
-                                 det <- ddply(rg, c("year", "month"), function(x) {
-                                   nested <- ddply(x, c("array", "antenna"), down_func)
-                                 })
-                               }
+      if (direction == "down") {
+        det <- ddply(rg, c("year", "month"), function(x) {
+          nested <- ddply(x, c("array", "antenna"), down_func)
+        })
+      }
 
-                               if (direction == "resident") {
-                                 det <- ddply(rg, c("year", "month"), function(x) {
-                                   nested <- ddply(x, c("array", "antenna"), resident_func)
-                                 })
-                               }
+      if (direction == "resident") {
+        det <- ddply(rg, c("year", "month"), function(x) {
+          nested <- ddply(x, c("array", "antenna"), resident_func)
+        })
+      }
 
-                               # Add a date column with the first day of the month and the first hour
-                               det$Date <- ymd(sprintf("%s-%s-%s", det$year, det$month,1))
-                               det$Date <- ymd(det$Date, tz = data$time_zone[1])
+      # Add a date column with the first day of the month and the first hour
+      det$Date <- ymd(sprintf("%s-%s-%s", det$year, det$month,1))
+      det$Date <- ymd(det$Date, tz = data$time_zone[1])
 
-                               det_clean <- det[,c("array","year","month","Date","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
+      det_clean <- det[,c("array","year","month","Date","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
 
-                               names(det_clean) <- c("array", "year", "month", "date", "antenna", "detection_efficiency", "shared_detections",
-                                                     "detections_on_array", "detections_not_on_array", "missed_detections")
+      names(det_clean) <- c("array", "year", "month", "date", "antenna", "detection_efficiency", "shared_detections",
+                            "detections_on_array", "detections_not_on_array", "missed_detections")
 
-                               #Filter rows without antenna values (single arrays not ID'd as arrays)
-                               det_clean <- dplyr::filter(det_clean, antenna != "NA")
+      #Filter rows without antenna values (single arrays not ID'd as arrays)
+      det_clean <- dplyr::filter(det_clean, antenna != "NA")
 
-                               return(det_clean)
+      return(det_clean)
 
-                             }
+    }
 
-                             ### WEEK ###
+    ### WEEK ###
 
 
-                             if (resolution == "week") {
+    if (resolution == "week") {
 
-                               if (direction == "up") {
+      if (direction == "up") {
 
-                                 det <- ddply(rg, c("year", "month", "week"), function(x) {
-                                   nested <- ddply(x, c("array", "antenna"), up_func)
-                                 })
-                               }
+        det <- ddply(rg, c("year", "month", "week"), function(x) {
+          nested <- ddply(x, c("array", "antenna"), up_func)
+        })
+      }
 
-                               if (direction == "down") {
-                                 det <- ddply(rg, c("year", "month", "week"), function(x) {
-                                   nested <- ddply(x, c("array", "antenna"), down_func)
-                                 })
-                               }
+      if (direction == "down") {
+        det <- ddply(rg, c("year", "month", "week"), function(x) {
+          nested <- ddply(x, c("array", "antenna"), down_func)
+        })
+      }
 
-                               if (direction == "resident") {
-                                 det <- ddply(rg, c("year", "month", "week"), function(x) {
-                                   nested <- ddply(x, c("array", "antenna"), resident_func)
-                                 })
-                               }
+      if (direction == "resident") {
+        det <- ddply(rg, c("year", "month", "week"), function(x) {
+          nested <- ddply(x, c("array", "antenna"), resident_func)
+        })
+      }
 
-                               # Add a date column with the first day of the week and the first hour
-                               det$Date <- ymd(sprintf("%s-%s-%s", det$year, 1, 1)) # Start at Jan 1
-                               # Determine what day of the week January 1 is for each year
-                               det$first.day <- as.numeric(format(det$Date, "%w"))
-                               det$Date <- det$Date + 7*det$week - det$first.day - 7 # Add in 7 days for each week up to the specified week minus the first.day and minus one week to get the start of the week
-                               det$Date <- ymd(det$Date, tz = data$time_zone[1])
+      # Add a date column with the first day of the week and the first hour
+      det$Date <- ymd(sprintf("%s-%s-%s", det$year, 1, 1)) # Start at Jan 1
+      # Determine what day of the week January 1 is for each year
+      det$first.day <- as.numeric(format(det$Date, "%w"))
+      det$Date <- det$Date + 7*det$week - det$first.day - 7 # Add in 7 days for each week up to the specified week minus the first.day and minus one week to get the start of the week
+      det$Date <- ymd(det$Date, tz = data$time_zone[1])
 
-                               # Re-order the columns to be more intuitive and fit with Joel's original structure
-                               det_clean <- det[,c("array","year","month","week","Date","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
+      # Re-order the columns to be more intuitive and fit with Joel's original structure
+      det_clean <- det[,c("array","year","month","week","Date","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
 
-                               names(det_clean) <- c("array", "year", "month", "week", "date", "antenna", "detection_efficiency", "shared_detections",
-                                                     "detections_on_array", "detections_not_on_array", "missed_detections")
+      names(det_clean) <- c("array", "year", "month", "week", "date", "antenna", "detection_efficiency", "shared_detections",
+                            "detections_on_array", "detections_not_on_array", "missed_detections")
 
-                               #Filter rows without antenna values (single arrays not ID'd as arrays)
-                               det_clean <- dplyr::filter(det_clean, antenna != "NA")
-                               return(det_clean)
+      #Filter rows without antenna values (single arrays not ID'd as arrays)
+      det_clean <- dplyr::filter(det_clean, antenna != "NA")
+      return(det_clean)
 
-                             }
+    }
 
-                             ### DAY ###
+    ### DAY ###
 
-                             if (resolution == "day") {
+    if (resolution == "day") {
 
-                               if (direction == "up") {
-                                 det <- ddply(rg, c("year", "month", "week", "day"), function(x) {
-                                   nested <- ddply(x, c("array", "antenna"), up_func)
-                                 })
-                               }
+      if (direction == "up") {
+        det <- ddply(rg, c("year", "month", "week", "day"), function(x) {
+          nested <- ddply(x, c("array", "antenna"), up_func)
+        })
+      }
 
-                               if (direction == "down") {
-                                 det <- ddply(rg, c("year", "month", "week", "day"), function(x) {
-                                   nested <- ddply(x, c("array", "antenna"), down_func)
-                                 })
-                               }
+      if (direction == "down") {
+        det <- ddply(rg, c("year", "month", "week", "day"), function(x) {
+          nested <- ddply(x, c("array", "antenna"), down_func)
+        })
+      }
 
-                               if (direction == "resident") {
-                                 det <- ddply(rg, c("year", "month", "week", "day"), function(x) {
-                                   nested <- ddply(x, c("array", "antenna"), resident_func)
-                                 })
-                               }
+      if (direction == "resident") {
+        det <- ddply(rg, c("year", "month", "week", "day"), function(x) {
+          nested <- ddply(x, c("array", "antenna"), resident_func)
+        })
+      }
 
-                               # Add a date column with the day and the first hour
-                               det$Date <- ymd(sprintf("%s-%s-%s", det$year, det$month, det$day))
-                               det$Date <- ymd(det$Date, tz = data$time_zone[1])
+      # Add a date column with the day and the first hour
+      det$Date <- ymd(sprintf("%s-%s-%s", det$year, det$month, det$day))
+      det$Date <- ymd(det$Date, tz = data$time_zone[1])
 
-                               # Re-order the columns to be more intuitive and fit with Joel's original structure
-                               det_clean <- det[,c("array","year","month","week","day","Date","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
+      # Re-order the columns to be more intuitive and fit with Joel's original structure
+      det_clean <- det[,c("array","year","month","week","day","Date","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
 
-                               names(det_clean) <- c("array", "year", "month", "week", "day", "date", "antenna", "detection_efficiency", "shared_detections",
-                                                     "detections_on_array", "detections_not_on_array", "missed_detections")
+      names(det_clean) <- c("array", "year", "month", "week", "day", "date", "antenna", "detection_efficiency", "shared_detections",
+                            "detections_on_array", "detections_not_on_array", "missed_detections")
 
-                               # Filter rows without antenna values (single arrays not ID'd as arrays)
-                               det_clean <- dplyr::filter(det_clean, antenna != "NA")
-                               return(det_clean)
+      # Filter rows without antenna values (single arrays not ID'd as arrays)
+      det_clean <- dplyr::filter(det_clean, antenna != "NA")
+      return(det_clean)
 
-                             }
+    }
 
-                             ### HOUR ###
+    ### HOUR ###
 
-                             if (resolution == "hour") {
+    if (resolution == "hour") {
 
-                               if (direction == "up") {
+      if (direction == "up") {
 
-                                 det <- ddply(rg, c("year", "month", "week", "day", "hour"), function(x) {
-                                   nested <- ddply(x, c("array", "antenna"), up_func)
-                                 })
-                               }
+        det <- ddply(rg, c("year", "month", "week", "day", "hour"), function(x) {
+          nested <- ddply(x, c("array", "antenna"), up_func)
+        })
+      }
 
-                               if (direction == "down") {
-                                 det <- ddply(rg, c("year", "month", "week", "day", "hour"), function(x) {
-                                   nested <- ddply(x, c("array", "antenna"), down_func)
-                                 })
-                               }
+      if (direction == "down") {
+        det <- ddply(rg, c("year", "month", "week", "day", "hour"), function(x) {
+          nested <- ddply(x, c("array", "antenna"), down_func)
+        })
+      }
 
-                               if (direction == "resident") {
-                                 det <- ddply(rg, c("year", "month", "week", "day", "hour"), function(x) {
-                                   nested <- ddply(x, c("array", "antenna"), resident_func)
-                                 })
-                               }
+      if (direction == "resident") {
+        det <- ddply(rg, c("year", "month", "week", "day", "hour"), function(x) {
+          nested <- ddply(x, c("array", "antenna"), resident_func)
+        })
+      }
 
 
-                               # Add a date column down to the hour
-                               # Add a date column with the day month and hour
-                               det$Date <- ymd(sprintf("%s-%s-%s", det$year, det$month, det$day))
-                               det$Date <- update(det$Date, hour = det$hour)
-                               det$Date <- ymd_hms(det$Date, tz = data$time_zone[1])
+      # Add a date column down to the hour
+      # Add a date column with the day month and hour
+      det$Date <- ymd(sprintf("%s-%s-%s", det$year, det$month, det$day))
+      det$Date <- update(det$Date, hour = det$hour)
+      det$Date <- ymd_hms(det$Date, tz = data$time_zone[1])
 
-                               # Re-order the columns to be more intuitive and fit with Joel's original structure
-                               det_clean <- det[,c("array","year","month","week","day","hour","Date","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
+      # Re-order the columns to be more intuitive and fit with Joel's original structure
+      det_clean <- det[,c("array","year","month","week","day","hour","Date","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
 
-                               names(det_clean) <- c("array", "year", "month", "week", "day", "hour", "date", "antenna", "detection_efficiency", "shared_detections",
-                                                     "detections_on_array", "detections_not_on_array", "missed_detections")
+      names(det_clean) <- c("array", "year", "month", "week", "day", "hour", "date", "antenna", "detection_efficiency", "shared_detections",
+                            "detections_on_array", "detections_not_on_array", "missed_detections")
 
-                               #Filter rows without antenna values (single arrays not ID'd as arrays)
-                               det_clean <- dplyr::filter(det_clean, antenna != "NA")
-                               return(det_clean)
+      #Filter rows without antenna values (single arrays not ID'd as arrays)
+      det_clean <- dplyr::filter(det_clean, antenna != "NA")
+      return(det_clean)
 
-                             }
+    }
 
-                           } # End of antenna section
+  } # End of antenna section
 
 
-                           #################################################
-                           ######### Array Detection Efficiency ############
-                           #################################################
+  #################################################
+  ######### Array Detection Efficiency ############
+  #################################################
 
-                           if (isTRUE(by_array)) {
+  if (isTRUE(by_array)) {
 
-                             if (is.null(array_sequence)) stop("Error: array_sequence must be provided")
+    if (is.null(array_sequence)) stop("Error: array_sequence must be provided")
 
-                             # Subset out any arrays not part of array_sequence
-                             rg <- subset(rg, array %in% array_sequence)
+    # Subset out any arrays not part of array_sequence
+    rg <- subset(rg, array %in% array_sequence)
 
-                             number_of_arrays <- length(array_sequence)
-                             numeric_array_names <- seq(from = 1, to = number_of_arrays, by = 1)
-                             rg$array_number <- plyr::mapvalues(rg$array, from = array_sequence, to = numeric_array_names) # Note that you can load the plyr function without loading plyr as long as dplyr is loaded.
-                             rg$as.numeric <- as.numeric(rg$array_number)
+    number_of_arrays <- length(array_sequence)
+    numeric_array_names <- seq(from = 1, to = number_of_arrays, by = 1)
+    rg$array_number <- plyr::mapvalues(rg$array, from = array_sequence, to = numeric_array_names) # Note that you can load the plyr function without loading plyr as long as dplyr is loaded.
+    rg$as.numeric <- as.numeric(rg$array_number)
 
-                             ### RESOLUTION = NULL ###
-                             if (is.null(resolution)) {
+    ### RESOLUTION = NULL ###
+    if (is.null(resolution)) {
 
-                               if (direction == "up") {
-                                 det <- ddply(rg, c("array"), up_func_array)
-                               }
+      if (direction == "up") {
+        det <- ddply(rg, c("array"), up_func_array)
+      }
 
-                               if (direction == "down") {
-                                 det <- ddply(rg, c("array"), down_func_array)
-                               }
+      if (direction == "down") {
+        det <- ddply(rg, c("array"), down_func_array)
+      }
 
-                               if (direction == "resident") {
-                                 det <- ddply(rg, c("array"), resident_func_array)
-                               }
+      if (direction == "resident") {
+        det <- ddply(rg, c("array"), resident_func_array)
+      }
 
-                               # Re-order the columns to be more intuitive and fit with Joel's original structure
-                               det_clean <- det[,c("array","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
+      # Re-order the columns to be more intuitive and fit with Joel's original structure
+      det_clean <- det[,c("array","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
 
-                               # Name columns for output
-                               names(det_clean) <- c("array", "antenna", "detection_efficiency", "shared_detections",
-                                                     "detections_on_array", "detections_not_on_array", "missed_detections")
-                               return(det_clean)
-                             }
+      # Name columns for output
+      names(det_clean) <- c("array", "antenna", "detection_efficiency", "shared_detections",
+                            "detections_on_array", "detections_not_on_array", "missed_detections")
+      return(det_clean)
+    }
 
 
-                             ### YEAR ###
+    ### YEAR ###
 
-                             if (resolution == "year") {
+    if (resolution == "year") {
 
-                               if (direction == "up") {
-                                 det <- ddply(rg, c("year"), function(x) {
-                                   nested <- ddply(x, c("array"), up_func_array)
-                                 })
-                               }
+      if (direction == "up") {
+        det <- ddply(rg, c("year"), function(x) {
+          nested <- ddply(x, c("array"), up_func_array)
+        })
+      }
 
-                               if (direction == "down") {
-                                 det <- ddply(rg, c("year"), function(x) {
-                                   nested <- ddply(x, c("array"), down_func_array)
-                                 })
-                               }
+      if (direction == "down") {
+        det <- ddply(rg, c("year"), function(x) {
+          nested <- ddply(x, c("array"), down_func_array)
+        })
+      }
 
-                               if (direction == "resident") {
-                                 det <- ddply(rg, c("year"), function(x) {
-                                   nested <- ddply(x, c("array"), resident_func_array)
-                                 })
-                               }
+      if (direction == "resident") {
+        det <- ddply(rg, c("year"), function(x) {
+          nested <- ddply(x, c("array"), resident_func_array)
+        })
+      }
 
-                               # Add a date column with the first day of the first month of year
-                               det$Date <- ymd(sprintf("%s-%s-%s", det$year,1,1))
-                               det$Date <- ymd(det$Date, tz = data$time_zone[1])
+      # Add a date column with the first day of the first month of year
+      det$Date <- ymd(sprintf("%s-%s-%s", det$year,1,1))
+      det$Date <- ymd(det$Date, tz = data$time_zone[1])
 
-                               # Re-order the columns to be more intuitive and fit with Joel's original structure
-                               det_clean <- det[,c("array","year","Date","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
+      # Re-order the columns to be more intuitive and fit with Joel's original structure
+      det_clean <- det[,c("array","year","Date","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
 
-                               names(det_clean) <- c("array", "year", "date", "antenna", "detection_efficiency", "shared_detections",
-                                                     "detections_on_array", "detections_not_on_array", "missed_detections")
+      names(det_clean) <- c("array", "year", "date", "antenna", "detection_efficiency", "shared_detections",
+                            "detections_on_array", "detections_not_on_array", "missed_detections")
 
-                               return(det_clean)
+      return(det_clean)
 
-                             }
+    }
 
-                             ### MONTH ###
+    ### MONTH ###
 
-                             if (resolution == "month") {
+    if (resolution == "month") {
 
-                               if (direction == "up") {
-                                 det <- ddply(rg, c("year", "month"), function(x) {
-                                   nested <- ddply(x, c("array"), up_func_array)
-                                 })
-                               }
+      if (direction == "up") {
+        det <- ddply(rg, c("year", "month"), function(x) {
+          nested <- ddply(x, c("array"), up_func_array)
+        })
+      }
 
-                               if (direction == "down") {
-                                 det <- ddply(rg, c("year", "month"), function(x) {
-                                   nested <- ddply(x, c("array"), down_func_array)
-                                 })
-                               }
+      if (direction == "down") {
+        det <- ddply(rg, c("year", "month"), function(x) {
+          nested <- ddply(x, c("array"), down_func_array)
+        })
+      }
 
-                               if (direction == "resident") {
-                                 det <- ddply(rg, c("year", "month"), function(x) {
-                                   nested <- ddply(x, c("array"), resident_func_array)
-                                 })
-                               }
+      if (direction == "resident") {
+        det <- ddply(rg, c("year", "month"), function(x) {
+          nested <- ddply(x, c("array"), resident_func_array)
+        })
+      }
 
-                               # Add a date column with the first day of the month and the first hour
-                               det$Date <- ymd(sprintf("%s-%s-%s", det$year, det$month, 1))
-                               det$Date <- ymd(det$Date, tz = data$time_zone[1])
+      # Add a date column with the first day of the month and the first hour
+      det$Date <- ymd(sprintf("%s-%s-%s", det$year, det$month, 1))
+      det$Date <- ymd(det$Date, tz = data$time_zone[1])
 
-                               # Re-order the columns to be more intuitive and fit with Joel's original structure
-                               det_clean <- det[,c("array","year","month","Date","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
+      # Re-order the columns to be more intuitive and fit with Joel's original structure
+      det_clean <- det[,c("array","year","month","Date","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
 
-                               # Name columns for output
-                               names(det_clean) <- c("array", "year", "month", "date", "antenna", "detection_efficiency", "shared_detections",
-                                                     "detections_on_array", "detections_not_on_array", "missed_detections")
+      # Name columns for output
+      names(det_clean) <- c("array", "year", "month", "date", "antenna", "detection_efficiency", "shared_detections",
+                            "detections_on_array", "detections_not_on_array", "missed_detections")
 
-                               return(det_clean)
+      return(det_clean)
 
-                             }
+    }
 
-                             ### WEEK ###
+    ### WEEK ###
 
-                             if (resolution == "week") {
+    if (resolution == "week") {
 
-                               if (direction == "up") {
+      if (direction == "up") {
 
-                                 det <- ddply(rg, c("year", "month", "week"), function(x) {
-                                   nested <- ddply(x, c("array"), up_func_array)
-                                 })
-                               }
+        det <- ddply(rg, c("year", "month", "week"), function(x) {
+          nested <- ddply(x, c("array"), up_func_array)
+        })
+      }
 
-                               if (direction == "down") {
+      if (direction == "down") {
 
-                                 det <- ddply(rg, c("year", "month", "week"), function(x) {
-                                   nested <- ddply(x, c("array"), down_func_array)
-                                 })
-                               }
+        det <- ddply(rg, c("year", "month", "week"), function(x) {
+          nested <- ddply(x, c("array"), down_func_array)
+        })
+      }
 
-                               if (direction == "resident") {
+      if (direction == "resident") {
 
-                                 det <- ddply(rg, c("year", "month", "week"), function(x) {
-                                   nested <- ddply(x, c("array"), resident_func_array)
-                                 })
-                               }
+        det <- ddply(rg, c("year", "month", "week"), function(x) {
+          nested <- ddply(x, c("array"), resident_func_array)
+        })
+      }
 
-                               # Add a date column with the first day of the week nd the first hour
-                               det$Date <- ymd(sprintf("%s-%s-%s", det$year, 1, 1)) # Start at Jan 1
-                               # Determine what day of the week January 1 is for each year
-                               det$first.day <- as.numeric(format(det$Date,"%w"))
-                               det$Date <- det$Date + 7*det$week - det$first.day - 7 # Add in 7 days for each week up to the specified week minus the first.day and minus one week to get the start of the week
-                               det$Date <- ymd(det$Date, tz = data$time_zone[1])
+      # Add a date column with the first day of the week nd the first hour
+      det$Date <- ymd(sprintf("%s-%s-%s", det$year, 1, 1)) # Start at Jan 1
+      # Determine what day of the week January 1 is for each year
+      det$first.day <- as.numeric(format(det$Date,"%w"))
+      det$Date <- det$Date + 7*det$week - det$first.day - 7 # Add in 7 days for each week up to the specified week minus the first.day and minus one week to get the start of the week
+      det$Date <- ymd(det$Date, tz = data$time_zone[1])
 
-                               # Re-order the columns to be more intuitive and fit with Joel's original structure
-                               det_clean <- det[,c("array","year","month","week","Date","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
+      # Re-order the columns to be more intuitive and fit with Joel's original structure
+      det_clean <- det[,c("array","year","month","week","Date","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
 
-                               # Name columns for output
-                               names(det_clean) <- c("array", "year", "month", "week", "date", "antenna", "detection_efficiency", "shared_detections",
-                                                     "detections_on_array", "detections_not_on_array", "missed_detections")
+      # Name columns for output
+      names(det_clean) <- c("array", "year", "month", "week", "date", "antenna", "detection_efficiency", "shared_detections",
+                            "detections_on_array", "detections_not_on_array", "missed_detections")
 
-                               return(det_clean)
+      return(det_clean)
 
-                             }
+    }
 
-                             ### DAY ###
+    ### DAY ###
 
-                             if (resolution == "day") {
+    if (resolution == "day") {
 
-                               if (direction == "up") {
+      if (direction == "up") {
 
-                                 det <- ddply(rg, c("year", "month", "week", "day"), function(x) {
-                                   nested <- ddply(x, c("array"), up_func_array)
-                                 })
-                               }
+        det <- ddply(rg, c("year", "month", "week", "day"), function(x) {
+          nested <- ddply(x, c("array"), up_func_array)
+        })
+      }
 
-                               if (direction == "down") {
+      if (direction == "down") {
 
-                                 det <- ddply(rg, c("year", "month", "week", "day"), function(x) {
-                                   nested <- ddply(x, c("array"), down_func_array)
-                                 })
-                               }
+        det <- ddply(rg, c("year", "month", "week", "day"), function(x) {
+          nested <- ddply(x, c("array"), down_func_array)
+        })
+      }
 
-                               if (direction == "resident") {
+      if (direction == "resident") {
 
-                                 det <- ddply(rg, c("year", "month", "week", "day"), function(x) {
-                                   nested <- ddply(x, c("array"), resident_func_array)
-                                 })
-                               }
+        det <- ddply(rg, c("year", "month", "week", "day"), function(x) {
+          nested <- ddply(x, c("array"), resident_func_array)
+        })
+      }
 
-                               # Add a date column with the day and the first hour
-                               det$Date <- ymd(sprintf("%s-%s-%s", det$year, det$month, det$day))
-                               det$Date <- ymd(det$Date, tz = data$time_zone[1])
+      # Add a date column with the day and the first hour
+      det$Date <- ymd(sprintf("%s-%s-%s", det$year, det$month, det$day))
+      det$Date <- ymd(det$Date, tz = data$time_zone[1])
 
-                               # Re-order the columns to be more intuitive and fit with Joel's original structure
-                               det_clean <- det[,c("array","year","month","week","day","Date","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
+      # Re-order the columns to be more intuitive and fit with Joel's original structure
+      det_clean <- det[,c("array","year","month","week","day","Date","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
 
-                               # Name columns for output
-                               names(det_clean) <- c("array", "year", "month", "week", "day", "date", "antenna", "detection_efficiency", "shared_detections",
-                                                     "detections_on_array", "detections_not_on_array", "missed_detections")
+      # Name columns for output
+      names(det_clean) <- c("array", "year", "month", "week", "day", "date", "antenna", "detection_efficiency", "shared_detections",
+                            "detections_on_array", "detections_not_on_array", "missed_detections")
 
-                               return(det_clean)
+      return(det_clean)
 
-                             }
+    }
 
-                             ### HOUR ###
+    ### HOUR ###
 
-                             if (resolution == "hour") {
+    if (resolution == "hour") {
 
-                               if (direction == "up") {
+      if (direction == "up") {
 
-                                 det <- ddply(rg, c("year", "month", "week", "day", "hour"), function(x) {
-                                   nested <- ddply(x, c("array"), up_func_array)
-                                 })
-                               }
+        det <- ddply(rg, c("year", "month", "week", "day", "hour"), function(x) {
+          nested <- ddply(x, c("array"), up_func_array)
+        })
+      }
 
-                               if (direction == "down") {
+      if (direction == "down") {
 
-                                 det <- ddply(rg, c("year", "month", "week", "day", "hour"), function(x) {
-                                   nested <- ddply(x, c("array"), down_func_array)
-                                 })
-                               }
+        det <- ddply(rg, c("year", "month", "week", "day", "hour"), function(x) {
+          nested <- ddply(x, c("array"), down_func_array)
+        })
+      }
 
-                               if (direction == "resident") {
+      if (direction == "resident") {
 
-                                 det <- ddply(rg, c("year", "month", "week", "day", "hour"), function(x) {
-                                   nested <- ddply(x, c("array"), resident_func_array)
-                                 })
-                               }
+        det <- ddply(rg, c("year", "month", "week", "day", "hour"), function(x) {
+          nested <- ddply(x, c("array"), resident_func_array)
+        })
+      }
 
-                               # Add a date column down to the hour
-                               # Add a date column with the day month and hour
-                               det$Date <- ymd(sprintf("%s-%s-%s", det$year, det$month, det$day))
-                               det$Date <- update(det$Date, hour = det$hour)
-                               det$Date <- ymd_hms(det$Date, tz = data$time_zone[1])
+      # Add a date column down to the hour
+      # Add a date column with the day month and hour
+      det$Date <- ymd(sprintf("%s-%s-%s", det$year, det$month, det$day))
+      det$Date <- update(det$Date, hour = det$hour)
+      det$Date <- ymd_hms(det$Date, tz = data$time_zone[1])
 
-                               # Re-order the columns to be more intuitive and fit with Joel's original structure
-                               det_clean <- det[,c("array","year","month","week","day","hour","Date","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
+      # Re-order the columns to be more intuitive and fit with Joel's original structure
+      det_clean <- det[,c("array","year","month","week","day","hour","Date","antenna","det_eff","no_unique_tag","no_x_antenna_tag","no_other_antenna_tag","no_missed_tags")]
 
-                               names(det_clean) <- c("array", "year", "month", "week", "day", "hour", "date", "antenna", "detection_efficiency", "shared_detections",
-                                                     "detections_on_array", "detections_not_on_array", "missed_detections")
+      names(det_clean) <- c("array", "year", "month", "week", "day", "hour", "date", "antenna", "detection_efficiency", "shared_detections",
+                            "detections_on_array", "detections_not_on_array", "missed_detections")
 
-                               return(det_clean)
+      return(det_clean)
 
-                             }
+    }
 
-                           } # end of array portion
+  } # end of array portion
 
-                         }
+}
 
 up_func <- function(x) {
 
