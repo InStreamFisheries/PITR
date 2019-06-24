@@ -36,7 +36,7 @@
 #' det_eff(data = multi_array, resolution = "month", by_array = TRUE, array_sequence = c("array_one", "array_two"), direction = "up")
 #' @export
 
-det_eff_test <- function(data,
+det_eff <- function(data,
                          resolution = NULL,
                          by_array = FALSE,
                          array_sequence = NULL,
