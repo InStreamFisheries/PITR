@@ -44,161 +44,6 @@ det_eff <- function(data,
                     start_date = NULL,
                     end_date = NULL) {
 
-  # Create internal functions
-  up_func <- function(x) {
-
-    # Unique tags above x (the array for which effiency is being calculated)
-    other_antenna_tag <- unique(subset(rg, antenna > x$antenna[1], na.rm = TRUE)$tag_code) #select unique tag codes for all antennas upstream of antenna X
-
-    x_antenna_tag <- unique(x$tag_code, na.rm = TRUE) # Unique tags at x
-
-    no_x_antenna_tag <- length(unique(x$tag_code, na.rm = TRUE)) # The number of unique tag codes for antenna x
-
-    no_other_antenna_tag <- length(unique(subset(rg, antenna > x$antenna[1], na.rm = TRUE)$tag_code)) # calculate the number of unique tag codes for all antennas UPSTREAM of antenna x
-
-    no_unique_tag <- sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) # the number of tags that are in both antenna x and antennas UPSTREAM of antenna x
-
-    # Calculate detection efficicency: the number of tags detected at antenna x that were detected at antennas UPSTREAM of x divided by the total number of tags detected UPSTREAM of antenna x
-    det_eff <- round(sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) / no_other_antenna_tag, 2)
-
-    no_missed_tags <- no_other_antenna_tag - no_unique_tag # Calculate number of tags seen at other antennas but missed at antenna x
-
-    data.frame(det_eff,
-               no_unique_tag,
-               no_x_antenna_tag,
-               no_other_antenna_tag,
-               no_missed_tags)
-  }
-
-  down_func <- function(x) {
-
-    # Unique tags below x (the array for which effiency is being calculated)
-    other_antenna_tag <- unique(subset(rg, antenna < x$antenna[1], na.rm = TRUE)$tag_code) # select unique tag codes for all antennas downstream of antenna X
-
-    x_antenna_tag <- unique(x$tag_code, na.rm = TRUE) # select all unique tag codes for antenna x
-
-    no_x_antenna_tag <- length(unique(x$tag_code, na.rm = TRUE)) # The number of unique tag codes for antenna x
-
-    no_other_antenna_tag <- length(unique(subset(rg, antenna < x$antenna[1], na.rm = TRUE)$tag_code)) #calculate the number of unique tag codes for all antennas downstream of antenna x
-
-    no_unique_tag <- sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) #the number of tags that are in both antenna x and antennas downstream of antenna x
-
-    # Calculate detection efficicency: the number of tags detected at antenna x that were detected at antennas downstream of x divided by the total number of tags detected downstream of antenna x
-    det_eff <- round(sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) / no_other_antenna_tag, 2)
-
-    no_missed_tags <- no_other_antenna_tag - no_unique_tag # Calculate number of tags seen at other antennas but missed at antenna x
-
-    data.frame(det_eff,
-               no_unique_tag,
-               no_x_antenna_tag,
-               no_other_antenna_tag,
-               no_missed_tags)
-  }
-
-  resident_func <- function(x) {
-
-    # Unique tags at arrays other than x (the array for which effiency is being calculated)
-    other_antenna_tag <- unique(subset(rg, antenna != x$antenna[1], na.rm = TRUE)$tag_code) # select unique tag codes for all antennas other than antenna X
-
-    x_antenna_tag <- unique(x$tag_code, na.rm = TRUE) # select all unique tag codes for antenna x
-
-    no_x_antenna_tag <- length(unique(x$tag_code, na.rm = TRUE)) # The number of unique tag codes for antenna x
-
-    no_other_antenna_tag <- length(unique(subset(rg, antenna != x$antenna[1], na.rm = TRUE)$tag_code)) #calculate the number of unique tag codes for all antennas other than antenna x
-
-    no_unique_tag <- sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) # the number of tags that are in both antenna x and antennas downstream of antenna x
-
-    # Calculate detection efficicency: the number of tags detected at antenna x that were detected at antennas other than x divided by the total number of tags detected other than antenna x
-    det_eff <- round(sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) / no_other_antenna_tag, 2)
-
-    no_missed_tags <- no_other_antenna_tag - no_unique_tag # Calculate number of tags seen at other antennas but missed at antenna x
-
-    data.frame(det_eff,
-               no_unique_tag,
-               no_x_antenna_tag,
-               no_other_antenna_tag,
-               no_missed_tags)
-  }
-
-  up_func_array <- function(x) {
-
-    # Unique tags above x (the array for which effiency is being calculate)
-    other_antenna_tag <- unique(subset(rg, array_number > x$array_number[1], na.rm = TRUE)$tag_code) #select unique tag codes for all antennas upstream of antenna X
-
-    x_antenna_tag <- unique(x$tag_code, na.rm = TRUE) # select all unique tag codes for antenna x
-
-    no_x_antenna_tag <- length(unique(x$tag_code, na.rm = TRUE)) # The number of unique tag codes for antenna x
-
-    no_other_antenna_tag <- length(unique(subset(rg, array_number > x$array_number[1], na.rm = TRUE)$tag_code)) #calculate the number of unique tag codes for all antennas UPSTREAM of antenna x
-
-    no_unique_tag <- sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) #the number of tags that are in both antenna x and antennas UPSTREAM of antenna x
-
-    # Calculate detection efficicency: the number of tags detected at antenna x that were detected at antennas UPSTREAM of x divided by the total number of tags detected UPSTREAM of antenna x
-    det_eff <- round(sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) / no_other_antenna_tag, 2)
-
-    no_missed_tags <- no_other_antenna_tag - no_unique_tag # Calculate number of tags seen at other antennas but missed at antenna x
-
-    data.frame(antenna=NA,
-               det_eff,
-               no_unique_tag,
-               no_x_antenna_tag,
-               no_other_antenna_tag,
-               no_missed_tags)
-  }
-
-  down_func_array <- function(x) {
-
-    # Unique tags below x (the array for which effiency is being calculate)
-    other_antenna_tag <- unique(subset(rg, array_number < x$array_number[1], na.rm = TRUE)$tag_code) #select unique tag codes for all antennas downstream of antenna X
-
-    x_antenna_tag <- unique(x$tag_code, na.rm = TRUE) # select all unique tag codes for antenna x
-
-    no_x_antenna_tag <- length(unique(x$tag_code, na.rm = TRUE)) # The number of unique tag codes for antenna x
-
-    no_other_antenna_tag <- length(unique(subset(rg, array_number < x$array_number[1], na.rm = TRUE)$tag_code)) #calculate the number of unique tag codes for all antennas downstream of antenna x
-
-    no_unique_tag <- sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) #the number of tags that are in both antenna x and antennas downstream of antenna x
-
-    #calculate detection efficicency: the number of tags detected at antenna x that were detected at antennas downstream of x divided by the total number of tags detected downstream of antenna x
-    det_eff <- round(sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) / no_other_antenna_tag, 2)
-
-    no_missed_tags <- no_other_antenna_tag - no_unique_tag # Calculate number of tags seen at other antennas but missed at antenna x
-
-    data.frame(antenna = NA,
-               det_eff,
-               no_unique_tag,
-               no_x_antenna_tag,
-               no_other_antenna_tag,
-               no_missed_tags)
-  }
-
-  resident_func_array <- function(x) {
-
-    # Unique tags at arrays other than x (the array for which effiency is being calculate)
-    other_antenna_tag <- unique(subset(rg, array_number != x$array_number[1], na.rm = TRUE)$tag_code) # select unique tag codes for all antennas other than antenna X
-
-    x_antenna_tag <- unique(x$tag_code, na.rm = TRUE) # select all unique tag codes for antenna x
-
-    no_x_antenna_tag <- length(unique(x$tag_code, na.rm = TRUE)) # The number of unique tag codes for antenna x
-
-    no_other_antenna_tag <- length(unique(subset(rg, array_number != x$array_number[1], na.rm = TRUE)$tag_code)) #calculate the number of unique tag codes for all antennas other than antenna x
-
-    no_unique_tag <- sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) # the number of tags that are in both antenna x and antennas downstream of antenna x
-
-    # Calculate detection efficicency: the number of tags detected at antenna x that were detected at antennas other than x divided by the total number of tags detected other than antenna x
-    det_eff <- round(sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) / no_other_antenna_tag, 2)
-
-    no_missed_tags <- no_other_antenna_tag - no_unique_tag # Calculate number of tags seen at other antennas but missed at antenna x
-
-    data.frame(antenna = NA,
-               det_eff,
-               no_unique_tag,
-               no_x_antenna_tag,
-               no_other_antenna_tag,
-               no_missed_tags)
-  }
-
-  # Begin main function
 
   if (is.null(start_date)) start_date <- min(data$date_time) else start_date <- ymd_hms(start_date, tz = data$time_zone[1])
   if (is.null(end_date)) end_date <- max(data$date_time) else end_date <- ymd_hms(end_date, tz = data$time_zone[1])
@@ -227,15 +72,16 @@ det_eff <- function(data,
     if (is.null(resolution)) {
 
       if (direction == "up") {
-        det <- ddply(rg, c("array", "antenna"), up_func)
+        det <- ddply(rg, c("array", "antenna"), up_func, all = rg)
       }
 
+
       if (direction == "down") {
-        det <- ddply(rg, c("array", "antenna"), down_func)
+        det <- ddply(rg, c("array", "antenna"), down_func, all = rg)
       }
 
       if (direction == "resident") {
-        nested <- ddply(rg, c("array", "antenna"), resident_func)
+        nested <- ddply(rg, c("array", "antenna"), resident_func, all = rg)
       }
 
       # Re-order the columns to be more intuitive and fit with Joel's original structure
@@ -246,7 +92,7 @@ det_eff <- function(data,
 
       # Filter rows without antenna values (single arrays not ID'd as arrays)
       det_clean <- dplyr::filter(det_clean, antenna != "NA")
-      #return(det_clean)
+      return(det_clean)
     }
 
     ### YEAR ###
@@ -255,19 +101,19 @@ det_eff <- function(data,
 
       if (direction == "up") {
         det <- ddply(rg, c("year"), function(x) {
-          nested <- ddply(x, c("array", "antenna"), up_func)
+          nested <- ddply(x, c("array", "antenna"), up_func, all = rg)
         })
       }
 
       if (direction == "down") {
         det <- ddply(rg, c("year"), function(x) {
-          nested <- ddply(x, c("array", "antenna"), down_func)
+          nested <- ddply(x, c("array", "antenna"), down_func, all = rg)
         })
       }
 
       if (direction == "resident") {
         det <- ddply(rg, c("year"), function(x) {
-          nested <- ddply(x, c("array", "antenna"), resident_func)
+          nested <- ddply(x, c("array", "antenna"), resident_func, all = rg)
         })
       }
 
@@ -283,7 +129,7 @@ det_eff <- function(data,
 
       #Filter rows without antenna values (single arrays not ID'd as arrays)
       det_clean <- dplyr::filter(det_clean, antenna != "NA")
-      #return(det_clean)
+      return(det_clean)
 
     }
 
@@ -293,19 +139,19 @@ det_eff <- function(data,
 
       if (direction == "up") {
         det <- ddply(rg, c("year", "month"), function(x) {
-          nested <- ddply(x, c("array", "antenna"), up_func)
+          nested <- ddply(x, c("array", "antenna"), up_func, all = rg)
         })
       }
 
       if (direction == "down") {
         det <- ddply(rg, c("year", "month"), function(x) {
-          nested <- ddply(x, c("array", "antenna"), down_func)
+          nested <- ddply(x, c("array", "antenna"), down_func, all = rg)
         })
       }
 
       if (direction == "resident") {
         det <- ddply(rg, c("year", "month"), function(x) {
-          nested <- ddply(x, c("array", "antenna"), resident_func)
+          nested <- ddply(x, c("array", "antenna"), resident_func, all = rg)
         })
       }
 
@@ -320,7 +166,7 @@ det_eff <- function(data,
 
       #Filter rows without antenna values (single arrays not ID'd as arrays)
       det_clean <- dplyr::filter(det_clean, antenna != "NA")
-      #return(det_clean)
+      return(det_clean)
 
     }
 
@@ -332,19 +178,19 @@ det_eff <- function(data,
       if (direction == "up") {
 
         det <- ddply(rg, c("year", "month", "week"), function(x) {
-          nested <- ddply(x, c("array", "antenna"), up_func)
+          nested <- ddply(x, c("array", "antenna"), up_func, all = rg)
         })
       }
 
       if (direction == "down") {
         det <- ddply(rg, c("year", "month", "week"), function(x) {
-          nested <- ddply(x, c("array", "antenna"), down_func)
+          nested <- ddply(x, c("array", "antenna"), down_func, all = rg)
         })
       }
 
       if (direction == "resident") {
         det <- ddply(rg, c("year", "month", "week"), function(x) {
-          nested <- ddply(x, c("array", "antenna"), resident_func)
+          nested <- ddply(x, c("array", "antenna"), resident_func, all = rg)
         })
       }
 
@@ -363,7 +209,7 @@ det_eff <- function(data,
 
       #Filter rows without antenna values (single arrays not ID'd as arrays)
       det_clean <- dplyr::filter(det_clean, antenna != "NA")
-      #return(det_clean)
+      return(det_clean)
 
     }
 
@@ -373,19 +219,19 @@ det_eff <- function(data,
 
       if (direction == "up") {
         det <- ddply(rg, c("year", "month", "week", "day"), function(x) {
-          nested <- ddply(x, c("array", "antenna"), up_func)
+          nested <- ddply(x, c("array", "antenna"), up_func, all = rg)
         })
       }
 
       if (direction == "down") {
         det <- ddply(rg, c("year", "month", "week", "day"), function(x) {
-          nested <- ddply(x, c("array", "antenna"), down_func)
+          nested <- ddply(x, c("array", "antenna"), down_func, all = rg)
         })
       }
 
       if (direction == "resident") {
         det <- ddply(rg, c("year", "month", "week", "day"), function(x) {
-          nested <- ddply(x, c("array", "antenna"), resident_func)
+          nested <- ddply(x, c("array", "antenna"), resident_func, all = rg)
         })
       }
 
@@ -401,7 +247,7 @@ det_eff <- function(data,
 
       # Filter rows without antenna values (single arrays not ID'd as arrays)
       det_clean <- dplyr::filter(det_clean, antenna != "NA")
-      #return(det_clean)
+      return(det_clean)
 
     }
 
@@ -412,19 +258,19 @@ det_eff <- function(data,
       if (direction == "up") {
 
         det <- ddply(rg, c("year", "month", "week", "day", "hour"), function(x) {
-          nested <- ddply(x, c("array", "antenna"), up_func)
+          nested <- ddply(x, c("array", "antenna"), up_func, all = rg)
         })
       }
 
       if (direction == "down") {
         det <- ddply(rg, c("year", "month", "week", "day", "hour"), function(x) {
-          nested <- ddply(x, c("array", "antenna"), down_func)
+          nested <- ddply(x, c("array", "antenna"), down_func, all = rg)
         })
       }
 
       if (direction == "resident") {
         det <- ddply(rg, c("year", "month", "week", "day", "hour"), function(x) {
-          nested <- ddply(x, c("array", "antenna"), resident_func)
+          nested <- ddply(x, c("array", "antenna"), resident_func, all = rg)
         })
       }
 
@@ -443,7 +289,7 @@ det_eff <- function(data,
 
       #Filter rows without antenna values (single arrays not ID'd as arrays)
       det_clean <- dplyr::filter(det_clean, antenna != "NA")
-      #return(det_clean)
+      return(det_clean)
 
     }
 
@@ -470,15 +316,15 @@ det_eff <- function(data,
     if (is.null(resolution)) {
 
       if (direction == "up") {
-        det <- ddply(rg, c("array"), up_func_array)
+        det <- ddply(rg, c("array"), up_func_array, all = rg)
       }
 
       if (direction == "down") {
-        det <- ddply(rg, c("array"), down_func_array)
+        det <- ddply(rg, c("array"), down_func_array, all = rg)
       }
 
       if (direction == "resident") {
-        det <- ddply(rg, c("array"), resident_func_array)
+        det <- ddply(rg, c("array"), resident_func_array, all = rg)
       }
 
       # Re-order the columns to be more intuitive and fit with Joel's original structure
@@ -487,7 +333,7 @@ det_eff <- function(data,
       # Name columns for output
       names(det_clean) <- c("array", "antenna", "detection_efficiency", "shared_detections",
                             "detections_on_array", "detections_not_on_array", "missed_detections")
-      #return(det_clean)
+      return(det_clean)
     }
 
 
@@ -497,19 +343,19 @@ det_eff <- function(data,
 
       if (direction == "up") {
         det <- ddply(rg, c("year"), function(x) {
-          nested <- ddply(x, c("array"), up_func_array)
+          nested <- ddply(x, c("array"), up_func_array, all = rg)
         })
       }
 
       if (direction == "down") {
         det <- ddply(rg, c("year"), function(x) {
-          nested <- ddply(x, c("array"), down_func_array)
+          nested <- ddply(x, c("array"), down_func_array, all = rg)
         })
       }
 
       if (direction == "resident") {
         det <- ddply(rg, c("year"), function(x) {
-          nested <- ddply(x, c("array"), resident_func_array)
+          nested <- ddply(x, c("array"), resident_func_array, all = rg)
         })
       }
 
@@ -523,7 +369,7 @@ det_eff <- function(data,
       names(det_clean) <- c("array", "year", "date", "antenna", "detection_efficiency", "shared_detections",
                             "detections_on_array", "detections_not_on_array", "missed_detections")
 
-      #return(det_clean)
+      return(det_clean)
 
     }
 
@@ -533,19 +379,19 @@ det_eff <- function(data,
 
       if (direction == "up") {
         det <- ddply(rg, c("year", "month"), function(x) {
-          nested <- ddply(x, c("array"), up_func_array)
+          nested <- ddply(x, c("array"), up_func_array, all = rg)
         })
       }
 
       if (direction == "down") {
         det <- ddply(rg, c("year", "month"), function(x) {
-          nested <- ddply(x, c("array"), down_func_array)
+          nested <- ddply(x, c("array"), down_func_array, all = rg)
         })
       }
 
       if (direction == "resident") {
         det <- ddply(rg, c("year", "month"), function(x) {
-          nested <- ddply(x, c("array"), resident_func_array)
+          nested <- ddply(x, c("array"), resident_func_array, all = rg)
         })
       }
 
@@ -560,7 +406,7 @@ det_eff <- function(data,
       names(det_clean) <- c("array", "year", "month", "date", "antenna", "detection_efficiency", "shared_detections",
                             "detections_on_array", "detections_not_on_array", "missed_detections")
 
-      #return(det_clean)
+      return(det_clean)
 
     }
 
@@ -571,21 +417,21 @@ det_eff <- function(data,
       if (direction == "up") {
 
         det <- ddply(rg, c("year", "month", "week"), function(x) {
-          nested <- ddply(x, c("array"), up_func_array)
+          nested <- ddply(x, c("array"), up_func_array, all = rg)
         })
       }
 
       if (direction == "down") {
 
         det <- ddply(rg, c("year", "month", "week"), function(x) {
-          nested <- ddply(x, c("array"), down_func_array)
+          nested <- ddply(x, c("array"), down_func_array, all = rg)
         })
       }
 
       if (direction == "resident") {
 
         det <- ddply(rg, c("year", "month", "week"), function(x) {
-          nested <- ddply(x, c("array"), resident_func_array)
+          nested <- ddply(x, c("array"), resident_func_array, all = rg)
         })
       }
 
@@ -603,7 +449,7 @@ det_eff <- function(data,
       names(det_clean) <- c("array", "year", "month", "week", "date", "antenna", "detection_efficiency", "shared_detections",
                             "detections_on_array", "detections_not_on_array", "missed_detections")
 
-      #return(det_clean)
+      return(det_clean)
 
     }
 
@@ -614,21 +460,21 @@ det_eff <- function(data,
       if (direction == "up") {
 
         det <- ddply(rg, c("year", "month", "week", "day"), function(x) {
-          nested <- ddply(x, c("array"), up_func_array)
+          nested <- ddply(x, c("array"), up_func_array, all = rg)
         })
       }
 
       if (direction == "down") {
 
         det <- ddply(rg, c("year", "month", "week", "day"), function(x) {
-          nested <- ddply(x, c("array"), down_func_array)
+          nested <- ddply(x, c("array"), down_func_array, all = rg)
         })
       }
 
       if (direction == "resident") {
 
         det <- ddply(rg, c("year", "month", "week", "day"), function(x) {
-          nested <- ddply(x, c("array"), resident_func_array)
+          nested <- ddply(x, c("array"), resident_func_array, all = rg)
         })
       }
 
@@ -643,7 +489,7 @@ det_eff <- function(data,
       names(det_clean) <- c("array", "year", "month", "week", "day", "date", "antenna", "detection_efficiency", "shared_detections",
                             "detections_on_array", "detections_not_on_array", "missed_detections")
 
-      #return(det_clean)
+      return(det_clean)
 
     }
 
@@ -654,21 +500,21 @@ det_eff <- function(data,
       if (direction == "up") {
 
         det <- ddply(rg, c("year", "month", "week", "day", "hour"), function(x) {
-          nested <- ddply(x, c("array"), up_func_array)
+          nested <- ddply(x, c("array"), up_func_array, all = rg)
         })
       }
 
       if (direction == "down") {
 
         det <- ddply(rg, c("year", "month", "week", "day", "hour"), function(x) {
-          nested <- ddply(x, c("array"), down_func_array)
+          nested <- ddply(x, c("array"), down_func_array, all = rg)
         })
       }
 
       if (direction == "resident") {
 
         det <- ddply(rg, c("year", "month", "week", "day", "hour"), function(x) {
-          nested <- ddply(x, c("array"), resident_func_array)
+          nested <- ddply(x, c("array"), resident_func_array, all = rg)
         })
       }
 
@@ -684,7 +530,7 @@ det_eff <- function(data,
       names(det_clean) <- c("array", "year", "month", "week", "day", "hour", "date", "antenna", "detection_efficiency", "shared_detections",
                             "detections_on_array", "detections_not_on_array", "missed_detections")
 
-      #return(det_clean)
+      return(det_clean)
 
     }
 
@@ -692,3 +538,156 @@ det_eff <- function(data,
 
 }
 
+# Create internal functions
+up_func <- function(x, all) {
+
+  # Unique tags above x (the array for which effiency is being calculated)
+  other_antenna_tag <- unique(subset(all, antenna > x$antenna[1], na.rm = TRUE)$tag_code) #select unique tag codes for all antennas upstream of antenna X
+
+  x_antenna_tag <- unique(x$tag_code, na.rm = TRUE) # Unique tags at x
+
+  no_x_antenna_tag <- length(unique(x$tag_code, na.rm = TRUE)) # The number of unique tag codes for antenna x
+
+  no_other_antenna_tag <- length(unique(subset(all, antenna > x$antenna[1], na.rm = TRUE)$tag_code)) # calculate the number of unique tag codes for all antennas UPSTREAM of antenna x
+
+  no_unique_tag <- sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) # the number of tags that are in both antenna x and antennas UPSTREAM of antenna x
+
+  # Calculate detection efficicency: the number of tags detected at antenna x that were detected at antennas UPSTREAM of x divided by the total number of tags detected UPSTREAM of antenna x
+  det_eff <- round(sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) / no_other_antenna_tag, 2)
+
+  no_missed_tags <- no_other_antenna_tag - no_unique_tag # Calculate number of tags seen at other antennas but missed at antenna x
+
+  data.frame(det_eff,
+             no_unique_tag,
+             no_x_antenna_tag,
+             no_other_antenna_tag,
+             no_missed_tags)
+}
+
+down_func <- function(x, all) {
+
+  # Unique tags below x (the array for which effiency is being calculated)
+  other_antenna_tag <- unique(subset(rg, antenna < x$antenna[1], na.rm = TRUE)$tag_code) # select unique tag codes for all antennas downstream of antenna X
+
+  x_antenna_tag <- unique(x$tag_code, na.rm = TRUE) # select all unique tag codes for antenna x
+
+  no_x_antenna_tag <- length(unique(x$tag_code, na.rm = TRUE)) # The number of unique tag codes for antenna x
+
+  no_other_antenna_tag <- length(unique(subset(rg, antenna < x$antenna[1], na.rm = TRUE)$tag_code)) #calculate the number of unique tag codes for all antennas downstream of antenna x
+
+  no_unique_tag <- sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) #the number of tags that are in both antenna x and antennas downstream of antenna x
+
+  # Calculate detection efficicency: the number of tags detected at antenna x that were detected at antennas downstream of x divided by the total number of tags detected downstream of antenna x
+  det_eff <- round(sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) / no_other_antenna_tag, 2)
+
+  no_missed_tags <- no_other_antenna_tag - no_unique_tag # Calculate number of tags seen at other antennas but missed at antenna x
+
+  data.frame(det_eff,
+             no_unique_tag,
+             no_x_antenna_tag,
+             no_other_antenna_tag,
+             no_missed_tags)
+}
+
+resident_func <- function(x, all) {
+
+  # Unique tags at arrays other than x (the array for which effiency is being calculated)
+  other_antenna_tag <- unique(subset(rg, antenna != x$antenna[1], na.rm = TRUE)$tag_code) # select unique tag codes for all antennas other than antenna X
+
+  x_antenna_tag <- unique(x$tag_code, na.rm = TRUE) # select all unique tag codes for antenna x
+
+  no_x_antenna_tag <- length(unique(x$tag_code, na.rm = TRUE)) # The number of unique tag codes for antenna x
+
+  no_other_antenna_tag <- length(unique(subset(rg, antenna != x$antenna[1], na.rm = TRUE)$tag_code)) #calculate the number of unique tag codes for all antennas other than antenna x
+
+  no_unique_tag <- sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) # the number of tags that are in both antenna x and antennas downstream of antenna x
+
+  # Calculate detection efficicency: the number of tags detected at antenna x that were detected at antennas other than x divided by the total number of tags detected other than antenna x
+  det_eff <- round(sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) / no_other_antenna_tag, 2)
+
+  no_missed_tags <- no_other_antenna_tag - no_unique_tag # Calculate number of tags seen at other antennas but missed at antenna x
+
+  data.frame(det_eff,
+             no_unique_tag,
+             no_x_antenna_tag,
+             no_other_antenna_tag,
+             no_missed_tags)
+}
+
+up_func_array <- function(x, all) {
+
+  # Unique tags above x (the array for which effiency is being calculate)
+  other_antenna_tag <- unique(subset(rg, array_number > x$array_number[1], na.rm = TRUE)$tag_code) #select unique tag codes for all antennas upstream of antenna X
+
+  x_antenna_tag <- unique(x$tag_code, na.rm = TRUE) # select all unique tag codes for antenna x
+
+  no_x_antenna_tag <- length(unique(x$tag_code, na.rm = TRUE)) # The number of unique tag codes for antenna x
+
+  no_other_antenna_tag <- length(unique(subset(rg, array_number > x$array_number[1], na.rm = TRUE)$tag_code)) #calculate the number of unique tag codes for all antennas UPSTREAM of antenna x
+
+  no_unique_tag <- sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) #the number of tags that are in both antenna x and antennas UPSTREAM of antenna x
+
+  # Calculate detection efficicency: the number of tags detected at antenna x that were detected at antennas UPSTREAM of x divided by the total number of tags detected UPSTREAM of antenna x
+  det_eff <- round(sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) / no_other_antenna_tag, 2)
+
+  no_missed_tags <- no_other_antenna_tag - no_unique_tag # Calculate number of tags seen at other antennas but missed at antenna x
+
+  data.frame(antenna=NA,
+             det_eff,
+             no_unique_tag,
+             no_x_antenna_tag,
+             no_other_antenna_tag,
+             no_missed_tags)
+}
+
+down_func_array <- function(x, all) {
+
+  # Unique tags below x (the array for which effiency is being calculate)
+  other_antenna_tag <- unique(subset(rg, array_number < x$array_number[1], na.rm = TRUE)$tag_code) #select unique tag codes for all antennas downstream of antenna X
+
+  x_antenna_tag <- unique(x$tag_code, na.rm = TRUE) # select all unique tag codes for antenna x
+
+  no_x_antenna_tag <- length(unique(x$tag_code, na.rm = TRUE)) # The number of unique tag codes for antenna x
+
+  no_other_antenna_tag <- length(unique(subset(rg, array_number < x$array_number[1], na.rm = TRUE)$tag_code)) #calculate the number of unique tag codes for all antennas downstream of antenna x
+
+  no_unique_tag <- sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) #the number of tags that are in both antenna x and antennas downstream of antenna x
+
+  #calculate detection efficicency: the number of tags detected at antenna x that were detected at antennas downstream of x divided by the total number of tags detected downstream of antenna x
+  det_eff <- round(sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) / no_other_antenna_tag, 2)
+
+  no_missed_tags <- no_other_antenna_tag - no_unique_tag # Calculate number of tags seen at other antennas but missed at antenna x
+
+  data.frame(antenna = NA,
+             det_eff,
+             no_unique_tag,
+             no_x_antenna_tag,
+             no_other_antenna_tag,
+             no_missed_tags)
+}
+
+resident_func_array <- function(x, all) {
+
+  # Unique tags at arrays other than x (the array for which effiency is being calculate)
+  other_antenna_tag <- unique(subset(rg, array_number != x$array_number[1], na.rm = TRUE)$tag_code) # select unique tag codes for all antennas other than antenna X
+
+  x_antenna_tag <- unique(x$tag_code, na.rm = TRUE) # select all unique tag codes for antenna x
+
+  no_x_antenna_tag <- length(unique(x$tag_code, na.rm = TRUE)) # The number of unique tag codes for antenna x
+
+  no_other_antenna_tag <- length(unique(subset(rg, array_number != x$array_number[1], na.rm = TRUE)$tag_code)) #calculate the number of unique tag codes for all antennas other than antenna x
+
+  no_unique_tag <- sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) # the number of tags that are in both antenna x and antennas downstream of antenna x
+
+  # Calculate detection efficicency: the number of tags detected at antenna x that were detected at antennas other than x divided by the total number of tags detected other than antenna x
+  det_eff <- round(sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) / no_other_antenna_tag, 2)
+
+  no_missed_tags <- no_other_antenna_tag - no_unique_tag # Calculate number of tags seen at other antennas but missed at antenna x
+
+  data.frame(antenna = NA,
+             det_eff,
+             no_unique_tag,
+             no_x_antenna_tag,
+             no_other_antenna_tag,
+             no_missed_tags)
+}
