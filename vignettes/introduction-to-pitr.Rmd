@@ -14,8 +14,8 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
-  library(PITR)
 )
+library(PITR)
 
 # Only use for checking development; comment out when submitting to github
 # devtools::load_all()
