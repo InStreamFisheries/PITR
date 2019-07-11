@@ -22,15 +22,15 @@ Description: PIT telemetry produces very large quantities of data that are
     year, month, week, day and hour. Notably, the quality of the data summaries is
     reliant on antenna performance.
 Imports:
-    stringr,
-    plyr,
-    dplyr,
-    lubridate,
-    ggplot2,
-    scales,
-    purrr
+    stringr (>= 1.4.0),
+    plyr (>= 1.8.4),
+    dplyr (>= 0.8.0.1),
+    lubridate (>= 1.7.4),
+    ggplot2 (>= 3.1.0),
+    scales (>= 1.0.0),
+    purrr (>= 0.3.2)
 Depends:
-    R
+    R (>= 3.0.1)
 URL: https://github.com/InStreamFisheries/PITR
 BugReports: https://github.com/InStreamFisheries/PITR/issues
 Encoding: UTF-8
@@ -38,5 +38,6 @@ LazyData: TRUE
 RoxygenNote: 6.1.1
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 VignetteBuilder: knitr
