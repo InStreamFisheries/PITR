@@ -54,7 +54,7 @@
 #'
 #' # Run new_pit function
 #' new_pit(data = new, test_tags = tt, print_to_file = TRUE, time_zone = "America/Vancouver")
-#'
+#' @importFrom magrittr %>%
 #' @export
 
 new_pit <- function (data,
