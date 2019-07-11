@@ -9,4 +9,5 @@ export(new_pit)
 export(old_pit)
 export(pit_2019)
 export(volt_plot)
-importFrom(magrittr, "%>%")
+importFrom(magrittr,"%>%")
+
