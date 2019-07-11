@@ -24,14 +24,14 @@ Description: PIT telemetry produces very large quantities of data that are
 Imports:
     stringr (>= 1.4.0),
     plyr (>= 1.8.4),
-    dplyr (>= 0.8.0.1),
     lubridate (>= 1.7.4),
     ggplot2 (>= 3.1.0),
     scales (>= 1.0.0),
     purrr (>= 0.3.2),
     magrittr(>= 1.5)
 Depends:
-    R (>= 3.0.1)
+    R (>= 3.0.1),
+    dplyr (>= 0.8.0.1)
 URL: https://github.com/InStreamFisheries/PITR
 BugReports: https://github.com/InStreamFisheries/PITR/issues
 Encoding: UTF-8
