@@ -12,12 +12,14 @@ volt_plot(volt_dat, file_path = getwd())
 \item{file_path}{filepath to save the voltage plot}
 }
 \description{
-Function plots the voltage of each reader over the study duration.
+Function plots the voltage of each reader over the study
+  duration.
 }
 \details{
-Plot is saved in the user-specified working directory.
+A voltage dataframe is created by \code{\link{new_pit}} only.
+  Plot is saved in the user-specified working directory.
 }
 \examples{
-#save voltage plot to a working directory
+# Save voltage plot to a working directory
 volt_plot(new_dat$volt_dat)
 }

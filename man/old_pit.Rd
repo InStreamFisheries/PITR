@@ -2,32 +2,69 @@
 % Please edit documentation in R/old_pit.R
 \name{old_pit}
 \alias{old_pit}
-\title{Collates data from readers in old format (<V5.0)}
+\title{Collates data from readers in format (<V5.0) prior to April 2014}
 \usage{
-old_pit(data, test_tags = NULL, print_to_file = FALSE, time_zone = NULL)
+old_pit(data, test_tags = NULL, print_to_file = FALSE,
+  time_zone = NULL)
 }
 \arguments{
 \item{data}{filepath of the working directory containing data in old format}
 
-\item{test_tags}{concatenated list of PIT codes used for testing antenna performance}
+\item{test_tags}{concatenated list of PIT codes used for testing antenna
+performance}
 
 \item{print_to_file}{export metadata to working directory}
 
-\item{time_zone}{time zone where data were collected, default is time zone of user’s computer}
+\item{time_zone}{time zone where data were collected, default is computer time zone}
 }
 \value{
-List of data frames consisting of detection records, event records, non-detection and non-event records, duplicated detections, error records, and a character vector of unique readers.
+List of data frames consisting of detection records, event records,
+  error records, and a character vector of unique readers.
 }
 \description{
-Function collates data located in the working directory that were collected from readers with a firmware version earlier than 5.0 (April 2014). Users must define the working directory where the PIT files are located. If data is being collated from old and new formats, the user must separate working directories containing old and new data.
+Function collates data located in the working directory that
+  were collected from readers with a firmware version earlier than 5.0 (April
+  2014). Users must define the working directory where the PIT files are
+  located. If data is being collated from different formats, the user must
+  specify separate working directories for each format and use the applicable
+  PITR function to collate (see details).
 }
 \details{
-Data files must be in the format ‘pit_reader_mm_dd_yyyy.txt’. Note that pit_reader is the unique name of the PIT reader and that mm, dd and yyyy must be separated by underscores. If .txt is not at the end of each file, the user must enter .txt manually to each file prior to uploading the data. Users can use the \code{print_to_file} argument to export metadata to the working directory to confirm that data collation was performed correctly. Users can choose to specify the time zone where data were collected. Default for \code{time_zone} is the time zone of the user’s computer.
+Users can apply the \code{print_to_file} argument to export metadata
+  to the working directory to confirm that data collation was performed
+  correctly. Data files must be named in the following format:
+  \emph{pit_reader_mm_dd_yyyy.txt}. Note that pit_reader is the unique name
+  of the PIT reader and that mm, dd, and yyyy must be separated by
+  underscores. If .txt is not at the end of each file, the user must enter
+  .txt manually to each file prior to reading in the data. Users can choose
+  to specify the time zone where data were collected in the rare event that
+  this is different from the computer time zone.
+
+  Test tags can be removed from the data using the \code{test_tag} argument.
+  Users can also include a data frame called study tags in .csv or .txt format
+  (i.e., study_tags.csv or study_tags.txt) in the working directory that
+  contains the full list of tags used in a study in one column called
+  \emph{study_tags}. Tag codes for study tags and test tags must be complete: 900_230000010075 and not
+  10075, 0000_0000000183783293 and not 183783293. If the study tag data frame
+  exists, the function will automatically subset the data to retain only the
+  applicable tags. If no data frame of study tags exists in the working
+  directory, it is assumed that no tag codes are subsetted out of the
+  dataset.
+
+  There are three versions of ORFID PIT readers that can be collated using
+  PITR: an older format prior to 2014 (use \code{\link{old_pit}}), a version
+  from 2015 to 2018 (use \code{\link{new_pit}}), and the most current version
+  from 2019 (use \code{\link{pit_2019}}). To combine data from multiple
+  reader versions, separate files into working directories based on version,
+  collate using the appropriate PITR function, then use
+  \code{rbind(old_pit$all_det, new_pit$all_det, pit_2019$all_det)} to
+  concatenate the detection dataframes prior to further analysis. Note:
+  \code{pit_2019} is a preliminary function and will continue to be updated.
 }
 \examples{
-#define working directory
+# Define working directory
 old <- "./Old PIT Data/"
 
-#no test tags, no metadata to print to working directory, data were collected in the time zone "America/Vancouver"
+# No test tags, no metadata to print to working directory, data were collected in the time zone "America/Vancouver"
 old_pit(data = old, test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
 }

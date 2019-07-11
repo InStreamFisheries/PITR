@@ -4,15 +4,16 @@
 \alias{array_config}
 \title{Restructure the configuration of arrays}
 \usage{
-array_config(data, configuration, array_name = NULL, r1 = NULL, r2 = NULL,
-  r3 = NULL, r4 = NULL, reader_name = NULL,
+array_config(data, configuration, array_name = NULL, r1 = NULL,
+  r2 = NULL, r3 = NULL, r4 = NULL, reader_name = NULL,
   new_reader_1_antennas = NULL, ao1 = NULL, ao2 = NULL, ao3 = NULL,
   ao4 = NULL, an1 = NULL, an2 = NULL, an3 = NULL, an4 = NULL)
 }
 \arguments{
-\item{data}{telemetry dataset created using \code{\link{old_pit}} or \code{\link{new_pit}} function}
+\item{data}{telemetry dataset created using \code{\link{old_pit}} or
+\code{\link{new_pit}} function}
 
-\item{configuration}{either \code{combine}, \code{split} or \code{rename_antennas}}
+\item{configuration}{either "combine", "split" or "rename_antennas"}
 
 \item{array_name}{name of array}
 
@@ -24,7 +25,7 @@ array_config(data, configuration, array_name = NULL, r1 = NULL, r2 = NULL,
 
 \item{r4}{name of reader 4}
 
-\item{reader_name}{name of reader to split}
+\item{reader_name}{name of reader to split or for renaming antennas}
 
 \item{new_reader_1_antennas}{specific antennas to be grouped into reader 1}
 
@@ -45,28 +46,67 @@ array_config(data, configuration, array_name = NULL, r1 = NULL, r2 = NULL,
 \item{an4}{new antenna 4}
 }
 \value{
-Updated dataset for further analysis using \code{\link{det_eff}}, \code{\link{direction}}, \code{\link{direction_total}} and \code{\link{first_last}} functions.
+Updated dataset for further analysis using \code{\link{det_eff}},
+  \code{\link{direction}}, \code{\link{direction_total}} and
+  \code{\link{first_last}} functions.
 }
 \description{
-Function allows users to combine unique readers into an array, split readers with multiple antennas into single readers, and rename an antenna on one reader or one array. Use of this function allows users to manage data for further analysis using \code{\link{det_eff}}, \code{\link{direction}}, \code{\link{direction_total}}, and \code{\link{first_last}} functions.
+Function allows users to combine unique readers into an array,
+  split readers with multiple antennas into single readers, and rename antennas.
+  Use of this function allows users to
+  manage data for further analysis using \code{\link{det_eff}},
+  \code{\link{direction}}, \code{\link{direction_total}}, and
+  \code{\link{first_last}} functions.
 }
 \details{
-Function is dependent on what the user defines in the \code{configuration} argument. Argument \code{split} is used to split multi readers into two or more single readers to allow the combination of single readers into a user-specified array (see Example 1). Argument \code{combine} is used to combine up to four single readers into one array (see Example 2). If a user wants to combine a multi reader with another reader (either a multi or single reader), the user first must split the multi reader into two or more single readers and then combine them together into an array. Argument \code{new_reader_1_antennas} is used to define the antennas to group into reader 1. All other antennas are grouped into reader 2. Argument \code{rename_antennas} is used to either rename antennas part of an array (if \code{array_name} is specified) or antennas part of a reader (if \code{reader_name} is specified) (see Example 3). Users can rename only one antenna on one reader or one array. The function is then repeated to rename subsequent antennas. Arguments with the prefix ‘ao’ correspond to the old (or current) antenna numbering scheme, whereas arguments with the prefix ‘an’ correspond to the new antenna numbering scheme. Old antennas must be specified in order within the \code{array_config} function. Depending on the setup of the study, the user may have to run the \code{array_config} function several times. Note that use of arguments \code{combine}, \code{split} and \code{rename_antennas} must be iterative (see Examples).
+This function allows complex antenna arrangements to be organized into
+  arrays, or antennas in single arrays to be renamed sequentially. The \code{array_config}
+  function is iterative and the user may need to run the function several times
+  to reach the desired study configuration (see examples).
+
+  Function is dependent on what the user defines in the
+  \code{configuration} argument:
+
+   \enumerate{
+     \item \code{configuration = "split"}: Used to split multi
+     readers into two or more single readers to allow the combination of single
+     readers into a user-specified array (see Example 1). The arguments
+     \code{reader_name} and \code{new_reader_1_antennas} are required for "split".
+     Argument \code{new_reader_1_antennas} is used to define the
+     antennas to group into reader 1. All other antennas are grouped into reader 2.
+     \item \code{configuration = "combine"}: Used to combine up to four \emph{single} readers into one array
+     (see Example 2). Arguments \code{array_name} and \code{r1} through \code{rx} are required for "combine".
+     If a user wants to combine a multi reader with another
+     reader (either a multi or single reader), the user first must split the
+     multi reader into two or more single readers and then combine them together
+     into an array. If a user needed to split a multi reader with four single readers for use in
+     "combine", they would need to run configuration "split" four times.
+     \item \code{configuration = "rename_antennas"}: Used to either rename antennas part
+     of an array (if \code{array_name} is specified) or antennas part of a
+     reader (if \code{reader_name} is specified) (see Example 3). Arguments
+     \code{ao1} through \code{aox} and \code{an1} through \code{anx} are require for
+     "rename_antennas". Arguments with the
+     prefix \emph{ao} correspond to the old (or current) antenna numbering scheme,
+     whereas arguments with the prefix \emph{an} correspond to the new antenna
+     numbering scheme. Users can rename up to four antennas for one reader or one array.
+   }
 }
 \examples{
-#load test dataset containing detections from a multi reader with two antennas
+# Load test dataset containing detections from a multi reader with two antennas
 oregon_rfid <- new_pit(data = "oregon_rfid", test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
 
-#Example 1: split a multi reader with two antennas into two single readers
-#users can split multi readers with two or more antennas into two or more single readers that can later be combined into user-defined arrays
+# Example 1: Split a multi reader with two antennas into two single readers
+# Users can split multi readers with two or more antennas into two or more single readers that can later be combined into user-defined arrays
 split <- array_config(data = oregon_rfid, configuration = "split", reader_name = "dam", new_reader_1_antennas = "1")
 
-#Example 2: combine two single readers into an array called fishway
-#users can combine two or more single readers (using a raw or split dataset) into arrays
-#if there is an existing dataset with two or more readers (multi or single readers or a combination), the user can start by combining the readers into arrays
+# Example 2: Combine two single readers into an array called fishway
+# Users can combine two or more single readers (using a raw or split dataset) into arrays
+# If there is an existing dataset with two or more readers (multi or single readers or a combination), the user can start by combining the readers into arrays
 combine <- array_config(data = split, configuration = "combine", array_name = "fishway", r1 = "dam_1", r2 = "dam_2")
 
-#Example 3: rename the two antennas
-rename_one <- array_config(data = combine, configuration = "rename_antennas", array_name = "fishway", ao1 = "1", an1 = "3")
-rename_two <- array_config(data = rename_one, configuration = "rename_antennas", array_name = "fishway", ao1 = "2", an1 = "4")
+# Example 3: Rename the two antennas. Antenna 1 becomes antenna 3, and antenna 2 becomes antenna 4.
+rename_one <- array_config(data = combine, configuration = "rename_antennas", array_name = "fishway", ao1 = 1, an1 = 3)
+rename_two <- array_config(data = rename_one, configuration = "rename_antennas", array_name = "fishway", ao1 = 2, an1 = 4)
+# The above calls could be combined:
+rename_multiple <- array_config(data = combine, configuration = "rename_antennas", array_name = "fishway", ao1 = 1, an1 = 3, ao2 = 2, an2 = 4)
 }

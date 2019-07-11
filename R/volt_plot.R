@@ -1,33 +1,35 @@
 #' @title Plots voltage of each reader over the study duration
 #'
-#' @description Function plots the voltage of each reader over the study duration.
+#' @description Function plots the voltage of each reader over the study
+#'   duration.
 #' @param volt_dat voltage dataset created using \code{\link{new_pit}} function
 #' @param file_path filepath to save the voltage plot
-#' @details Plot is saved in the user-specified working directory.
+#' @details A voltage dataframe is created by \code{\link{new_pit}} only.
+#'   Plot is saved in the user-specified working directory.
 #' @examples
-#' #save voltage plot to a working directory
+#' # Save voltage plot to a working directory
 #' volt_plot(new_dat$volt_dat)
 #' @export
 
 volt_plot <- function(volt_dat, file_path = getwd()) {
-  fig_name <- paste(file_path, "reader_voltage", ".png")
-  png(fig_name, height = 1200, width = 1200)
-  par(mfrow = c(length(unique(volt_dat$reader)), 1), mar = c(1.5, 1.5, 1, 1.5), oma = c(4, 4, 0, 0), cex = 1.5)
-  v2<- dplyr::arrange(volt_dat, date_time)
-  d_ply(v2, c("reader"), function(volt_dat) {
-    plot(volt ~ date_time, data = volt_dat,
-         ylim = c(min(volt_dat$volt)-0.5, max(volt_dat$volt)+0.5),
-         xlim = c(min(volt_dat$date_time), max(volt_dat$date_time)),
-         type = "b",
-         las = 1,
-         axes = FALSE)
-    x_range <- seq(min(as.POSIXct(volt_dat$date)), max(as.POSIXct(volt_dat$date)), by = "days")
-    r <- range(volt_dat$date_time)
-    axis.POSIXct(1, at = seq(r[1], r[2], by = "weeks"), format = "%b %d", cex.axis = 0.8)
-    axis(side = 2, col = "black", las = 1)
-    mtext(volt_dat$reader[1], side = 3, adj = 0.02, line = -1.5, cex = 1.5)
-    mtext("Voltage", 2, cex = 2, line = 3)
-    box()
-  })
-  dev.off()
+  fig_name <- sprintf("%s/reader_voltage.png", file_path)
+
+  v2 <- dplyr::arrange(volt_dat, date_time)
+
+  vplot <- ggplot2::ggplot(v2, ggplot2::aes(x = date_time, y = volt)) +
+    ggplot2::geom_point() +
+    ggplot2::geom_line() +
+    ggplot2::scale_x_datetime(labels = scales::date_format("%Y-%b-%d")) +
+    ggplot2::ylab("Voltage") +
+    ggplot2::xlab("") +
+    ggplot2::facet_wrap(~ reader, ncol = 1) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(panel.grid.major = ggplot2::element_blank(),
+                   panel.grid.minor = ggplot2::element_blank(),
+                   strip.background = ggplot2::element_blank(),
+                   strip.text = ggplot2::element_text(size = 16),
+                   axis.text = ggplot2::element_text(size = 14),
+                   axis.title = ggplot2::element_text(size = 14))
+
+  ggplot2::ggsave(filename = fig_name, vplot, scale = 2) # Might have to adjust scale depending on testing.
 }

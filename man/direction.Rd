@@ -2,26 +2,32 @@
 % Please edit documentation in R/direction.R
 \name{direction}
 \alias{direction}
-\title{Computes the direction of movement}
+\title{Computes the direction of movement for each tag detection}
 \usage{
 direction(data)
 }
 \arguments{
-\item{data}{telemetry dataset created using \code{\link{old_pit}}, \code{\link{new_pit}} or \code{\link{array_config}}}
+\item{data}{telemetry dataset created using \code{\link{old_pit}},
+\code{\link{new_pit}} or \code{\link{array_config}}}
 }
 \value{
 Data frame summarizing the direction of movement.
 }
 \description{
-Function that determines the direction of movement if there were two or more antennas deployed in the study.
+Function that determines the direction of movement for each tag detection
+   on each antenna if there were two or more antennas deployed in a study.
 }
 \details{
-User can apply the direction function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use an updated dataset created by the \code{\link{array_config}} function.
+Antennas must be numbered sequentially and any antennas from single readers
+  that have not be renamed using \code{array_config} (i.e., the antenna number is NA)
+  will not be considered by the function. Users can apply the direction function to the original dataset
+  created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or
+  use an updated dataset created by the \code{\link{array_config}} function.
 }
 \examples{
-#load test dataset containing detections from a multi reader with two antennas
+# Load test dataset containing detections from a multi reader with two antennas
 oregon_rfid <- new_pit(data = "oregon_rfid", test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
 
-#determine the direction of fish movement
+# Determine the direction of fish movement
 direction(data = oregon_rfid)
 }

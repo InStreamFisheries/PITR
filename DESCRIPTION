@@ -1,9 +1,12 @@
 Package: PITR
 Title: Functions to collate, manage and summarize PIT telemetry data
-Version: 1.1.0
+Version: 1.2.0
 Date: 2018-01-01
-Authors: Joel Harding, Douglas Braun, Nicholas Burnett, Annika Putt
-Maintainer: Nicholas Burnett <nich@instream.net>
+Authors@R: c(
+    person("Joel", "Harding", role = "aut"),
+    person("Annika", "Putt", email = "annika@instream.net", role = c("aut", "cre")),
+    person("Douglas", "Braun", role = "aut"),
+    person("Nicholas", "Burnett", role = "aut"))
 Description: PIT telemetry produces very large quantities of data that are
     difficult to manage in raw format. The PITR package is designed to automate and
     standardize the process of collating, managing, summarizing and querying PIT telemetry
@@ -18,16 +21,23 @@ Description: PIT telemetry produces very large quantities of data that are
     voltage of each reader over the study duration. Users can summarize data by
     year, month, week, day and hour. Notably, the quality of the data summaries is
     reliant on antenna performance.
+Imports:
+    stringr (>= 1.4.0),
+    plyr (>= 1.8.4),
+    dplyr (>= 0.8.0.1),
+    lubridate (>= 1.7.4),
+    ggplot2 (>= 3.1.0),
+    scales (>= 1.0.0),
+    purrr (>= 0.3.2)
 Depends:
-    stringr,
-    plyr,
-    dplyr,
-    lubridate
+    R (>= 3.0.1)
 URL: https://github.com/InStreamFisheries/PITR
 BugReports: https://github.com/InStreamFisheries/PITR/issues
 Encoding: UTF-8
 LazyData: TRUE
-RoxygenNote: 6.0.1
-Suggests: knitr,
-    rmarkdown
+RoxygenNote: 6.1.1
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat
 VignetteBuilder: knitr

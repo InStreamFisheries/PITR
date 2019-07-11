@@ -4,34 +4,51 @@
 \alias{first_last}
 \title{Summarizes first and last detections on individual antennas}
 \usage{
-first_last(data, resolution = NULL, start_date = min(data$date_time),
-  end_date = max(data$date_time))
+first_last(data, resolution = NULL, start_date = NULL,
+  end_date = NULL)
 }
 \arguments{
-\item{data}{telemetry dataset created using \code{\link{old_pit}}, \code{\link{new_pit}} or \code{\link{array_config}}}
+\item{data}{telemetry dataset created using \code{\link{old_pit}},
+\code{\link{new_pit}} or \code{\link{array_config}}}
 
 \item{resolution}{summarize data by year, month, week, day or hour (optional)}
 
-\item{start_date}{start date of period of interest, default is first date in dataset}
+\item{start_date}{start date of period of interest, default is first date in
+dataset}
 
-\item{end_date}{end date of period of interest, default is last date in dataset}
+\item{end_date}{end date of period of interest, default is last date in
+dataset}
 }
 \value{
-Data frame summarizing the first and last detections on individual antennas.
+Data frame summarizing the first and last detections on individual
+  antennas.
 }
 \description{
-Function summarizes the first and last detections and the difference in time (in minutes and days) between the first and last detections on each antenna over a user-defined period of time. Data can be summarized by year, month, week, day or hour.
+Function summarizes the first and last detections and the
+  difference in time (in minutes and days) between the first and last
+  detections for each fish on each antenna over a user-defined period of time.
+  Data can be summarized by year, month, week, day or hour.
 }
 \details{
-Users can apply the \code{first_last} function to the original dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}} function, or use an updated dataset created by the \code{\link{array_config}} function. Arguments \code{start_date} and \code{end_date}, if specified, must be entered as yyyy-mm-dd hh:mm:ss. Default for the resolution argument will summarize the first and last detections on antennas over the entire time period present in the dataset.
+\code{first_last} summarizes first and last detections for each tag
+  on each antenna. In the data output, antennas are organized into arrays. If
+  no array name has been specified \code{first_last} defaults the reader name
+  to the array name and summarizes by reader/array. Users can apply the
+  \code{first_last} function to the original
+  dataset created by the \code{\link{old_pit}} or \code{\link{new_pit}}
+  function, or use an updated dataset created by the
+  \code{\link{array_config}} function. Arguments \code{start_date} and
+  \code{end_date}, if specified, must be entered as yyyy-mm-dd hh:mm:ss.
+  Default for the resolution argument will summarize the first and last
+  detections on antennas over the entire time period present in the dataset.
 }
 \examples{
-#load test dataset containing detections from a multi reader with two antennas
+# Load test dataset containing detections from a multi reader with two antennas
 oregon_rfid <- new_pit(data = "oregon_rfid", test_tags = NULL, print_to_file = FALSE, time_zone = "America/Vancouver")
 
-#summarize first and last detections by day with a start date of 2015-10-15 08:00:00
+# Summarize first and last detections by day with a start date of 2015-10-15 08:00:00
 first_last(data = oregon_rfid, resolution = "day", start_date = "2015-10-15 08:00:00")
 
-#summarize first and last detections by month
+# Summarize first and last detections by month
 first_last(data = oregon_rfid, resolution = "month")
 }
