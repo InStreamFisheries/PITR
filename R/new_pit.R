@@ -126,6 +126,10 @@ new_pit <- function (data,
       dplyr::mutate(date_time = lubridate::with_tz(date_time, time_zone)) %>%
       dplyr::mutate(time_zone = time_zone)
   }
+  
+  
+  if(sum(is.na(v$date)) > 0) print("Warning: Not all dates parsed; look for corrupt dates in voltage data")
+  if(sum(is.na(v$date_time)) > 0) print("Warning: Not all date-times parsed; look for corrupt dates and times in voltage data")
 
   # Find the location of the "V" in each row of the data frame
   # I'm assuming V will only occur once in the row.
@@ -327,6 +331,9 @@ new_pit <- function (data,
       dplyr::mutate(time_zone = time_zone) %>%
       dplyr::mutate(date = lubridate::date(date_time))
   }
+  
+  if(sum(is.na(all_det$date)) > 0) print("Warning: Not all dates parsed; look for corrupt dates")
+  if(sum(is.na(all_det$date_time)) > 0) print("Warning: Not all date-times parsed; look for corrupt dates and times")
 
   all_det <- all_det %>%
     dplyr::select(reader, antenna, det_type, date, time, date_time, time_zone, dur, tag_type,
