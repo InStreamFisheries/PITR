@@ -116,13 +116,13 @@ new_pit <- function (data,
 
     v <- v %>%
       dplyr::mutate(date = lubridate::ymd(date)) %>%
-      dplyr::mutate(date_time = lubridate::ymd_hms(paste(date, time)))
+      dplyr::mutate(date_time = lubridate::ymd_hms(paste(date, time), tz = Sys.timezone()))
   }
 
   if (!is.null(time_zone)) { # Manipulate time zone if specified by user
 
     v <- v %>%
-      dplyr::mutate(date_time = lubridate::ymd_hms(paste(date, time))) %>%
+      dplyr::mutate(date_time = lubridate::ymd_hms(paste(date, time), tz = Sys.timezone())) %>%
       dplyr::mutate(date_time = lubridate::with_tz(date_time, time_zone)) %>%
       dplyr::mutate(time_zone = time_zone)
   }
@@ -320,13 +320,13 @@ new_pit <- function (data,
   # Create new column that combines date and time
   if (is.null(time_zone)) {
     all_det <- all_det %>%
-      dplyr::mutate(date_time = lubridate::ymd_hms(paste(date, time))) %>%
+      dplyr::mutate(date_time = lubridate::ymd_hms(paste(date, time), tz = Sys.timezone())) %>%
       dplyr::mutate(time_zone = Sys.timezone())
   }
 
   if (!is.null(time_zone)) {
     all_det <- all_det %>%
-      dplyr::mutate(date_time = lubridate::ymd_hms(paste(date, time))) %>%
+      dplyr::mutate(date_time = lubridate::ymd_hms(paste(date, time), tz = Sys.timezone())) %>%
       dplyr::mutate(date_time = lubridate::with_tz(date_time, time_zone)) %>%
       dplyr::mutate(time_zone = time_zone) %>%
       dplyr::mutate(date = lubridate::date(date_time))
