@@ -48,14 +48,12 @@ direction_total <- function(data,
   if (is.null(start_date)) start_date <- min(data$date_time) else start_date <- lubridate::ymd_hms(start_date, tz = data$time_zone[1])
   if (is.null(end_date)) end_date <- max(data$date_time) else end_date <- lubridate::ymd_hms(end_date, tz = data$time_zone[1])
 
-  # Remove single reader rows from data set (created with pit_data function)
-  xv <- subset(data, antenna != "NA")
-
-  # Filter data
-  rg <- dplyr::filter(xv, date_time >= start_date & date_time <= end_date)
-
-  # Create new temporal columns
-  rg <- rg %>%
+  rg <- data %>% 
+    # Remove single reader rows from data set (created with pit_data function)
+    dplyr::filter(antenna != "NA") %>% 
+    # Filter data for start and end date
+    dplyr::filter(date_time >= start_date & date_time <= end_date) %>% 
+    # Create new temporal columns
     dplyr::mutate(year = lubridate::year(date_time)) %>%
     dplyr::mutate(month = lubridate::month(date_time)) %>%
     dplyr::mutate(week = lubridate::week(date_time)) %>%
@@ -67,145 +65,168 @@ direction_total <- function(data,
 
   if (is.null(resolution)) {
 
-    dir <- plyr::ddply(rg, c("array", "tag_code"), function(x) {
-      xx <- x[order(x$date_time), ]
+    dir <- rg %>% 
+      # Order by date and time
+      dplyr::arrange(date_time) %>% 
+      dplyr::group_by(array, tag_code) %>% 
       # If the diffference between two consecutive detections is positive then
       # up/down (direction) = up, if it's negative then direction = down, if
       # it's 0 then direction = N.
-      xx$direction <- ifelse(c(0, diff(xx$antenna)) > 0, "up", ifelse(c(0, diff(xx$antenna)) < 0, "down", "N"))
-      data.frame(xx)
-    })
-
-    dir_c <- subset(dir, direction != "N") # Remove rows where direction is N
-    dir_cs <- dir_c[order(dir_c$array, dir_c$tag_code, dir_c$date_time), ]
-    dir_t <- plyr::ddply(dir_cs, c("array", "tag_code"), direction_summary)
-    return(dir_t)
+      dplyr::mutate(direction = ifelse(c(0, diff(antenna)) > 0, "up", 
+                                ifelse(c(0, diff(antenna)) < 0, "down", 
+                                       "N"))) %>% 
+      # Remove rows where direction is N
+      dplyr::filter(direction != "N") %>% 
+      # Perform a second grouping to apply summary function for each date
+      dplyr::arrange(array, tag_code, date_time) %>% 
+      dplyr::group_by(array, tag_code) %>% 
+      # Apply custon direction summary function
+      dplyr::group_modify(~direction_summary(.x))
+    
+    return(dir)
   }
 
   else if (resolution == "hour") {
-    dir <- plyr::ddply(rg, c("array", "tag_code", "year", "month", "day", "hour"), function(x) {
-      xx <- x[order(x$date_time), ]
-      xx$direction <- ifelse(c(0, diff(xx$antenna)) > 0, "up", ifelse(c(0, diff(xx$antenna)) < 0, "down", "N"))
-      data.frame(xx)
-    })
-
-    dir_c <- subset(dir, direction != "N")
-    dir_cs <- dir_c[order(dir_c$array, dir_c$tag_code, dir_c$date_time), ]
-    dir_t <- plyr::ddply(dir_cs, c("array", "tag_code", "year", "month", "day", "hour"),
-                         direction_summary)
+    
+    dir <- rg %>% 
+      dplyr::arrange(date_time) %>% 
+      dplyr::group_by(array, tag_code, year, month, day, hour) %>% 
+      dplyr::mutate(direction = ifelse(c(0, diff(antenna)) > 0, "up", 
+                                       ifelse(c(0, diff(antenna)) < 0, "down", 
+                                              "N"))) %>% 
+      dplyr::filter(direction != "N") %>% 
+      dplyr::arrange(array, tag_code, date_time) %>% 
+      dplyr::group_by(array, tag_code, year, month, day, hour) %>% 
+      dplyr::group_modify(~direction_summary(.x)) %>% 
+      ungroup
 
     # Add a date column that represents the first moment in time at the level of subsetting
-    dir_t <- dir_t %>%
+    dir2 <- dir %>%
       dplyr::mutate(date = lubridate::ymd(sprintf("%s-%s-%s", year, month, day))) %>%
       dplyr::mutate(date = update(date, hour = hour)) %>%
       dplyr::mutate(date = lubridate::ymd_hms(date, tz = data$time_zone[1])) %>%
       dplyr::select(array, tag_code, year, month, day, hour, date, first_det, first_dir,
                     last_det, last_dir, time_diff_days, time_diff_mins)
-
-    return(dir_t)
+    
+    return(dir2)
   }
 
   else if (resolution == "day") {
 
-    dir <- plyr::ddply(rg, c("array", "tag_code", "year", "month", "day"), function(x) {
-      xx <- x[order(x$date_time), ]
-      xx$direction <- ifelse(c(0, diff(xx$antenna)) > 0, "up", ifelse(c(0, diff(xx$antenna)) < 0, "down", "N"))
-      data.frame(xx)
-    })
-
-    dir_c <- subset(dir, direction != "N")
-    dir_cs <- dir_c[order(dir_c$array, dir_c$tag_code, dir_c$date_time), ]
-    dir_t <- plyr::ddply(dir_cs, c("array", "tag_code", "year", "month", "day"), direction_summary)
+    dir <- rg %>% 
+      dplyr::arrange(date_time) %>% 
+      dplyr::group_by(array, tag_code, year, month, day) %>% 
+      dplyr::mutate(direction = ifelse(c(0, diff(antenna)) > 0, "up", 
+                                       ifelse(c(0, diff(antenna)) < 0, "down", 
+                                              "N"))) %>% 
+      dplyr::filter(direction != "N") %>% 
+      dplyr::arrange(array, tag_code, date_time) %>% 
+      dplyr::group_by(array, tag_code, year, month, day) %>% 
+      dplyr::group_modify(~direction_summary(.x)) %>% 
+      ungroup
 
     # Add a date column that represents the first moment in time at the level of subsetting
-    dir_t <- dir_t %>%
+    dir2 <- dir %>%
       dplyr::mutate(date = lubridate::ymd(sprintf("%s-%s-%s", year, month, day))) %>%
       dplyr::mutate(date = lubridate::ymd(date, tz = data$time_zone[1])) %>%
       dplyr::select(array, tag_code, year, month, day, date, first_det, first_dir, last_det,
                     last_dir, time_diff_days, time_diff_mins)
-
-    return(dir_t)
+    
+    return(dir2)
   }
 
   else if (resolution == "week") {
 
-    dir <- plyr::ddply(rg, c("array", "tag_code", "year", "month", "week"), function(x) {
-      xx <- x[order(x$date_time), ]
-      xx$direction <- ifelse(c(0, diff(xx$antenna)) > 0, "up", ifelse(c(0, diff(xx$antenna)) < 0, "down", "N"))
-      data.frame(xx)
-    })
-
-    dir_c <- subset(dir, direction != "N")
-    dir_cs <- dir_c[order(dir_c$array, dir_c$tag_code, dir_c$date_time), ]
-    dir_t <- plyr::ddply(dir_cs, c("array", "tag_code", "year", "month", "week"), direction_summary)
-
+    dir <- rg %>% 
+      dplyr::arrange(date_time) %>% 
+      dplyr::group_by(array, tag_code, year, month, week) %>% 
+      dplyr::mutate(direction = ifelse(c(0, diff(antenna)) > 0, "up", 
+                                       ifelse(c(0, diff(antenna)) < 0, "down", 
+                                              "N"))) %>% 
+      dplyr::filter(direction != "N") %>% 
+      dplyr::arrange(array, tag_code, date_time) %>% 
+      dplyr::group_by(array, tag_code, year, month, week) %>% 
+      dplyr::group_modify(~direction_summary(.x)) %>% 
+      ungroup
+    
     # Add a date column with the first day of the week and the first hour
-    dir_t <- dir_t %>%
+    dir2 <- dir %>%
       dplyr::mutate(date = lubridate::ymd(sprintf("%s-%s-%s", year, 1, 1))) %>%  # Start at Jan 1
       dplyr::mutate(first.day = as.numeric(format(date, "%w"))) %>%
       dplyr::mutate(date = date + 7 * week - first.day - 7) %>%  # Add in 7 days for each week up to the specified week minus the first.day and minus one week to get the start of the week
       dplyr::mutate(date = lubridate::ymd(date, tz = data$time_zone[1])) %>%
       dplyr::select(array, tag_code, year, month, week, date, first_det, first_dir, last_det,
                     last_dir, time_diff_days, time_diff_mins)
-
-    return(dir_t)
+    
+    return(dir2)
   }
 
   else if (resolution == "month") {
 
-    dir <- plyr::ddply(rg, c("array", "tag_code", "year", "month"), function(x) {
-      xx <- x[order(x$date_time), ]
-      xx$direction <- ifelse(c(0, diff(xx$antenna)) > 0, "up", ifelse(c(0, diff(xx$antenna)) < 0, "down", "N"))
-      data.frame(xx)
-    })
-
-    dir_c <- subset(dir, direction != "N")
-    dir_cs <- dir_c[order(dir_c$array, dir_c$tag_code, dir_c$date_time), ]
-    dir_t <- plyr::ddply(dir_cs, c("array", "tag_code", "year", "month"), direction_summary)
-
+    dir <- rg %>% 
+      dplyr::arrange(date_time) %>% 
+      dplyr::group_by(array, tag_code, year, month) %>% 
+      dplyr::mutate(direction = ifelse(c(0, diff(antenna)) > 0, "up", 
+                                       ifelse(c(0, diff(antenna)) < 0, "down", 
+                                              "N"))) %>% 
+      dplyr::filter(direction != "N") %>% 
+      dplyr::arrange(array, tag_code, date_time) %>% 
+      dplyr::group_by(array, tag_code, year, month) %>% 
+      dplyr::group_modify(~direction_summary(.x)) %>% 
+      ungroup
+    
     # Add a date column that represents the first moment in time at the level of subsetting
-    dir_t <- dir_t %>%
+    dir2 <- dir %>%
       dplyr::mutate(date = lubridate::ymd(sprintf("%s-%s-%s", year, month, 1))) %>%
       dplyr::mutate(date = lubridate::ymd(date, tz = data$time_zone[1])) %>%
       dplyr::select(array, tag_code, year, month, date, first_det, first_dir, last_det,
                     last_dir, time_diff_days, time_diff_mins)
-
-    return(dir_t)
+    
+    return(dir2)
   }
 
   else if (resolution == "year") {
-
-    dir <- plyr::ddply(rg, c("array", "tag_code", "year"), function(x) {
-      xx <- x[order(x$date_time), ]
-      xx$direction <- ifelse(c(0, diff(xx$antenna)) > 0, "up", ifelse(c(0, diff(xx$antenna)) < 0, "down", "N"))
-      data.frame(xx)
-    })
-
-    dir_c <- subset(dir, direction != "N")
-    dir_cs <- dir_c[order(dir_c$array, dir_c$tag_code, dir_c$date_time), ]
-    dir_t <- plyr::ddply(dir_cs, c("array", "tag_code", "year"), direction_summary)
-
+    
+    dir <- rg %>% 
+      dplyr::arrange(date_time) %>% 
+      dplyr::group_by(array, tag_code, year) %>% 
+      dplyr::mutate(direction = ifelse(c(0, diff(antenna)) > 0, "up", 
+                                       ifelse(c(0, diff(antenna)) < 0, "down", 
+                                              "N"))) %>% 
+      dplyr::filter(direction != "N") %>% 
+      dplyr::arrange(array, tag_code, date_time) %>% 
+      dplyr::group_by(array, tag_code, year, month) %>% 
+      dplyr::group_modify(~direction_summary(.x)) %>% 
+      ungroup
+    
     # Add a date column that represents the first moment in time at the level of subsetting
-    dir_t <- dir_t %>%
+    dir2 <- dir %>%
       dplyr::mutate(date = lubridate::ymd(sprintf("%s-%s-%s", year, 1, 1))) %>%
       dplyr::mutate(date = lubridate::ymd(date, tz = data$time_zone[1])) %>%
       dplyr::select(array, tag_code, year, date, first_det, first_dir, last_det, last_dir,
                     time_diff_days, time_diff_mins)
-
-    return(dir_t)
+    
+    return(dir2)
   }
 }
 
 direction_summary <- function(x){
-  x[order(x$date_time), ]
+  x <- x %>% 
+    dplyr::arrange(date_time)
   first_det <- min(x$date_time)
   first_dir <- dplyr::first(x$direction)
   last_det <- max(x$date_time)
   last_dir <- dplyr::last(x$direction)
-
+  
   # Calculate time differences b/w first and last detections
   time_diff <- lubridate::interval(first_det, last_det)
   time_diff_days <- round(time_diff / lubridate::ddays(1), 2)
   time_diff_mins <- round(time_diff / lubridate::dminutes(1), 2)
-  data.frame(first_det, first_dir, last_det, last_dir, time_diff_days, time_diff_mins)
+  final <- data.frame(first_det, 
+                      first_dir, 
+                      last_det, 
+                      last_dir, 
+                      time_diff_days, 
+                      time_diff_mins, 
+                      stringsAsFactors = FALSE)
 }

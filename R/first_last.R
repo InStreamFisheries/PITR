@@ -43,11 +43,8 @@ first_last <- function(data,
   if (is.null(start_date)) start_date <- min(data$date_time) else start_date <- lubridate::ymd_hms(start_date, tz = data$time_zone[1])
   if (is.null(end_date)) end_date <- max(data$date_time) else end_date <- lubridate::ymd_hms(end_date, tz = data$time_zone[1])
 
-  # Filter data
-  rg <- dplyr::filter(data, date_time >= start_date  & date_time <= end_date)
-
-  # create new temporal columns
-  rg <- rg %>%
+  # Filter data and create temporal columns
+  rg <- dplyr::filter(data, date_time >= start_date  & date_time <= end_date) %>% 
     dplyr::mutate(year = lubridate::year(date_time)) %>%
     dplyr::mutate(month = lubridate::month(date_time)) %>%
     dplyr::mutate(week = lubridate::week(date_time)) %>%
@@ -58,46 +55,52 @@ first_last <- function(data,
   if (!"array" %in% names(rg)) rg$array <- rg$reader
 
   if (is.null(resolution)) {
-
-    fl.df <- plyr::ddply(rg, c("array", "antenna", "tag_code"), diff_func)
-
+    
+    fl.df <- rg %>% 
+      dplyr::group_by(array, antenna, tag_code) %>% 
+      group_modify(~diff_func(.x)) %>% 
+      ungroup
+    
     return(fl.df)
   }
 
   if (resolution == "year") {
-
-    fl.df <- plyr::ddply(rg, c("array", "antenna", "tag_code", "year"), diff_func)
-
-    # Add a date column that represents the first moment in time at the level of subsetting
-    fl.df$date <- lubridate::ymd(sprintf("%s-%s-%s", fl.df$year, 1, 1))
-    fl.df$date <- lubridate::ymd(fl.df$date, tz = data$time_zone[1])
-
-    fl.df <- dplyr::select(fl.df, array, antenna, tag_code, year, date, first_det, last_det,
+    
+    fl.df <- rg %>% 
+      dplyr::group_by(array, antenna, tag_code, year) %>% 
+      dplyr::group_modify(~diff_func(.x)) %>% 
+      ungroup %>% 
+      # Add a date column that represents the first moment in time at the level of subsetting
+      dplyr::mutate(date = lubridate::ymd(sprintf("%s-%s-%s", year, 1, 1))) %>% 
+      dplyr::mutate(date = lubridate::ymd(date, tz = data$time_zone[1])) %>% 
+      dplyr::select(array, antenna, tag_code, year, date, first_det, last_det,
                            time_diff_days, time_diff_mins)
-
+    
     return(fl.df)
   }
 
   if (resolution == "month") {
-
-    fl.df <- plyr::ddply(rg, c("array", "antenna", "tag_code", "year", "month"), diff_func)
-
-    # Add a date column that represents the first moment in time at the level of subsetting
-    fl.df <- fl.df %>%
+    
+    fl.df <- rg %>% 
+      dplyr::group_by(array, antenna, tag_code, year, month) %>% 
+      dplyr::group_modify(~diff_func(.x)) %>% 
+      ungroup %>% 
+      # Add a date column that represents the first moment in time at the level of subsetting
       dplyr::mutate(date = lubridate::ymd(sprintf("%s-%s-%s", year, month, 1))) %>%
       dplyr::mutate(date = lubridate::ymd(date, tz = data$time_zone[1])) %>%
       dplyr::select(array, antenna, tag_code, year, month, date, first_det, last_det,
                     time_diff_days, time_diff_mins)
-
+    
     return(fl.df)
   }
 
   if (resolution == "week") {
-
-    fl.df <- plyr::ddply(rg, c("array", "antenna", "tag_code", "year", "month", "week"), diff_func)
-
-    # Add a date column that represents the first moment in time at the level of subsetting
-    fl.df <- fl.df %>%
+    
+    fl.df <- rg %>% 
+      dplyr::group_by(array, antenna, tag_code, year, month, week) %>% 
+      dplyr::group_modify(~diff_func(.x)) %>% 
+      ungroup %>% 
+      # Add a date column that represents the first moment in time at the level of subsetting
       dplyr::mutate(date = lubridate::ymd(sprintf("%s-%s-%s", year, 1, 1))) %>%  # Start at Jan 1
       dplyr::mutate(first.day = as.numeric(format(date, "%w"))) %>%
       dplyr::mutate(date = date + 7 * week - first.day - 7) %>%  # Add in 7 days for each week up to the specified week minus the first.day and minus one week to get the start of the week
@@ -110,30 +113,32 @@ first_last <- function(data,
 
   if (resolution == "day") {
 
-    fl.df <- plyr::ddply(rg, c("array", "antenna", "tag_code", "year", "month", "week", "day"), diff_func)
-
-    # Add a date column that represents the first moment in time at the level of subsetting
-    fl.df <- fl.df %>%
+    fl.df <- rg %>% 
+      dplyr::group_by(array, antenna, tag_code, year, month, week, day) %>% 
+      dplyr::group_modify(~diff_func(.x)) %>% 
+      ungroup %>% 
+      # Add a date column that represents the first moment in time at the level of subsetting
       dplyr::mutate(date = lubridate::ymd(sprintf("%s-%s-%s", year, month, day))) %>%
       dplyr::mutate(date = lubridate::ymd(date, tz = data$time_zone[1])) %>%
       dplyr::select(array, antenna, tag_code, year, month, week, day, date, first_det, last_det,
                     time_diff_days, time_diff_mins)
-
+    
     return(fl.df)
   }
 
   if (resolution == "hour") {
-
-    fl.df <- plyr::ddply(rg, c("array", "antenna", "tag_code", "year", "month", "week", "day", "hour"), diff_func)
-
-    # Add a date column that represents the first moment in time at the level of subsetting
-    fl.df <- fl.df %>%
+    
+    fl.df <- rg %>% 
+      dplyr::group_by(array, antenna, tag_code, year, month, week, day, hour) %>% 
+      dplyr::group_modify(~diff_func(.x)) %>% 
+      ungroup %>% 
+      # Add a date column that represents the first moment in time at the level of subsetting
       dplyr::mutate(date = lubridate::ymd(sprintf("%s-%s-%s", year, month, day))) %>%
       dplyr::mutate(date = update(date, hour = hour)) %>%
       dplyr::mutate(date = lubridate::ymd_hms(date, tz = data$time_zone[1])) %>%
       dplyr::select(array, antenna, tag_code, year, month, week, day, hour, date, first_det,
                     last_det, time_diff_days, time_diff_mins)
-
+    
     return(fl.df)
   }
 }

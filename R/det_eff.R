@@ -67,50 +67,58 @@ det_eff <- function(data,
                     direction,
                     start_date = NULL,
                     end_date = NULL) {
-
-
+  
+  
   if (is.null(start_date)) start_date <- min(data$date_time) else start_date <- lubridate::ymd_hms(start_date, tz = data$time_zone[1])
   if (is.null(end_date)) end_date <- max(data$date_time) else end_date <- lubridate::ymd_hms(end_date, tz = data$time_zone[1])
-
-  # Filter data
-  rg <- dplyr::filter(data, date_time >= start_date  & date_time <= end_date)
-
-  # Create new temporal columns
-  rg <- rg %>%
+  
+  # Filter data and add temporal columns
+  rg <- data %>% 
+    dplyr::filter(date_time >= start_date  & date_time <= end_date) %>% 
     dplyr::mutate(year = lubridate::year(date_time)) %>%
     dplyr::mutate(month = lubridate::month(date_time)) %>%
     dplyr::mutate(week = lubridate::week(date_time)) %>%
     dplyr::mutate(day = lubridate::day(date_time)) %>%
     dplyr::mutate(hour = lubridate::hour(date_time))
-
+  
   # Antenna Detection Efficiency --------------------
-
   if (!isTRUE(by_array)) { # by_array = FALSE
-
+    
     # If the array column doesn't exist, create it by duplicating the reader column
     if (!"array" %in% names(rg)) rg$array <- rg$reader
-
+    
     # A user might run this function with antennas set to NA because they came
     # from single data NAs are ok if by_array == TRUE because you specify the
     # array sequence (but by creating an array column you create antenna numbers)
     if (sum(is.na(rg$antenna) > 0))
       print("Warning: Detection efficiency will not be calculated for readers with no antenna number. Number antennas using array_config()")
-
+    
     # Resolution NULL
     if (is.null(resolution)) {
-
+      
       if (direction == "up") {
-        det <- plyr::ddply(rg, c("array", "antenna"), up_func, all = rg)
+        det <- rg %>% 
+          # Group by array and antenna
+          dplyr::group_by(array, antenna) %>% 
+          # Apply custom function
+          dplyr::group_modify(~up_func(.x, all = rg), keep = TRUE) %>% 
+          ungroup
       }
-
+      
       if (direction == "down") {
-        det <- plyr::ddply(rg, c("array", "antenna"), down_func, all = rg)
+        det <- rg %>% 
+          dplyr::group_by(array, antenna) %>% 
+          dplyr::group_modify(~down_func(.x, all = rg), keep = TRUE) %>% 
+          ungroup
       }
-
+      
       if (direction == "resident") {
-        det <- plyr::ddply(rg, c("array", "antenna"), resident_func, all = rg)
+        det <- rg %>% 
+          dplyr::group_by(array, antenna) %>% 
+          dplyr::group_modify(~resident_func(.x, all = rg), keep = TRUE) %>% 
+          ungroup
       }
-
+      
       det_clean <- det %>%
         dplyr::select(array, antenna, det_eff, no_unique_tag, no_x_antenna_tag,
                       no_other_antenna_tag, no_missed_tags) %>%
@@ -120,32 +128,33 @@ det_eff <- function(data,
                       detections_not_on_array = no_other_antenna_tag,
                       missed_detections = no_missed_tags) %>%
         dplyr::filter(antenna != "NA") # Filter rows without antenna values (single arrays not ID'd as arrays)
-
       return(det_clean)
     }
-
+    
     # Resolution Year
-
     if (resolution == "year") {
-
+      
       if (direction == "up") {
-        det <- plyr::ddply(rg, c("year"), function(x) {
-          nested <- plyr::ddply(x, c("array", "antenna"), up_func, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, array, antenna) %>% 
+          dplyr::group_modify(~up_func(.x, all = rg), keep = TRUE) %>% 
+          ungroup
       }
-
+      
       if (direction == "down") {
-        det <- plyr::ddply(rg, c("year"), function(x) {
-          nested <- plyr::ddply(x, c("array", "antenna"), down_func, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, array, antenna) %>% 
+          dplyr::group_modify(~down_func(.x, all = rg), keep = TRUE) %>% 
+          ungroup
       }
-
+      
       if (direction == "resident") {
-        det <- plyr::ddply(rg, c("year"), function(x) {
-          nested <- plyr::ddply(x, c("array", "antenna"), resident_func, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, array, antenna) %>% 
+          dplyr::group_modify(~resident_func(.x, all = rg), keep = TRUE) %>% 
+          ungroup
       }
-
+      
       # Add a date column with the first day of the first month of year and rename columns
       det_clean <- det %>%
         dplyr::mutate(Date = lubridate::ymd(sprintf("%s-%s-%s", year, 1, 1))) %>%
@@ -159,33 +168,33 @@ det_eff <- function(data,
                       detections_not_on_array = no_other_antenna_tag,
                       missed_detections = no_missed_tags) %>%
         dplyr::filter(antenna != "NA")
-
       return(det_clean)
-
     }
-
+    
     # Resolution Month
-
     if (resolution == "month") {
-
+      
       if (direction == "up") {
-        det <- plyr::ddply(rg, c("year", "month"), function(x) {
-          nested <- plyr::ddply(x, c("array", "antenna"), up_func, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, month, array, antenna) %>% 
+          dplyr::group_modify(~up_func(.x, all = rg), keep = TRUE) %>% 
+          ungroup
       }
-
+      
       if (direction == "down") {
-        det <- plyr::ddply(rg, c("year", "month"), function(x) {
-          nested <- plyr::ddply(x, c("array", "antenna"), down_func, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, month, array, antenna) %>% 
+          dplyr::group_modify(~down_func(.x, all = rg), keep = TRUE) %>% 
+          ungroup
       }
-
+      
       if (direction == "resident") {
-        det <- plyr::ddply(rg, c("year", "month"), function(x) {
-          nested <- plyr::ddply(x, c("array", "antenna"), resident_func, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, month, array, antenna) %>% 
+          dplyr::group_modify(~resident_func(.x, all = rg), keep = TRUE) %>% 
+          ungroup
       }
-
+      
       # Add a date column with the first day of the month and the first hour
       det_clean <- det %>%
         dplyr::mutate(Date = lubridate::ymd(sprintf("%s-%s-%s", year, month, 1))) %>%
@@ -199,34 +208,33 @@ det_eff <- function(data,
                       detections_not_on_array = no_other_antenna_tag,
                       missed_detections = no_missed_tags) %>%
         dplyr::filter(antenna != "NA")
-
       return(det_clean)
-
     }
-
+    
     # Resolution Week
-
     if (resolution == "week") {
-
+      
       if (direction == "up") {
-
-        det <- plyr::ddply(rg, c("year", "month", "week"), function(x) {
-          nested <- plyr::ddply(x, c("array", "antenna"), up_func, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, month, week, array, antenna) %>% 
+          dplyr::group_modify(~up_func(.x, all = rg), keep = TRUE) %>% 
+          ungroup
       }
-
+      
       if (direction == "down") {
-        det <- plyr::ddply(rg, c("year", "month", "week"), function(x) {
-          nested <- plyr::ddply(x, c("array", "antenna"), down_func, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, month, week, array, antenna) %>% 
+          dplyr::group_modify(~down_func(.x, all = rg), keep = TRUE) %>% 
+          ungroup
       }
-
+      
       if (direction == "resident") {
-        det <- plyr::ddply(rg, c("year", "month", "week"), function(x) {
-          nested <- plyr::ddply(x, c("array", "antenna"), resident_func, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, month, week, array, antenna) %>% 
+          dplyr::group_modify(~resident_func(.x, all = rg), keep = TRUE) %>% 
+          ungroup
       }
-
+      
       # Add a date column with the first day of the week and the first hour
       det_clean <- det %>%
         dplyr::mutate(Date = lubridate::ymd(sprintf("%s-%s-%s", year, 1, 1))) %>%
@@ -242,32 +250,34 @@ det_eff <- function(data,
                       detections_not_on_array = no_other_antenna_tag,
                       missed_detections = no_missed_tags) %>%
         dplyr::filter(antenna != "NA")
-
+      
       return(det_clean)
     }
-
+    
     # Resolution Day
-
     if (resolution == "day") {
-
+      
       if (direction == "up") {
-        det <- plyr::ddply(rg, c("year", "month", "week", "day"), function(x) {
-          nested <- plyr::ddply(x, c("array", "antenna"), up_func, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, month, week, day, array, antenna) %>% 
+          dplyr::group_modify(~up_func(.x, all = rg), keep = TRUE) %>% 
+          ungroup
       }
-
+      
       if (direction == "down") {
-        det <- plyr::ddply(rg, c("year", "month", "week", "day"), function(x) {
-          nested <- plyr::ddply(x, c("array", "antenna"), down_func, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, month, week, day, array, antenna) %>% 
+          dplyr::group_modify(~down_func(.x, all = rg), keep = TRUE) %>% 
+          ungroup
       }
-
+      
       if (direction == "resident") {
-        det <- plyr::ddply(rg, c("year", "month", "week", "day"), function(x) {
-          nested <- plyr::ddply(x, c("array", "antenna"), resident_func, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, month, week, day, array, antenna) %>% 
+          dplyr::group_modify(~resident_func(.x, all = rg), keep = TRUE) %>% 
+          ungroup
       }
-
+      
       # Add a date column with the day and the first hour
       det_clean <- det %>%
         dplyr::mutate(Date = lubridate::ymd(sprintf("%s-%s-%s", year, month, day))) %>%
@@ -281,33 +291,34 @@ det_eff <- function(data,
                       detections_not_on_array = no_other_antenna_tag,
                       missed_detections = no_missed_tags) %>%
         dplyr::filter(antenna != "NA")
-
+      
       return(det_clean)
     }
-
+    
     # Resolution Hour
-
     if (resolution == "hour") {
-
+      
       if (direction == "up") {
-
-        det <- plyr::ddply(rg, c("year", "month", "week", "day", "hour"), function(x) {
-          nested <- plyr::ddply(x, c("array", "antenna"), up_func, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, month, week, day, hour, array, antenna) %>% 
+          dplyr::group_modify(~up_func(.x, all = rg), keep = TRUE) %>% 
+          ungroup
       }
-
+      
       if (direction == "down") {
-        det <- plyr::ddply(rg, c("year", "month", "week", "day", "hour"), function(x) {
-          nested <- plyr::ddply(x, c("array", "antenna"), down_func, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, month, week, day, hour, array, antenna) %>% 
+          dplyr::group_modify(~down_func(.x, all = rg), keep = TRUE) %>% 
+          ungroup
       }
-
+      
       if (direction == "resident") {
-        det <- plyr::ddply(rg, c("year", "month", "week", "day", "hour"), function(x) {
-          nested <- plyr::ddply(x, c("array", "antenna"), resident_func, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, month, week, day, hour, array, antenna) %>% 
+          dplyr::group_modify(~resident_func(.x, all = rg), keep = TRUE) %>% 
+          ungroup
       }
-
+      
       # Add a date column down to the hour
       # Add a date column with the day month and hour
       det_clean <- det %>%
@@ -323,41 +334,52 @@ det_eff <- function(data,
                       detections_not_on_array = no_other_antenna_tag,
                       missed_detections = no_missed_tags) %>%
         dplyr::filter(antenna != "NA")
-
+      
       return(det_clean)
     }
-
+    
   } # End of antenna section
-
+  
   # Array Detection Efficiency --------------------
-
   if (isTRUE(by_array)) {
-
+    
     if (is.null(array_sequence)) stop("Error: array_sequence must be provided")
-
-    # Subset out any arrays not part of array_sequence
-    rg <- subset(rg, array %in% array_sequence)
-
+    
+    # Subset out any arrays not part of array_sequence and add array number columns
     number_of_arrays <- length(array_sequence)
     numeric_array_names <- seq(from = 1, to = number_of_arrays, by = 1)
-    rg$array_number <- plyr::mapvalues(rg$array, from = array_sequence, to = numeric_array_names) # Note that you can load the plyr function without loading plyr as long as dplyr is loaded.
-    rg$as.numeric <- as.numeric(rg$array_number)
-
+    
+    rg <- rg %>% 
+      dplyr::filter(array %in% array_sequence) %>% 
+      dplyr::mutate(array_number = plyr::mapvalues(array, 
+                                                   from = array_sequence, 
+                                                   to = numeric_array_names)) %>% 
+      dplyr::mutate(as.numeric = as.numeric(array_number))
+    
     # Resolution Null
     if (is.null(resolution)) {
-
+      
       if (direction == "up") {
-        det <- plyr::ddply(rg, c("array"), up_func_array, all = rg)
+        det <- rg %>% 
+          dplyr::group_by(array) %>% 
+          dplyr::group_modify(~up_func_array(.x, all = rg)) %>% 
+          ungroup
       }
-
+      
       if (direction == "down") {
-        det <- plyr::ddply(rg, c("array"), down_func_array, all = rg)
+        det <- rg %>% 
+          dplyr::group_by(array) %>% 
+          dplyr::group_modify(~down_func_array(.x, all = rg)) %>% 
+          ungroup
       }
-
+      
       if (direction == "resident") {
-        det <- plyr::ddply(rg, c("array"), resident_func_array, all = rg)
+        det <- rg %>% 
+          dplyr::group_by(array) %>% 
+          dplyr::group_modify(~resident_func_array(.x, all = rg)) %>% 
+          ungroup
       }
-
+      
       det_clean <- det %>%
         dplyr::select(array, antenna, det_eff, no_unique_tag, no_x_antenna_tag,
                       no_other_antenna_tag, no_missed_tags) %>%
@@ -366,32 +388,34 @@ det_eff <- function(data,
                       detections_on_array = no_x_antenna_tag,
                       detections_not_on_array = no_other_antenna_tag,
                       missed_detections = no_missed_tags)
-
+      
       return(det_clean)
     }
-
+    
     # Resolution Year
-
     if (resolution == "year") {
-
+      
       if (direction == "up") {
-        det <- plyr::ddply(rg, c("year"), function(x) {
-          nested <- plyr::ddply(x, c("array"), up_func_array, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, array) %>% 
+          dplyr::group_modify(~up_func_array(.x, all = rg)) %>% 
+          ungroup
       }
-
+      
       if (direction == "down") {
-        det <- plyr::ddply(rg, c("year"), function(x) {
-          nested <- plyr::ddply(x, c("array"), down_func_array, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, array) %>% 
+          dplyr::group_modify(~down_func_array(.x, all = rg)) %>% 
+          ungroup
       }
-
+      
       if (direction == "resident") {
-        det <- plyr::ddply(rg, c("year"), function(x) {
-          nested <- plyr::ddply(x, c("array"), resident_func_array, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, array) %>% 
+          dplyr::group_modify(~resident_func_array(.x, all = rg)) %>% 
+          ungroup
       }
-
+      
       # Add a date column with the first day of the first month of year
       det_clean <- det %>%
         dplyr::mutate(Date = lubridate::ymd(sprintf("%s-%s-%s", year, 1, 1))) %>%
@@ -403,33 +427,34 @@ det_eff <- function(data,
                       detections_on_array = no_x_antenna_tag,
                       detections_not_on_array = no_other_antenna_tag,
                       missed_detections = no_missed_tags)
-
+      
       return(det_clean)
-
     }
-
+    
     # Resolution Month
-
     if (resolution == "month") {
-
+      
       if (direction == "up") {
-        det <- plyr::ddply(rg, c("year", "month"), function(x) {
-          nested <- plyr::ddply(x, c("array"), up_func_array, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, month, array) %>% 
+          dplyr::group_modify(~up_func_array(.x, all = rg)) %>% 
+          ungroup
       }
-
+      
       if (direction == "down") {
-        det <- plyr::ddply(rg, c("year", "month"), function(x) {
-          nested <- plyr::ddply(x, c("array"), down_func_array, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, month, array) %>% 
+          dplyr::group_modify(~down_func_array(.x, all = rg)) %>% 
+          ungroup
       }
-
+      
       if (direction == "resident") {
-        det <- plyr::ddply(rg, c("year", "month"), function(x) {
-          nested <- plyr::ddply(x, c("array"), resident_func_array, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, month, array) %>% 
+          dplyr::group_modify(~resident_func_array(.x, all = rg)) %>% 
+          ungroup
       }
-
+      
       # Add a date column with the first day of the month and the first hour
       det_clean <- det %>%
         dplyr::mutate(Date = lubridate::ymd(sprintf("%s-%s-%s", year, month, 1))) %>%
@@ -441,36 +466,34 @@ det_eff <- function(data,
                        detections_on_array = no_x_antenna_tag,
                        detections_not_on_array = no_other_antenna_tag,
                        missed_detections = no_missed_tags)
-
+      
       return(det_clean)
-
     }
-
+    
     # Resolution Week
-
     if (resolution == "week") {
-
+      
       if (direction == "up") {
-
-        det <- plyr::ddply(rg, c("year", "month", "week"), function(x) {
-          nested <- plyr::ddply(x, c("array"), up_func_array, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, month, week, array) %>% 
+          dplyr::group_modify(~up_func_array(.x, all = rg)) %>% 
+          ungroup
       }
-
+      
       if (direction == "down") {
-
-        det <- plyr::ddply(rg, c("year", "month", "week"), function(x) {
-          nested <- plyr::ddply(x, c("array"), down_func_array, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, month, week, array) %>% 
+          dplyr::group_modify(~down_func_array(.x, all = rg)) %>% 
+          ungroup
       }
-
+      
       if (direction == "resident") {
-
-        det <- plyr::ddply(rg, c("year", "month", "week"), function(x) {
-          nested <- plyr::ddply(x, c("array"), resident_func_array, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, month, week, array) %>% 
+          dplyr::group_modify(~resident_func_array(.x, all = rg)) %>% 
+          ungroup
       }
-
+      
       # Add a date column with the first day of the week nd the first hour
       det_clean <- det %>%
         dplyr::mutate(Date = lubridate::ymd(sprintf("%s-%s-%s", year, 1, 1))) %>%
@@ -485,35 +508,34 @@ det_eff <- function(data,
                       detections_on_array = no_x_antenna_tag,
                       detections_not_on_array = no_other_antenna_tag,
                       missed_detections = no_missed_tags)
-
+      
       return(det_clean)
     }
-
+    
     # Resolution Day
-
     if (resolution == "day") {
-
+      
       if (direction == "up") {
-
-        det <- plyr::ddply(rg, c("year", "month", "week", "day"), function(x) {
-          nested <- plyr::ddply(x, c("array"), up_func_array, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, month, week, day, array) %>% 
+          dplyr::group_modify(~up_func_array(.x, all = rg)) %>% 
+          ungroup
       }
-
+      
       if (direction == "down") {
-
-        det <- plyr::ddply(rg, c("year", "month", "week", "day"), function(x) {
-          nested <- plyr::ddply(x, c("array"), down_func_array, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, month, week, day, array) %>% 
+          dplyr::group_modify(~down_func_array(.x, all = rg)) %>% 
+          ungroup
       }
-
+      
       if (direction == "resident") {
-
-        det <- plyr::ddply(rg, c("year", "month", "week", "day"), function(x) {
-          nested <- plyr::ddply(x, c("array"), resident_func_array, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, month, week, day, array) %>% 
+          dplyr::group_modify(~resident_func_array(.x, all = rg)) %>% 
+          ungroup
       }
-
+      
       # Add a date column with the day and the first hour
       det_clean <- det %>%
         dplyr::mutate(Date = lubridate::ymd(sprintf("%s-%s-%s", year, month, day))) %>%
@@ -526,35 +548,34 @@ det_eff <- function(data,
                       detections_on_array = no_x_antenna_tag,
                       detections_not_on_array = no_other_antenna_tag,
                       missed_detections = no_missed_tags)
-
+      
       return(det_clean)
     }
-
+    
     # Resolution Hour
-
     if (resolution == "hour") {
-
+      
       if (direction == "up") {
-
-        det <- plyr::ddply(rg, c("year", "month", "week", "day", "hour"), function(x) {
-          nested <- plyr::ddply(x, c("array"), up_func_array, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, month, week, day, hour, array) %>% 
+          dplyr::group_modify(~up_func_array(.x, all = rg)) %>% 
+          ungroup
       }
-
+      
       if (direction == "down") {
-
-        det <- plyr::ddply(rg, c("year", "month", "week", "day", "hour"), function(x) {
-          nested <- plyr::ddply(x, c("array"), down_func_array, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, month, week, day, hour, array) %>% 
+          dplyr::group_modify(~down_func_array(.x, all = rg)) %>% 
+          ungroup
       }
-
+      
       if (direction == "resident") {
-
-        det <- plyr::ddply(rg, c("year", "month", "week", "day", "hour"), function(x) {
-          nested <- plyr::ddply(x, c("array"), resident_func_array, all = rg)
-        })
+        det <- rg %>% 
+          dplyr::group_by(year, month, week, day, hour, array) %>% 
+          dplyr::group_modify(~resident_func_array(.x, all = rg)) %>% 
+          ungroup
       }
-
+      
       # Add a date column down to the hour
       # Add a date column with the day month and hour
       det_clean <- det %>%
@@ -569,34 +590,34 @@ det_eff <- function(data,
                       detections_on_array = no_x_antenna_tag,
                       detections_not_on_array = no_other_antenna_tag,
                       missed_detections = no_missed_tags)
-
+      
       return(det_clean)
     }
-
+    
   } # End of array portion
-
+  
 } # End of main funtion
 
 # Internal Functions --------------------
 
 up_func <- function(x, all) {
-
+  
   # Unique tags above x (the array for which effiency is being calculated)
   other_antenna_tag <- unique(subset(all, antenna > x$antenna[1], na.rm = TRUE)$tag_code) #select unique tag codes for all antennas upstream of antenna X
-
+  
   x_antenna_tag <- unique(x$tag_code, na.rm = TRUE) # Unique tags at x
-
+  
   no_x_antenna_tag <- length(unique(x$tag_code, na.rm = TRUE)) # The number of unique tag codes for antenna x
-
+  
   no_other_antenna_tag <- length(unique(subset(all, antenna > x$antenna[1], na.rm = TRUE)$tag_code)) # calculate the number of unique tag codes for all antennas UPSTREAM of antenna x
-
+  
   no_unique_tag <- sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) # the number of tags that are in both antenna x and antennas UPSTREAM of antenna x
-
+  
   # Calculate detection efficicency: the number of tags detected at antenna x that were detected at antennas UPSTREAM of x divided by the total number of tags detected UPSTREAM of antenna x
   det_eff <- round(sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) / no_other_antenna_tag, 2)
-
+  
   no_missed_tags <- no_other_antenna_tag - no_unique_tag # Calculate number of tags seen at other antennas but missed at antenna x
-
+  
   data.frame(det_eff,
              no_unique_tag,
              no_x_antenna_tag,
@@ -605,23 +626,23 @@ up_func <- function(x, all) {
 }
 
 down_func <- function(x, all) {
-
+  
   # Unique tags below x (the array for which effiency is being calculated)
   other_antenna_tag <- unique(subset(all, antenna < x$antenna[1], na.rm = TRUE)$tag_code) # select unique tag codes for all antennas downstream of antenna X
-
+  
   x_antenna_tag <- unique(x$tag_code, na.rm = TRUE) # select all unique tag codes for antenna x
-
+  
   no_x_antenna_tag <- length(unique(x$tag_code, na.rm = TRUE)) # The number of unique tag codes for antenna x
-
+  
   no_other_antenna_tag <- length(unique(subset(all, antenna < x$antenna[1], na.rm = TRUE)$tag_code)) #calculate the number of unique tag codes for all antennas downstream of antenna x
-
+  
   no_unique_tag <- sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) #the number of tags that are in both antenna x and antennas downstream of antenna x
-
+  
   # Calculate detection efficicency: the number of tags detected at antenna x that were detected at antennas downstream of x divided by the total number of tags detected downstream of antenna x
   det_eff <- round(sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) / no_other_antenna_tag, 2)
-
+  
   no_missed_tags <- no_other_antenna_tag - no_unique_tag # Calculate number of tags seen at other antennas but missed at antenna x
-
+  
   data.frame(det_eff,
              no_unique_tag,
              no_x_antenna_tag,
@@ -630,23 +651,23 @@ down_func <- function(x, all) {
 }
 
 resident_func <- function(x, all) {
-
+  
   # Unique tags at arrays other than x (the array for which effiency is being calculated)
   other_antenna_tag <- unique(subset(all, antenna != x$antenna[1], na.rm = TRUE)$tag_code) # select unique tag codes for all antennas other than antenna X
-
+  
   x_antenna_tag <- unique(x$tag_code, na.rm = TRUE) # select all unique tag codes for antenna x
-
+  
   no_x_antenna_tag <- length(unique(x$tag_code, na.rm = TRUE)) # The number of unique tag codes for antenna x
-
+  
   no_other_antenna_tag <- length(unique(subset(all, antenna != x$antenna[1], na.rm = TRUE)$tag_code)) #calculate the number of unique tag codes for all antennas other than antenna x
-
+  
   no_unique_tag <- sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) # the number of tags that are in both antenna x and antennas downstream of antenna x
-
+  
   # Calculate detection efficicency: the number of tags detected at antenna x that were detected at antennas other than x divided by the total number of tags detected other than antenna x
   det_eff <- round(sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) / no_other_antenna_tag, 2)
-
+  
   no_missed_tags <- no_other_antenna_tag - no_unique_tag # Calculate number of tags seen at other antennas but missed at antenna x
-
+  
   data.frame(det_eff,
              no_unique_tag,
              no_x_antenna_tag,
@@ -655,23 +676,23 @@ resident_func <- function(x, all) {
 }
 
 up_func_array <- function(x, all) {
-
+  
   # Unique tags above x (the array for which effiency is being calculate)
   other_antenna_tag <- unique(subset(all, array_number > x$array_number[1], na.rm = TRUE)$tag_code) #select unique tag codes for all antennas upstream of antenna X
-
+  
   x_antenna_tag <- unique(x$tag_code, na.rm = TRUE) # select all unique tag codes for antenna x
-
+  
   no_x_antenna_tag <- length(unique(x$tag_code, na.rm = TRUE)) # The number of unique tag codes for antenna x
-
+  
   no_other_antenna_tag <- length(unique(subset(all, array_number > x$array_number[1], na.rm = TRUE)$tag_code)) #calculate the number of unique tag codes for all antennas UPSTREAM of antenna x
-
+  
   no_unique_tag <- sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) #the number of tags that are in both antenna x and antennas UPSTREAM of antenna x
-
+  
   # Calculate detection efficicency: the number of tags detected at antenna x that were detected at antennas UPSTREAM of x divided by the total number of tags detected UPSTREAM of antenna x
   det_eff <- round(sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) / no_other_antenna_tag, 2)
-
+  
   no_missed_tags <- no_other_antenna_tag - no_unique_tag # Calculate number of tags seen at other antennas but missed at antenna x
-
+  
   data.frame(antenna = NA,
              det_eff,
              no_unique_tag,
@@ -681,23 +702,23 @@ up_func_array <- function(x, all) {
 }
 
 down_func_array <- function(x, all) {
-
+  
   # Unique tags below x (the array for which effiency is being calculate)
   other_antenna_tag <- unique(subset(all, array_number < x$array_number[1], na.rm = TRUE)$tag_code) #select unique tag codes for all antennas downstream of antenna X
-
+  
   x_antenna_tag <- unique(x$tag_code, na.rm = TRUE) # select all unique tag codes for antenna x
-
+  
   no_x_antenna_tag <- length(unique(x$tag_code, na.rm = TRUE)) # The number of unique tag codes for antenna x
-
+  
   no_other_antenna_tag <- length(unique(subset(all, array_number < x$array_number[1], na.rm = TRUE)$tag_code)) #calculate the number of unique tag codes for all antennas downstream of antenna x
-
+  
   no_unique_tag <- sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) #the number of tags that are in both antenna x and antennas downstream of antenna x
-
+  
   #calculate detection efficicency: the number of tags detected at antenna x that were detected at antennas downstream of x divided by the total number of tags detected downstream of antenna x
   det_eff <- round(sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) / no_other_antenna_tag, 2)
-
+  
   no_missed_tags <- no_other_antenna_tag - no_unique_tag # Calculate number of tags seen at other antennas but missed at antenna x
-
+  
   data.frame(antenna = NA,
              det_eff,
              no_unique_tag,
@@ -707,23 +728,23 @@ down_func_array <- function(x, all) {
 }
 
 resident_func_array <- function(x, all) {
-
+  
   # Unique tags at arrays other than x (the array for which effiency is being calculate)
   other_antenna_tag <- unique(subset(all, array_number != x$array_number[1], na.rm = TRUE)$tag_code) # select unique tag codes for all antennas other than antenna X
-
+  
   x_antenna_tag <- unique(x$tag_code, na.rm = TRUE) # select all unique tag codes for antenna x
-
+  
   no_x_antenna_tag <- length(unique(x$tag_code, na.rm = TRUE)) # The number of unique tag codes for antenna x
-
+  
   no_other_antenna_tag <- length(unique(subset(all, array_number != x$array_number[1], na.rm = TRUE)$tag_code)) #calculate the number of unique tag codes for all antennas other than antenna x
-
+  
   no_unique_tag <- sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) # the number of tags that are in both antenna x and antennas downstream of antenna x
-
+  
   # Calculate detection efficicency: the number of tags detected at antenna x that were detected at antennas other than x divided by the total number of tags detected other than antenna x
   det_eff <- round(sum(x_antenna_tag %in% other_antenna_tag, na.rm = TRUE) / no_other_antenna_tag, 2)
-
+  
   no_missed_tags <- no_other_antenna_tag - no_unique_tag # Calculate number of tags seen at other antennas but missed at antenna x
-
+  
   data.frame(antenna = NA,
              det_eff,
              no_unique_tag,

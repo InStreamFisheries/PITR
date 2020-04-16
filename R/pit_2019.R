@@ -59,76 +59,110 @@ pit_2019 <- function(data,
                      test_tags = NULL,
                      print_to_file = FALSE,
                      time_zone = NULL) {
-
+  
+  # Create a list of raw data paths
   counter_paths <- dir(data, full.names = TRUE)
-
-  dat0 <- counter_paths %>%
-    purrr::set_names() %>%
-    purrr::map_df(~read.table(., header = FALSE,
-                              fill = TRUE,
-                              stringsAsFactors = FALSE,
-                              skipNul = TRUE,
-                              # col.names = c("DTY", "ARR", "ARR2", "DUR", "TCH", "TTY", "TAG", "EFA", "RCN")), # Original names
-                              col.names = c("det_type", "date", "time", "dur",
-                                            "tag_type", "tag_type2", "tag_code",
-                                            "effective_amps", "unknown")),
-                  .id = "source") %>%
-    dplyr::mutate(source = basename(source)) %>%
-    dplyr::mutate(reader = stringr::str_sub(source, 1, -16)) %>%
-    dplyr::mutate(antenna = NA) %>% # All get NA because the new readers only have one antenna
-    dplyr::select(reader, antenna, det_type, date, time, dur, tag_type, tag_type2, tag_code,
-                  effective_amps, unknown)
-
+  
+  # Determine how many lines to skip from each raw data file
+  skipLines <- counter_paths %>% 
+    # Read in the raw files as a giant character vector
+    # Use quietly to store warnings instead of showing them
+    purrr::map(purrr::quietly(readLines)) %>% 
+    # Pull the results and drop the other list elements
+    purrr::map("result") %>% 
+    # Determine which lines to skip by selecting the line with DTY (Det Type)
+    purrr::map(grep, pattern = "*DTY*") 
+  
+  # Create a function to read in the data files and skip the file-specific line
+  ReadFun <- function(x, y) {
+    read.table(x,
+               skip = y,
+               header = FALSE,
+               fill = TRUE,
+               stringsAsFactors = FALSE,
+               skipNul = TRUE,
+               col.names = c("det_type", "date", "time", "dur",
+                             "tag_type", "tag_type2", "tag_code",
+                             "effective_amps", "unknown")) %>%
+      # Pull the reader from the filename
+      dplyr::mutate(source = basename(x)) %>% 
+      dplyr::mutate(reader = stringr::str_sub(source, 1, -16)) %>%
+      # Create antenna column, but all get NA because the new readers only have one antenna
+      dplyr::mutate(antenna = NA) %>% 
+      dplyr::select(reader, antenna, det_type, date, time, dur, tag_type, tag_type2, tag_code,
+                    effective_amps, unknown)
+  }
+  
+  dat0 <- suppressWarnings(mapply(FUN = ReadFun, 
+                 counter_paths, 
+                 skipLines, 
+                 SIMPLIFY = FALSE))
+  
+  # Turn the list into a data.frame
+  dat1 <- dat0 %>% 
+    data.table::rbindlist(., fill = TRUE)
+  
   # Create Event Dataframe --------------------
-
-  event_dat <- dat0 %>%
+  
+  event_dat <- dat1 %>%
     dplyr::filter(det_type == "E") %>%
-    dplyr::mutate(desc = apply(dplyr::select(., dur:unknown), 1, paste, collapse = " ")) %>%  # Collapse the columns into one description
-    dplyr::mutate(desc = gsub("NA", "", paste(as.character(desc)))) %>% # Remove NA values
-    dplyr::mutate(desc = gsub("^\\s+|\\s+$", "", desc)) %>% # Remove space at end of text
-    dplyr::select(reader, det_type, date, time, desc)
-
+    # Collapse the columns into one description
+    dplyr::mutate(desc = apply(dplyr::select(., dur:unknown), 1, paste, collapse = " ")) %>% 
+    # Remove NA values
+    dplyr::mutate(desc = gsub("NA", "", paste(as.character(desc)))) %>% 
+    # Remove space at end of text
+    dplyr::mutate(desc = gsub("^\\s+|\\s+$", "", desc)) %>% 
+    dplyr::select(reader, det_type, date, time, desc) %>% 
+    # Retain only unique lines
+    dplyr::distinct()
+  
   # Create Detection Dataframe --------------------
-
-  d <- dplyr::filter(dat0, det_type %in% c("S", "I"))  # Not sure what "I" is yet
-
-  if (nrow(d) == 0) stop("Error: Data has no detections") # Force stop if no detections
-
-  det_data <- d %>% # For now, just manipulate to match the data from new_pit
+  
+  d <- dplyr::filter(dat1, det_type %in% c("S", "I"))  # Not sure what "I" is yet
+  
+  # Force stop if no detections
+  if (nrow(d) == 0) stop("Error: Data has no detections") 
+  
+  # May be temporary, but manipulate to look exactly like new_pit() output
+  det_data <- d %>% 
     dplyr::mutate(consec_det = NA) %>%
+    dplyr::mutate(consec_det = as.numeric(consec_det)) %>%
     dplyr::mutate(no_empt_scan_prior = NA) %>%
-    dplyr::select(reader, det_type, date, time, dur, tag_type, tag_code, antenna,
-                  consec_det, no_empt_scan_prior)
-
+    dplyr::mutate(no_empt_scan_prior = as.numeric(no_empt_scan_prior)) %>%
+    dplyr::mutate(antenna = as.numeric(antenna)) %>%
+    dplyr::select(reader, antenna, det_type, date, time, dur, tag_type, tag_code, 
+                  consec_det, no_empt_scan_prior) %>% 
+    # Retain only unique lines
+    dplyr::distinct()
+  
   # Filter Tags --------------------
-
+  
   # Remove test tags if they exist
   if (!(is.null(test_tags))) {
     det_data <- dplyr::filter(det_data, !(tag_code %in% test_tags))
   }
-
+  
   # Filter out study tags
   study_tag_path <- counter_paths[grep(pattern = "study_tags", x = counter_paths)]
-
+  
   if (length(study_tag_path) == 1) {
-
+    
     if (grepl(pattern = ".csv", x = study_tag_path) == TRUE) study_tag_df <- read.table(study_tag_path, header = TRUE, sep = ",")
     if (grepl(pattern = ".txt", x = study_tag_path) == TRUE) study_tag_df <- read.table(study_tag_path, header = TRUE, sep = "\t")
-
+    
     study_tags_vector <- study_tag_df$study_tags
     det_data <- dplyr::filter(det_data, tag_code %in% study_tags_vector)
-
   }
-
+  
   # Create Datafames to Return --------------------
-
+  
   # Create new column that combines date and time
   if (is.null(time_zone)) {
     det_data <- det_data %>%
       dplyr::mutate(date_time = lubridate::ymd_hms(paste(date, time))) %>%
       dplyr::mutate(time_zone = Sys.timezone())
   }
-
+  
   if (!is.null(time_zone)) {
     det_data <- det_data %>%
       dplyr::mutate(date_time = lubridate::ymd_hms(paste(date, time))) %>%
@@ -136,22 +170,22 @@ pit_2019 <- function(data,
       dplyr::mutate(time_zone = time_zone) %>%
       dplyr::mutate(date = lubridate::date(date_time))
   }
-
+  
+  # Create final detection data frame
   all_det <- det_data %>%
-    dplyr::mutate(antenna = as.numeric(antenna)) %>%
-    dplyr::mutate(consec_det = as.numeric(consec_det)) %>%
-    dplyr::mutate(no_empt_scan_prior = as.numeric(no_empt_scan_prior)) %>%
     dplyr::select(reader, antenna, det_type, date, time, date_time, time_zone, dur,
                   tag_type, tag_code, consec_det, no_empt_scan_prior)
-
+  
   if (print_to_file == TRUE) {
     write.csv(all_det, "all_det.csv", row.names = FALSE)
     write.csv(event_dat, "event_dat.csv", row.names = FALSE)
     write.csv(unique(all_det$readers), "single_readers.csv", row.names = FALSE)
   }
-
+  
   final_list <- list(all_det = all_det,
                      event_dat = event_dat,
                      readers = unique(all_det$reader))
+  
   return(final_list)
+  
 }

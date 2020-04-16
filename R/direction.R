@@ -19,34 +19,25 @@
 #' @export
 
 direction <- function(data) {
-
+  
   # If the array column doesn't exist, create it by duplicating the reader column
   if (!"array" %in% names(data)) data$array <- data$reader
-
-  # Remove single reader rows form data set (created with pit_data function)
-  xv <- subset(data, antenna != "NA")
-
-  dir <- plyr::ddply(xv, c("array", "tag_code"), function(x) {
-    xx <- x[order(x$date_time), ]
-
-    # If the diffferenc between two consecutive sdettions is positive then
-    # up/down (direction) = up, if it's negative then direction = down, if it's
-    # 0 then direction = N.
-    xx$direction <- ifelse(c(0, diff(xx$antenna)) > 0, "up", ifelse(c(0, diff(xx$antenna)) < 0, "down", "N"))
-
+  
+  dir <- data %>%  
+    # Remove single reader rows form data set (created with pit_data function)
+    dplyr::filter(antenna != "NA") %>% 
+    dplyr::arrange(date_time) %>% 
+    dplyr::group_by(array, tag_code) %>% 
+    dplyr::mutate(direction = ifelse(c(0, diff(antenna)) > 0, "up", 
+                                     ifelse(c(0, diff(antenna)) < 0, "down", 
+                                            "N"))) %>% 
+    ungroup %>% 
     # Calculate the number of antennas apart that consequtive detections occur
-    xx$no_ant <- c(0, abs(diff(xx$antenna)))
-    data.frame(xx)
-
-  })
-
-  dir_c <- subset(dir, direction != "N") # Remove rows where direction is N
-
-  # Sort by reader, tag code and date-time
-  dir_cs <- dir_c[order(dir_c$array, dir_c$tag_code, dir_c$date_time), ]
-
-  dir_cs <- dplyr::select(dir_cs, array, reader, antenna, det_type, date, time, date_time,
-                          dur, tag_type, tag_code, consec_det, no_empt_scan_prior, direction, no_ant)
-  return(dir_cs)
-
+    dplyr::mutate(no_ant = c(0, abs(diff(antenna)))) %>% 
+    # Remove rows where direction is N
+    dplyr::filter(direction != "N") %>% 
+    # Sort by reader, tag code and date-time
+    dplyr::arrange(array, tag_code, date_time) %>% 
+    dplyr::select(array, reader, antenna, det_type, date, time, date_time,
+                  dur, tag_type, tag_code, consec_det, no_empt_scan_prior, direction, no_ant)
 }

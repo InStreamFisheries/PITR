@@ -149,9 +149,10 @@ array_config <- function (data,
       nc <- rbind(rd, rr)
 
       # Reorder columns
-      nc <- dplyr::select(nc, array, reader, antenna, det_type, date, time, date_time,
-                          time_zone, dur, tag_type, tag_code, consec_det, no_empt_scan_prior)
-      nc$antenna <- as.numeric(nc$antenna)
+      nc <- nc %>% 
+        dplyr::select(array, reader, antenna, det_type, date, time, date_time,
+                          time_zone, dur, tag_type, tag_code, consec_det, no_empt_scan_prior) %>% 
+        dplyr::mutate(antenna = as.numeric(antenna))
 
       array_summary(nc)
 
@@ -191,9 +192,10 @@ array_config <- function (data,
 
       array_summary(nc)
 
-      nc <- dplyr::select(nc, array, reader, antenna, det_type, date, time, date_time,
-                          time_zone, dur, tag_type, tag_code, consec_det, no_empt_scan_prior)
-      nc$antenna <- as.numeric(nc$antenna)
+      nc <- nc %>% 
+        dplyr::select(array, reader, antenna, det_type, date, time, date_time,
+                          time_zone, dur, tag_type, tag_code, consec_det, no_empt_scan_prior) %>% 
+        dplyr::mutate(antenna = as.numeric(antenna))
 
       return(nc)
     }
@@ -298,8 +300,8 @@ array_config <- function (data,
     if ("array" %in% names(rr)) rr$array <- rr$array else rr$array <- rr$reader
     if ("array" %in% names(rd)) rd$array <- rd$array else rd$array <- rd$reader
 
-    nc <- rbind(rd, rr)
-    nc$antenna <- as.numeric(nc$antenna)
+    nc <- rbind(rd, rr) %>% 
+      dplyr::mutate(antenna = as.numeric(antenna))
 
     array_summary(nc)
 
