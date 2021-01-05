@@ -1,6 +1,6 @@
 .onAttach <- function(libname, pkgname) {
-  packageStartupMessage("Welcome to PITR. PITR is continuously being developed and your input can help.
-  Check for updates regularly and contact maintainer for support.")
+  packageStartupMessage("Welcome to PITR. PITR is continuously being developed and your input can help.")
+  packageStartupMessage("Check for updates regularly and contact maintainer for support.")
 }
 
 .onLoad <- function(libname, pkgname) {
